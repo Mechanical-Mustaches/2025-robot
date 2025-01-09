@@ -5,7 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-
+import frc.robot.subsystems.SwerveDriveSubsystem;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -15,9 +16,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
+
+
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
- 
+  private SwerveDriveSubsystem swerveDriveSubsystem;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -25,6 +28,17 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    swerveDriveSubsystem = new SwerveDriveSubsystem();
+
+    swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
+      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.01),
+      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.01),
+      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.01)
+      
+
+    ));
+
     // Configure the trigger bindings
     configureBindings();
   }
