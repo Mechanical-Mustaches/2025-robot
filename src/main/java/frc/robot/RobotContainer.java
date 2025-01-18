@@ -32,9 +32,9 @@ public class RobotContainer {
     swerveDriveSubsystem = new SwerveDriveSubsystem();
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
-      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.01),
-      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.01),
-      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.01)
+      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
+      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
+      ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)
       
 
     ));
