@@ -4,12 +4,18 @@
 
 package frc.robot.subsystems;
 
+import com.playingwithfusion.TimeOfFlight;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ExampleSubsystem extends SubsystemBase {
+  private TimeOfFlight sensor;
+
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  public ExampleSubsystem() {
+    this.sensor = new TimeOfFlight(0);
+  }
 
   /**
    * Example command factory method.
