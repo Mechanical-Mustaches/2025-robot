@@ -31,7 +31,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             throw new RuntimeException(e);
         }
         
-
+        swerveDrive.setHeadingCorrection(false);
     } 
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX){
