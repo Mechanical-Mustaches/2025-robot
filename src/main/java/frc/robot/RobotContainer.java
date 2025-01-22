@@ -6,7 +6,13 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -21,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private SwerveDriveSubsystem swerveDriveSubsystem;
+
+  private final SendableChooser<Command> autoChooser; 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -41,6 +49,10 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+
+    // Setup autoChooser
+     autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -55,5 +67,10 @@ public class RobotContainer {
   private void configureBindings() {
    
    
+  }
+
+
+    public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
   }
 }
