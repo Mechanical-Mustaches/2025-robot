@@ -5,7 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.ElevatorTelemetry;
 import frc.robot.commands.EndEffectorCommand;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
@@ -29,7 +32,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private SwerveDriveSubsystem swerveDriveSubsystem;
-  private EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
+  //private EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
+  private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
   private final SendableChooser<Command> autoChooser; 
 
@@ -52,11 +56,25 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+    
+
 
     // Setup autoChooser
      autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    
+
+    
   }
+
+  public void setupTelemetry(){
+    ElevatorTelemetry telemetry = new ElevatorTelemetry(elevatorSubsystem);
+   telemetry.schedule();
+  }
+
+  
+  
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -69,7 +87,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
-   m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+   //m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+    m_driverController.povDown().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
+    m_driverController.povLeft().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
+    m_driverController.povUp().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
+    m_driverController.povRight().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
    
   }
 

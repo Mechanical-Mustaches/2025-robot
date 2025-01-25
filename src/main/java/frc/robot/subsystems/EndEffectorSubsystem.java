@@ -1,19 +1,14 @@
 package frc.robot.subsystems;
-
-import com.ctre.phoenix6.controls.Follower;
-import com.revrobotics.servohub.ServoHub.ResetMode;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class EndEffectorSubsystem extends SubsystemBase {
-    private SparkMax effectorLeft = new SparkMax(16, MotorType.kBrushless);
-    private SparkMax effectorRight = new SparkMax(17, MotorType.kBrushless);
+    private SparkMax effectorLeft = new SparkMax(13, MotorType.kBrushless);
+    private SparkMax effectorRight = new SparkMax(14, MotorType.kBrushless);
     
 
     public EndEffectorSubsystem(){
