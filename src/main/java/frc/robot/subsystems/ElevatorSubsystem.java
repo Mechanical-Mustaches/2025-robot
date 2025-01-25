@@ -68,6 +68,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     public void stopElevator(){
         leftEleMotor.set(0);
+    } public void clearPosition(){
+        //TODO: clear set position on enabling
     }
 
 }
