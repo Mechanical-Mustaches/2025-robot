@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.EndEffectorCommand;
+import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private SwerveDriveSubsystem swerveDriveSubsystem;
+  private EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
 
   private final SendableChooser<Command> autoChooser; 
 
@@ -66,6 +69,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
+   m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
    
   }
 
