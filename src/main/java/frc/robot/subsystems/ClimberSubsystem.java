@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -16,9 +17,16 @@ public class ClimberSubsystem extends SubsystemBase {
     public ClimberSubsystem(){
         SparkMaxConfig config1 = new SparkMaxConfig();
         SparkMaxConfig config2 = new SparkMaxConfig();
+        ClosedLoopConfig pidConfig = new ClosedLoopConfig();
+
+        pidConfig
+            .pid(0.01,0,0)
+            .maxOutput(.5)
+            .minOutput(.2);
 
         config1
             .smartCurrentLimit(50)
+            .apply(pidConfig)
             .idleMode(IdleMode.kBrake);
         config2
             .apply(config1)
@@ -28,6 +36,9 @@ public class ClimberSubsystem extends SubsystemBase {
         climber2.configure(config2, null, null);
     }
 
+    public double getEncoderValue(){
+        return climber1.getEncoder().getPosition();
+    }
 
     public void verticleClimber(){
         climber1.set(0.2);

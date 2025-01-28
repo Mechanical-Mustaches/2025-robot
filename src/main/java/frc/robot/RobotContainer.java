@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.AngledClimberCommand;
+import frc.robot.commands.ClimberTelemetry;
 import frc.robot.commands.EndEffectorCommand;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -76,8 +77,10 @@ public class RobotContainer {
   }
 
   public void setupTelemetry(){
-    ElevatorTelemetry telemetry = new ElevatorTelemetry(elevatorSubsystem);
-   telemetry.schedule();
+    ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(elevatorSubsystem);
+    ClimberTelemetry climberTelemetry = new ClimberTelemetry(climberSubsystem);
+   elevatorTelemetry.schedule();
+   climberTelemetry.schedule();
   }
 
   
