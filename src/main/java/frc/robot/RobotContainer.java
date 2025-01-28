@@ -5,7 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AngledClimberCommand;
 import frc.robot.commands.EndEffectorCommand;
+import frc.robot.commands.VerticleClimberCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
@@ -30,6 +33,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private SwerveDriveSubsystem swerveDriveSubsystem;
   private EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
+  private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   private final SendableChooser<Command> autoChooser; 
 
@@ -69,7 +73,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
-   m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+  // m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+   m_driverController.b().whileTrue(new VerticleClimberCommand(climberSubsystem));
+   m_driverController.x().whileTrue(new AngledClimberCommand(climberSubsystem));
    
   }
 
