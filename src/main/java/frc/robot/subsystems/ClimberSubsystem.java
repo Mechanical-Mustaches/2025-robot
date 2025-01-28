@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -39,6 +40,6 @@ public class ClimberSubsystem extends SubsystemBase {
     public void climberStop(){
         climber1.set(0);
     }
+}
 
     
-}
