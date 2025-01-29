@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,13 +21,15 @@ public class ClimberSubsystem extends SubsystemBase {
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
-            .pid(0.01,0,0)
+            .pid(0.02,0.00001,0)
             .maxOutput(.5)
-            .minOutput(.2);
+            .minOutput(-.5);
+            
 
         config1
             .smartCurrentLimit(50)
             .apply(pidConfig)
+            .inverted(true)
             .idleMode(IdleMode.kBrake);
         config2
             .apply(config1)
@@ -41,16 +44,18 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void verticleClimber(){
-        climber1.set(0.2);
+        climber1.getClosedLoopController().setReference(0, ControlType.kPosition);
     }
 
     public void angledClimber(){
-        climber1.set(-0.2);
+        climber1.getClosedLoopController().setReference(-7, ControlType.kPosition);  
     }
 
     public void climberStop(){
         climber1.set(0);
     }
+
+
 }
 
     

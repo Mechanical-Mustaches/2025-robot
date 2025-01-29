@@ -15,7 +15,7 @@ public class VerticleClimberCommand extends Command{
     }
    
     @Override
-    public void end(boolean interupt){
-       climber.climberStop();
+    public boolean isFinished(){
+       return true;
     }
 }

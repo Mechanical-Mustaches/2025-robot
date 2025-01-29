@@ -98,8 +98,8 @@ public class RobotContainer {
   private void configureBindings() {
    
   // m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
-   m_driverController.b().whileTrue(new VerticleClimberCommand(climberSubsystem));
-   m_driverController.x().whileTrue(new AngledClimberCommand(climberSubsystem));
+   m_driverController.b().onTrue(new VerticleClimberCommand(climberSubsystem));
+   m_driverController.x().onTrue(new AngledClimberCommand(climberSubsystem));
 
     m_driverController.povDown().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
     m_driverController.povLeft().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));

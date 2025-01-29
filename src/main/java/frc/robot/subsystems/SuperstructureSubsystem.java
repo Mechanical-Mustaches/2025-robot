@@ -10,8 +10,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SuperstructureSubsystem extends SubsystemBase{
-    private SparkMax leftPivot = new SparkMax(98,MotorType.kBrushless);
-    private SparkMax rightPivot = new SparkMax(99,MotorType.kBrushless);
+    private SparkMax leftPivot = new SparkMax(20,MotorType.kBrushless);
+    private SparkMax rightPivot = new SparkMax(21,MotorType.kBrushless);
     
 
     public SuperstructureSubsystem(){
