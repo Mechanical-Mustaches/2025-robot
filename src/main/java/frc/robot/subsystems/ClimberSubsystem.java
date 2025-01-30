@@ -24,7 +24,6 @@ public class ClimberSubsystem extends SubsystemBase {
             .pid(0.02,0.00001,0)
             .maxOutput(.5)
             .minOutput(-.5);
-            
 
         config1
             .smartCurrentLimit(50)
@@ -54,8 +53,6 @@ public class ClimberSubsystem extends SubsystemBase {
     public void climberStop(){
         climber1.set(0);
     }
-
-
 }
 
     
