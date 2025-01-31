@@ -14,6 +14,8 @@ import frc.robot.subsystems.ClimberSubsystem;
 
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorTelemetry;
+import frc.robot.commands.EndEffector2Command;
+import frc.robot.commands.EndEffector3Command;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -97,9 +99,14 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
-  // m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+ //  m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+ //  m_driverController.b().whileTrue(new EndEffector2Command(endEffectorSubsystem));
+ //  m_driverController.x().whileTrue(new EndEffector3Command(endEffectorSubsystem));
+
    m_driverController.b().onTrue(new VerticleClimberCommand(climberSubsystem));
    m_driverController.x().onTrue(new AngledClimberCommand(climberSubsystem));
+
+    
 
     m_driverController.povDown().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
     m_driverController.povLeft().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));

@@ -28,13 +28,13 @@ public class EndEffectorSubsystem extends SubsystemBase {
         effectorRight.configure(rightConfig, null, null);
     }
     public void effectorSpin1(){
-        effectorLeft.set(-1);
+        effectorLeft.set(1);
     }
     public void effectorSpin2(){
-        effectorLeft.set(-0.5);
+        effectorLeft.set(0.25);
     }
     public void effectorSpin3(){
-        effectorLeft.set(-0.25);
+        effectorLeft.set(0.1);
     }
     public void effectorStop(){
         effectorLeft.set(0);
