@@ -25,6 +25,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
             .smartCurrentLimit(50)
             .idleMode(IdleMode.kBrake)
             .apply(pidConfig);
+            
         intakeActivator.configure(pivotConfig, null, null);
     }
 

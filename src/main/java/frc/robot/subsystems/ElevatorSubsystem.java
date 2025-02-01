@@ -40,7 +40,7 @@ public class ElevatorSubsystem extends SubsystemBase{
             .follow(16,true);
 
         leftEleMotor.configure(leftConfig,null,null);
-        rightEleMotor.configure(leftConfig,null,null);
+        rightEleMotor.configure(rightConfig,null,null);
     }
 
     public void setPosition(Level level){
