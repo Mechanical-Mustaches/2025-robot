@@ -13,7 +13,6 @@ public class EndEffectorCommand extends Command  {
     public void initialize(){
         endEffector.effectorSpin1();
     }
-   
     @Override
     public void end(boolean interupt){
        endEffector.effectorStop();
