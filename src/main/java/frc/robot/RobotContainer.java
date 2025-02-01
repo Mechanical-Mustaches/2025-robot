@@ -5,11 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-
+import frc.robot.commands.AlgaeIntakeCommand;
 import frc.robot.commands.AngledClimberCommand;
 import frc.robot.commands.ClimberTelemetry;
 import frc.robot.commands.EndEffectorCommand;
 import frc.robot.commands.VerticleClimberCommand;
+import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 
 import frc.robot.commands.ElevatorCommand;
@@ -45,6 +46,7 @@ public class RobotContainer {
   private EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
   private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private AlgaeHandlerSubsystem algaeHandlerSubsystem = new AlgaeHandlerSubsystem();
 
   private final SendableChooser<Command> autoChooser; 
 
@@ -116,12 +118,15 @@ public class RobotContainer {
     m_driverController.povLeft().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
     m_driverController.povUp().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
     m_driverController.povRight().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
-   
+    
+    m_driverController.rightBumper().whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem));
+
     m_pitController.y().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
     m_pitController.y().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
     m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
     m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
     m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
+   
   }
 
 

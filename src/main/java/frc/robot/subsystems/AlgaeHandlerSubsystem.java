@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeHandlerSubsystem extends SubsystemBase{
@@ -21,19 +22,20 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         pidConfig
             .pid(0.01, 0, 0);
 
+        
         pivotConfig
             .smartCurrentLimit(50)
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kCoast)
             .apply(pidConfig);
             
-        intakeActivator.configure(pivotConfig, null, null);
+        intakePivoter.configure(pivotConfig, null, null);
     }
 
     public void intake(){
-        intakeActivator.set(0.05);
+        intakeActivator.set(-1);
     }
     public void reverseIntake(){
-        intakeActivator.set(-0.05);
+        intakeActivator.set(1);
     }
     public void stopIntake(){
         intakeActivator.set(0);
@@ -46,6 +48,10 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
     }
     public double getEncoderValue(){
         return intakePivoter.getEncoder().getPosition();
+    }
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("AlgaePivotEncoderValue", getEncoderValue());
     }
 
 }
