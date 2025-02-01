@@ -8,7 +8,7 @@ public class AlgaeIntakeCommand extends Command{
     private AlgaeHandlerSubsystem AlgaeSubsystem;
     
 
-    public void AlgaeIntakerCommand(AlgaeHandlerSubsystem subsystem){
+    public AlgaeIntakeCommand(AlgaeHandlerSubsystem subsystem){
         AlgaeSubsystem = subsystem;
     }
 
@@ -20,14 +20,10 @@ public class AlgaeIntakeCommand extends Command{
    
     @Override
     public void end(boolean interrupted) {
-        //elevator.stopElevator();
+        AlgaeSubsystem.stopIntake();
     }
   
     
-    @Override
-    public boolean isFinished() {
-      return true;
-        //TODO: return value based on encoder value, especially for sequential commands.
-    }
+
 
 }
