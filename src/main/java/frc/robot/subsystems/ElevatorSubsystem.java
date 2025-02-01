@@ -6,6 +6,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -39,13 +41,15 @@ public class ElevatorSubsystem extends SubsystemBase{
         
 
         pidConfig
-            .pid(0.02,0,0,ClosedLoopSlot.kSlot0)
+            .pid(0.02,0.00001,0,ClosedLoopSlot.kSlot0)
             .maxOutput(.6,ClosedLoopSlot.kSlot0)
-            .minOutput(0.1,ClosedLoopSlot.kSlot0)
+            .minOutput(0,ClosedLoopSlot.kSlot0)
             
             .pid(0.01,0,0,ClosedLoopSlot.kSlot1)
-            .maxOutput(-0.1,ClosedLoopSlot.kSlot1)
-            .minOutput(-0.6,ClosedLoopSlot.kSlot1);
+            .maxOutput(0,ClosedLoopSlot.kSlot1)
+            .minOutput(-0.6,ClosedLoopSlot.kSlot1)
+
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
        
 

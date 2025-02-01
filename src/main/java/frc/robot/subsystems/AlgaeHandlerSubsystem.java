@@ -44,5 +44,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
     public void pivotIn(){
         intakePivoter.getClosedLoopController().setReference(0, ControlType.kPosition);
     }
+    public double getEncoderValue(){
+        return intakePivoter.getEncoder().getPosition();
+    }
 
 }
