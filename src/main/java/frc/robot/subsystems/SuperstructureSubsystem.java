@@ -2,12 +2,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SuperstructureSubsystem extends SubsystemBase{
@@ -18,17 +15,12 @@ public class SuperstructureSubsystem extends SubsystemBase{
     public SuperstructureSubsystem(){
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         SparkMaxConfig rightConfig = new SparkMaxConfig();
-        ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
-
-        pidConfig
-            .pid(0.01, 0, 0);
             
 
         leftConfig
-            .smartCurrentLimit(50)
-            .idleMode(IdleMode.kBrake)
-            .apply(pidConfig);
+            .smartCurrentLimit(10)
+            .idleMode(IdleMode.kBrake);
         
         rightConfig
             .apply(leftConfig)
@@ -41,14 +33,10 @@ public class SuperstructureSubsystem extends SubsystemBase{
     }
 
     public void pivotOut(){
-        leftPivot.set(.5);
+        leftPivot.set(.2);
     }
 
-    public double getEncoderValue(){
-        return leftPivot.getEncoder().getPosition();
-    }
-    @Override
-    public void periodic(){
-        SmartDashboard.putNumber("SuperStructureEncoderValue", getEncoderValue());
+    public void pivotStop(){
+        leftPivot.set(0);
     }
 }

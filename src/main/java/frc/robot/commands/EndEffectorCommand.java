@@ -11,7 +11,7 @@ public class EndEffectorCommand extends Command  {
     }
     @Override
     public void initialize(){
-        endEffector.effectorSpin1();
+        endEffector.effectorSpin();
     }
     @Override
     public void end(boolean interupt){

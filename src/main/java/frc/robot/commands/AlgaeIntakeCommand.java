@@ -5,22 +5,22 @@ import frc.robot.subsystems.AlgaeHandlerSubsystem;
 
 
 public class AlgaeIntakeCommand extends Command{
-    private AlgaeHandlerSubsystem AlgaeSubsystem;
+    private AlgaeHandlerSubsystem algaeSubsystem;
     
 
     public AlgaeIntakeCommand(AlgaeHandlerSubsystem subsystem){
-        AlgaeSubsystem = subsystem;
+        algaeSubsystem = subsystem;
     }
 
     @Override
     public void initialize() {
-       AlgaeSubsystem.intake();
+       algaeSubsystem.intake();
     }
   
    
     @Override
     public void end(boolean interrupted) {
-        AlgaeSubsystem.stopIntake();
+        algaeSubsystem.stopIntake();
     }
   
     
