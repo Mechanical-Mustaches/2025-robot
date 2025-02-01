@@ -15,18 +15,19 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorTelemetry;
 import frc.robot.commands.EndEffector2Command;
-import frc.robot.commands.EndEffector3Command;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -51,10 +52,16 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
+  private final CommandXboxController m_pitController =
+      new CommandXboxController(OperatorConstants.kPitControllerPort);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     swerveDriveSubsystem = new SwerveDriveSubsystem();
+
+    //NamedCommands.registerCommands("L1", endEffectorSubsystem.());
+
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
       ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
@@ -101,18 +108,20 @@ public class RobotContainer {
    
  //  m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
  //  m_driverController.b().whileTrue(new EndEffector2Command(endEffectorSubsystem));
- //  m_driverController.x().whileTrue(new EndEffector3Command(endEffectorSubsystem));
 
    m_driverController.b().onTrue(new VerticleClimberCommand(climberSubsystem));
    m_driverController.x().onTrue(new AngledClimberCommand(climberSubsystem));
-
-    
 
     m_driverController.povDown().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
     m_driverController.povLeft().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
     m_driverController.povUp().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
     m_driverController.povRight().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
    
+    m_pitController.y().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
+    m_pitController.y().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
+    m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
   }
 
 

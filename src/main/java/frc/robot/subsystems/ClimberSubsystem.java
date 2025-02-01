@@ -49,6 +49,15 @@ public class ClimberSubsystem extends SubsystemBase {
     public void angledClimber(){
         climber1.getClosedLoopController().setReference(-9.5, ControlType.kPosition);  
     }
+    public void climberUp(){
+        climber1.set(-0.2);
+    }
+    public void climberDown(){
+        climber1.set(0.2);
+    }
+    public void resetEncoder(){
+        climber1.getEncoder().setPosition(0);
+    }
 
     public void climberStop(){
         climber1.set(0);
