@@ -17,15 +17,20 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
     public AlgaeHandlerSubsystem(){
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
+        SparkMaxConfig intakeConfig = new SparkMaxConfig();
 
 
         pidConfig
             .pid(0.01, 0, 0);
 
-        
+        intakeConfig
+        .smartCurrentLimit(20)
+        .idleMode(IdleMode.kBrake);
+
+
         pivotConfig
             .smartCurrentLimit(50)
-            .idleMode(IdleMode.kCoast)
+            .idleMode(IdleMode.kBrake)
             .apply(pidConfig);
             
         intakePivoter.configure(pivotConfig, null, null);
@@ -41,10 +46,10 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         intakeActivator.set(0);
     }
     public void pivotOut(){
-        intakePivoter.getClosedLoopController().setReference(0.2, ControlType.kPosition);
+        intakePivoter.set(0.2);
     }
     public void pivotIn(){
-        intakePivoter.getClosedLoopController().setReference(0, ControlType.kPosition);
+        intakePivoter.set(-0.2);
     }
     public double getEncoderValue(){
         return intakePivoter.getEncoder().getPosition();

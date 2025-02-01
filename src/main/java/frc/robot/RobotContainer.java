@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlgaeIntakeCommand;
 import frc.robot.commands.AngledClimberCommand;
 import frc.robot.commands.ClimberTelemetry;
+import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.EndEffectorCommand;
 import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.VerticleClimberCommand;
@@ -15,6 +16,7 @@ import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.ElevatorTelemetry;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -114,13 +116,18 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
- //  m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
- //  m_driverController.b().whileTrue(new EndEffector2Command(endEffectorSubsystem));
+  m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+  m_driverController.b().whileTrue(new EndEffector2Command(endEffectorSubsystem));
 
+<<<<<<< HEAD
    m_driverController.y().onTrue(new VerticleClimberCommand(climberSubsystem));
    m_driverController.a().onTrue(new AngledClimberCommand(climberSubsystem));
    m_driverController.x().whileTrue(new SuperstructureCommand(superstructureSubsystem));
 
+=======
+  // m_driverController.b().onTrue(new VerticleClimberCommand(climberSubsystem));
+   m_driverController.x().onTrue(new AngledClimberCommand(climberSubsystem));
+>>>>>>> 1a2ca40a7842091210e2d0aa98c42eb10e62deb9
 
     m_driverController.povDown().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
     m_driverController.povLeft().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
@@ -128,6 +135,8 @@ public class RobotContainer {
     m_driverController.povRight().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
     
     m_driverController.rightBumper().whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem));
+    m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
+    m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
 
     m_pitController.y().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
     m_pitController.y().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));

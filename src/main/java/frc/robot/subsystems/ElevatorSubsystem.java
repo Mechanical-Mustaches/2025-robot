@@ -15,9 +15,9 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public enum Level{
         L1(0),
-        L2(12),
-        L3(24),
-        L4(36);
+        L2(6.5),
+        L3(22),
+        L4(46);
 
         public final double encoderValue;
 
@@ -41,7 +41,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         
 
         pidConfig
-            .pid(0.02,0.00001,0,ClosedLoopSlot.kSlot0)
+            .pid(0.02,0.00001,0.00002,ClosedLoopSlot.kSlot0)
             .maxOutput(.6,ClosedLoopSlot.kSlot0)
             .minOutput(0,ClosedLoopSlot.kSlot0)
             
@@ -79,13 +79,16 @@ public class ElevatorSubsystem extends SubsystemBase{
         }
     }
 
-    public void elevatorUp(){
-        leftEleMotor.getClosedLoopController().setReference(36, ControlType.kPosition);
+    public void adjust(boolean up){
+        if (up){
+        leftEleMotor.set(0.2);
+        } else {
+            leftEleMotor.set(-0.2);
+        }
         
     }
-    public void elevatorDown(){
-        leftEleMotor.getClosedLoopController().setReference(0, ControlType.kPosition);
-    }
+    
+    
     public double getEncoderValue(){
         return leftEleMotor.getEncoder().getPosition();
     }
@@ -96,3 +99,4 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
 }
+
