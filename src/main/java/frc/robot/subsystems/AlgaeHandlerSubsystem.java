@@ -22,6 +22,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         pidConfig
             .pid(0.01, 0, 0);
 
+        
         pivotConfig
             .smartCurrentLimit(50)
             .idleMode(IdleMode.kCoast)
@@ -31,10 +32,10 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
     }
 
     public void intake(){
-        intakeActivator.set(-0.75);
+        intakeActivator.set(-1);
     }
     public void reverseIntake(){
-        intakeActivator.set(0.75);
+        intakeActivator.set(1);
     }
     public void stopIntake(){
         intakeActivator.set(0);
