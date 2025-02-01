@@ -2,19 +2,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
+
 
 public class AlgaeIntakeCommand extends Command{
-    private final AlgaeHandlerSubsystem AlgaeSubsystem;
-    private ElevatorSubsystem.Level targetLevel;
+    private AlgaeHandlerSubsystem AlgaeSubsystem;
+    
 
-    public AlgaeIntakerCommand(AlgaeHandlerSubsystem subsystem){
+    public void AlgaeIntakerCommand(AlgaeHandlerSubsystem subsystem){
         AlgaeSubsystem = subsystem;
     }
 
     @Override
     public void initialize() {
-        elevator.setPosition(targetLevel);
+       AlgaeSubsystem.intake();
     }
   
    

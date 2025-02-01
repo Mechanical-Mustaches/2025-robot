@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -7,14 +8,24 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+
 public class ElevatorSubsystem extends SubsystemBase{
 
     public enum Level{
-        L1,
-        L2,
-        L3,
-        L4
+        L1(0),
+        L2(12),
+        L3(24),
+        L4(36);
+
+        public final double encoderValue;
+
+        private Level(double level){
+            this.encoderValue = level;
+        }
     }
+
+    
+    
 
     private SparkMax leftEleMotor = new SparkMax(16, MotorType.kBrushless);
     private SparkMax rightEleMotor = new SparkMax(17, MotorType.kBrushless);
@@ -23,11 +34,20 @@ public class ElevatorSubsystem extends SubsystemBase{
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         SparkMaxConfig rightConfig = new SparkMaxConfig();
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
+        
+
+        
 
         pidConfig
-            .pid(0.02,0,0)
-            .maxOutput(.6)
-            .minOutput(.1);
+            .pid(0.02,0,0,ClosedLoopSlot.kSlot0)
+            .maxOutput(.6,ClosedLoopSlot.kSlot0)
+            .minOutput(0.1,ClosedLoopSlot.kSlot0)
+            
+            .pid(0.01,0,0,ClosedLoopSlot.kSlot1)
+            .maxOutput(-0.1,ClosedLoopSlot.kSlot1)
+            .minOutput(-0.6,ClosedLoopSlot.kSlot1);
+
+       
 
         leftConfig
             .smartCurrentLimit(50)
@@ -43,17 +63,16 @@ public class ElevatorSubsystem extends SubsystemBase{
         rightEleMotor.configure(rightConfig,null,null);
     }
 
-    public void setPosition(Level level){
-        if (level == Level.L1){
-            leftEleMotor.getClosedLoopController().setReference(0, ControlType.kPosition);  
-        } else if (level == Level.L2){
-            leftEleMotor.getClosedLoopController().setReference(12, ControlType.kPosition);  
-        } else if (level == Level.L3){
-            leftEleMotor.getClosedLoopController().setReference(24, ControlType.kPosition);  
-        } else if (level == Level.L4){
-            leftEleMotor.getClosedLoopController().setReference(36, ControlType.kPosition);  
-        } 
+    
+    
 
+    public void setPosition(Level targetLevel){
+       
+        if(getEncoderValue() > targetLevel.encoderValue){
+            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
+        } else {
+            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
+        }
     }
 
     public void elevatorUp(){
