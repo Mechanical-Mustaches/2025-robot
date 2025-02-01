@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class EndEffectorSubsystem extends SubsystemBase {
+
     private SparkMax effectorLeft = new SparkMax(13, MotorType.kBrushless);
     private SparkMax effectorRight = new SparkMax(14, MotorType.kBrushless);
     
