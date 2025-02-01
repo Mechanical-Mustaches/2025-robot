@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SuperstructureSubsystem extends SubsystemBase{
@@ -41,5 +42,13 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
     public void pivotOut(){
         leftPivot.set(.5);
+    }
+
+    public double getEncoderValue(){
+        return leftPivot.getEncoder().getPosition();
+    }
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("SuperStructureEncoderValue", getEncoderValue());
     }
 }
