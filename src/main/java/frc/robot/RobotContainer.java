@@ -19,6 +19,7 @@ import frc.robot.commands.EndEffector2Command;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.SuperstructureSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -47,6 +48,7 @@ public class RobotContainer {
   private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private AlgaeHandlerSubsystem algaeHandlerSubsystem = new AlgaeHandlerSubsystem();
+  private SuperstructureSubsystem superstructureSubsystem = new SuperstructureSubsystem();
 
   private final SendableChooser<Command> autoChooser; 
 
