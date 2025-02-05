@@ -118,9 +118,9 @@ public class RobotContainer {
    
   m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
 
-   m_driverController.y().onTrue(new VerticleClimberCommand(climberSubsystem));
-   m_driverController.a().onTrue(new AngledClimberCommand(climberSubsystem));
-   m_driverController.x().whileTrue(new SuperstructureCommand(superstructureSubsystem));
+
+  // m_driverController.b().onTrue(new VerticleClimberCommand(climberSubsystem));
+   m_driverController.x().onTrue(new AngledClimberCommand(climberSubsystem));
 
     m_driverController.povDown().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
     m_driverController.povLeft().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
