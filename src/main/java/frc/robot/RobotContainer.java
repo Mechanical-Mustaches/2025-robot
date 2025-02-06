@@ -10,7 +10,6 @@ import frc.robot.commands.AngledClimberCommand;
 import frc.robot.commands.ClimberTelemetry;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.EndEffectorCommand;
-import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -70,7 +69,7 @@ public class RobotContainer {
 
     swerveDriveSubsystem  = new SwerveDriveSubsystem();
    
-    NamedCommands.registerCommand("EndEffector 3 Seconds", new ParallelDeadlineGroup(new WaitCommand(3), new EndEffectorCommand(endEffectorSubsystem)));
+    NamedCommands.registerCommand("Intake", new EndEffectorCommand(endEffectorSubsystem));
     NamedCommands.registerCommand("L4", new ParallelDeadlineGroup(new WaitCommand(8), new ElevatorCommand(elevatorSubsystem, Level.L4)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
@@ -116,8 +115,10 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
-  m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+  m_driverController.b().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
 
+   m_driverController.y().onTrue(new VerticleClimberCommand(climberSubsystem));
+   m_driverController.a().onTrue(new AngledClimberCommand(climberSubsystem));
 
   // m_driverController.b().onTrue(new VerticleClimberCommand(climberSubsystem));
    m_driverController.x().onTrue(new AngledClimberCommand(climberSubsystem));
