@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "EndEffector 3 Seconds"
+            "name": "Intake"
           }
         },
         {
@@ -37,7 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "EndEffector 3 Seconds"
+            "name": "Intake"
           }
         }
       ]

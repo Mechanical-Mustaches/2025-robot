@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.playingwithfusion.TimeOfFlight;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,11 +27,13 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
     SwerveDrive swerveDrive;
+    TimeOfFlight leftDistanceSensor = new TimeOfFlight(31);
+    TimeOfFlight rightDistanceSensor = new TimeOfFlight(30);
+    // maximumSpeed in meters per second.
+    public double maximumSpeed = 5.3;
 
     public SwerveDriveSubsystem() {
 
-        // maximumSpeed in meters per second.
-        double maximumSpeed = 5.3;
         try {
             File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
@@ -129,5 +132,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
             swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
         }
+
+        SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
+        SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());
     }
 }

@@ -17,4 +17,8 @@ public class EndEffectorCommand extends Command  {
     public void end(boolean interupt){
        endEffector.effectorStop();
     }
+    @Override
+    public boolean isFinished(){
+        return endEffector.isCoralSeen();
+    }
 }
