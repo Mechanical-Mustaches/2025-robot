@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -17,10 +18,12 @@ public class SuperstructureSubsystem extends SubsystemBase{
     private Stage currentStage = Stage.Closed;
 
     public enum Stage{
+        Unknown(0,0),
         Closed(-0.52,0.5),
         S1(-0.62,0.31),
         S2(-0.05,0.21);
         
+        private static final double tolerance = 0.1;
 
         public final double rightEncoderValue;
         public final double leftEncoderValue;
@@ -29,6 +32,21 @@ public class SuperstructureSubsystem extends SubsystemBase{
             this.leftEncoderValue = left;
             this.rightEncoderValue = right;
         }
+
+        public String toString(){
+            if (this == Closed) {
+                return ("Closed");
+            } else if(this == S1){
+                return "S1";
+            } else if(this == S2){
+                return "S2";
+            } else{
+                return "Unknown";
+            }
+            
+
+        }
+
 
         public boolean isValidTarget(Stage target) {
             switch (target) {
@@ -42,6 +60,28 @@ public class SuperstructureSubsystem extends SubsystemBase{
                     
             }
         }
+
+        
+
+        public boolean equals(double left, double right){
+            double leftDifference = Math.abs((this.leftEncoderValue-left));
+            double rightDifference = Math.abs((this.rightEncoderValue-right));
+            return(leftDifference<= tolerance && rightDifference<=tolerance);
+        }
+
+        public static Stage fromValues(double left, double right){
+            if(Closed.equals(left, right)) {
+                return Closed;
+            }
+            if(S1.equals(left, right)) {
+                return S1;
+            }
+            if(S2.equals(left, right)) {
+                return S2;
+            } 
+
+            return Unknown;
+        }
     
     }
     public SuperstructureSubsystem(){
@@ -49,6 +89,8 @@ public class SuperstructureSubsystem extends SubsystemBase{
         SparkMaxConfig rightConfig = new SparkMaxConfig();
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
+        leftPivot.getEncoder().setPosition(Stage.Closed.leftEncoderValue);
+        rightPivot.getEncoder().setPosition(Stage.Closed.rightEncoderValue);
 
         pidConfig
             .pid(0.01, 0, 0);
@@ -76,14 +118,12 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
         rightPivot.getClosedLoopController().setReference(stage.rightEncoderValue, ControlType.kPosition);
         leftPivot.getClosedLoopController().setReference(stage.leftEncoderValue, ControlType.kPosition);
-        
-        currentStage = stage;
     }
-
 
     public Stage getStage(){
-        return currentStage;
+        return Stage.fromValues(getLeftEncoderValue(), getRightEncoderValue());
     }
+
     public void stop(){
         leftPivot.set(0);
     }
@@ -94,10 +134,14 @@ public class SuperstructureSubsystem extends SubsystemBase{
     public double getRightEncoderValue(){
         return rightPivot.getEncoder().getPosition();
     }
+
+    
+
     @Override
     public void periodic(){
         SmartDashboard.putNumber("SuperLeftStructureEncoderValue", getLeftEncoderValue());
         SmartDashboard.putNumber("SuperRightStructureEncoderValue", getRightEncoderValue());
+        SmartDashboard.putString("SuperstructureStage", Stage.fromValues(getLeftEncoderValue(), getRightEncoderValue()).toString());
     }
 
 
