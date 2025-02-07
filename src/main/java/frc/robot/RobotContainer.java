@@ -10,6 +10,7 @@ import frc.robot.commands.AngledClimberCommand;
 import frc.robot.commands.ClimberTelemetry;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.EndEffectorCommand;
+import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -69,7 +70,7 @@ public class RobotContainer {
 
     swerveDriveSubsystem  = new SwerveDriveSubsystem();
    
-    NamedCommands.registerCommand("Intake", new EndEffectorCommand(endEffectorSubsystem));
+    NamedCommands.registerCommand("EndEffector 3 Seconds", new ParallelDeadlineGroup(new WaitCommand(3), new EndEffectorCommand(endEffectorSubsystem)));
     NamedCommands.registerCommand("L4", new ParallelDeadlineGroup(new WaitCommand(8), new ElevatorCommand(elevatorSubsystem, Level.L4)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
@@ -97,6 +98,8 @@ public class RobotContainer {
   public void setupTelemetry(){
     ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(elevatorSubsystem);
     ClimberTelemetry climberTelemetry = new ClimberTelemetry(climberSubsystem);
+    
+
    elevatorTelemetry.schedule();
    climberTelemetry.schedule();
   }
@@ -115,28 +118,30 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
-  m_driverController.b().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
+   m_driverController.a().whileTrue(new EndEffectorCommand(endEffectorSubsystem));
 
-   m_driverController.y().onTrue(new VerticleClimberCommand(climberSubsystem));
-   m_driverController.a().onTrue(new AngledClimberCommand(climberSubsystem));
 
   // m_driverController.b().onTrue(new VerticleClimberCommand(climberSubsystem));
    m_driverController.x().onTrue(new AngledClimberCommand(climberSubsystem));
+   m_driverController.button(8).onTrue(new SequentialCommandGroup(
+    new SuperstructureCommand(superstructureSubsystem ,SuperstructureSubsystem.Stage.S1),
+    new SuperstructureCommand(superstructureSubsystem,SuperstructureSubsystem.Stage.S2)
+  ));
 
-    m_driverController.povDown().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
-    m_driverController.povLeft().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
-    m_driverController.povUp().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
-    m_driverController.povRight().onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
+    m_driverController.button(0).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
+    m_driverController.button(1).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
+    m_driverController.button(2).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
+    m_driverController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
     
-    m_driverController.rightBumper().whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem));
+    m_driverController.button(4).whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem));
     m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
     m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
 
-    m_pitController.y().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
-    m_pitController.y().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
-    m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
+    m_pitController.button(5).onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
+    m_pitController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    m_pitController.button(6).onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
+    m_pitController.button(6).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    m_pitController.button(7).onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
    
   }
 

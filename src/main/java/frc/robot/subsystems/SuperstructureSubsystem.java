@@ -18,10 +18,10 @@ public class SuperstructureSubsystem extends SubsystemBase{
     private Stage currentStage = Stage.Closed;
 
     public enum Stage{
-        Unknown(0,0),
-        Closed(-0.52,0.5),
-        S1(-0.62,0.31),
-        S2(-0.05,0.21);
+        Unknown(Double.POSITIVE_INFINITY,Double.NEGATIVE_INFINITY),
+        Closed(0,0.),
+        S1(-0.10,-0.21),
+        S2(-0.55,-0.31);
         
         private static final double tolerance = 0.1;
 
@@ -62,6 +62,9 @@ public class SuperstructureSubsystem extends SubsystemBase{
         }
 
         
+        public boolean equals(Stage other) {
+            return this.equals(other.leftEncoderValue, other.rightEncoderValue);
+        }
 
         public boolean equals(double left, double right){
             double leftDifference = Math.abs((this.leftEncoderValue-left));
