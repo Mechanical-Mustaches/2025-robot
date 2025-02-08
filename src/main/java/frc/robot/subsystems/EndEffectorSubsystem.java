@@ -14,6 +14,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private SparkMax effectorLeft = new SparkMax(13, MotorType.kBrushless);
     private SparkMax effectorRight = new SparkMax(14, MotorType.kBrushless);
     private SparkLimitSwitch frontLineBreakSensor = effectorLeft.getForwardLimitSwitch();
+    private SparkLimitSwitch backLineBreakSensor = effectorRight.getForwardLimitSwitch();
 
     public EndEffectorSubsystem(){
         SparkMaxConfig leftConfig = new SparkMaxConfig();
@@ -31,7 +32,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         effectorRight.configure(rightConfig, null, null);
     }
     public void effectorSpin(){
-        effectorLeft.set(0.2);
+        effectorLeft.set(-0.2);
     }
    
     public void effectorStop(){
@@ -40,9 +41,13 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic(){
-        SmartDashboard.putBoolean("coral detection", frontLineBreakSensor.isPressed());
+        SmartDashboard.putBoolean("coral detection front", frontLineBreakSensor.isPressed());
+        SmartDashboard.putBoolean("coral detection back", backLineBreakSensor.isPressed());
     }
-    public boolean isCoralSeen(){
+    public boolean isCoralSeenFront(){
         return frontLineBreakSensor.isPressed();
+    }
+    public boolean isCoralSeenBack(){
+        return backLineBreakSensor.isPressed();
     }
 }

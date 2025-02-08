@@ -126,6 +126,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("tag area right", limelightPoseRight.avgTagArea);
         SmartDashboard.putNumber("tag area left", limelightPoseLeft.avgTagArea);
 
+
         if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
             swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
         }

@@ -19,11 +19,11 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
     public enum Stage{
         Unknown(Double.POSITIVE_INFINITY,Double.NEGATIVE_INFINITY),
-        Closed(0,0.),
-        S1(-0.10,-0.21),
-        S2(-0.55,-0.31);
+        Closed(0,0),
+        S1(-0.02,-0.1),
+        S2(0.26,-0.19);
         
-        private static final double tolerance = 0.1;
+        private static final double tolerance = 0.15;
 
         public final double rightEncoderValue;
         public final double leftEncoderValue;
@@ -35,7 +35,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
         public String toString(){
             if (this == Closed) {
-                return ("Closed");
+                return "Closed";
             } else if(this == S1){
                 return "S1";
             } else if(this == S2){
@@ -92,11 +92,8 @@ public class SuperstructureSubsystem extends SubsystemBase{
         SparkMaxConfig rightConfig = new SparkMaxConfig();
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
-        leftPivot.getEncoder().setPosition(Stage.Closed.leftEncoderValue);
-        rightPivot.getEncoder().setPosition(Stage.Closed.rightEncoderValue);
-
         pidConfig
-            .pid(0.01, 0, 0);
+            .pid(1, 0, 0);
             
 
         leftConfig
@@ -115,10 +112,6 @@ public class SuperstructureSubsystem extends SubsystemBase{
     }
 
     public void toStage(Stage stage){
-        if (!currentStage.isValidTarget(stage)) {
-            return;
-        }
-
         rightPivot.getClosedLoopController().setReference(stage.rightEncoderValue, ControlType.kPosition);
         leftPivot.getClosedLoopController().setReference(stage.leftEncoderValue, ControlType.kPosition);
     }
@@ -142,8 +135,8 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("SuperLeftStructureEncoderValue", getLeftEncoderValue());
-        SmartDashboard.putNumber("SuperRightStructureEncoderValue", getRightEncoderValue());
+        SmartDashboard.putNumber("SuperstructureLeftEncoderValue", getLeftEncoderValue());
+        SmartDashboard.putNumber("SuperstructureRightEncoderValue", getRightEncoderValue());
         SmartDashboard.putString("SuperstructureStage", Stage.fromValues(getLeftEncoderValue(), getRightEncoderValue()).toString());
     }
 

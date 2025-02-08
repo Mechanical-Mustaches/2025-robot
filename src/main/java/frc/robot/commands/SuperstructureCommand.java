@@ -24,8 +24,8 @@ public class SuperstructureCommand extends Command{
     
   
     
-    @Override
-    public boolean isFinished() {
-      return targetStage.equals(superstructure.getStage());
-    }
+    // @Override
+    // public boolean isFinished() {
+    //   return targetStage.equals(superstructure.getStage());
+    // }
 }
