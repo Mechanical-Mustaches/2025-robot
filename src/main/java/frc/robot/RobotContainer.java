@@ -9,6 +9,7 @@ import frc.robot.commands.AlgaeIntakeCommand;
 import frc.robot.commands.AngledClimberCommand;
 import frc.robot.commands.ClimberTelemetry;
 import frc.robot.commands.CoralIntakeCommand;
+import frc.robot.commands.CoralInverseCommand;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.SuperstructureCommand;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.ElevatorTelemetry;
+import frc.robot.commands.RobotAlignCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -37,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -65,6 +68,9 @@ public class RobotContainer {
 
   private final CommandXboxController m_pitController =
       new CommandXboxController(OperatorConstants.kPitControllerPort);
+
+  private final CommandGenericHID m_gunnerController =
+      new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -119,31 +125,34 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
-   m_driverController.a().whileTrue(new CoralScoringCommand(endEffectorSubsystem));
-   m_driverController.b().whileTrue(new CoralIntakeCommand(endEffectorSubsystem));
+   m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem));
+   m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(
+     new CoralIntakeCommand(endEffectorSubsystem),
+    new CoralInverseCommand(endEffectorSubsystem)));
+    m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem));
+    m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
-
-   m_driverController.button(9).onTrue(new VerticleClimberCommand(climberSubsystem));
-   m_driverController.button(10).onTrue(new AngledClimberCommand(climberSubsystem));
+   m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
+   m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
    m_driverController.x().onTrue(new SequentialCommandGroup(
     new SuperstructureCommand(superstructureSubsystem ,SuperstructureSubsystem.Stage.S1)
     // new SuperstructureCommand(superstructureSubsystem,SuperstructureSubsystem.Stage.S2)
   ));
 
-    //m_driverController.button(0).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
-   // m_driverController.button(1).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
-   // m_driverController.button(2).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
-    //m_driverController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
+    m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
+    m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
+    m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
+    m_gunnerController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
     
     m_driverController.button(4).whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem));
     m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
     m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
 
-    m_pitController.button(5).onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
-    m_pitController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    m_pitController.button(6).onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
-    m_pitController.button(6).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    m_pitController.button(7).onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
+    m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
+    m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    m_pitController.y().onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
+    m_pitController.y().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
    
   }
 

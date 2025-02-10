@@ -12,14 +12,21 @@ public class RobotAlignCommand extends Command{
     SwerveDriveSubsystem swerve;
     private final PIDController pidController = new PIDController(0.025, 0, 0);
 
+    public RobotAlignCommand(SwerveDriveSubsystem swerve){
+    this.swerve = swerve;
+    }
+
     @Override
     public void execute(){
-        if(LimelightHelpers.getTV("limelight-right")){
-            double xVelocity = pidController.calculate(LimelightHelpers.getTX("limelight-right"), 0.0);
-            swerve.driveRobotRelative(new ChassisSpeeds(xVelocity * swerve.maximumSpeed, 0, 0));
-        }else{
-            swerve.driveRobotRelative(new ChassisSpeeds(0, 0, 0));
-        }
+        double distanceDifference = swerve.leftDistanceSensor.getRange() - swerve.rightDistanceSensor.getRange();
+        double rotation = pidController.calculate(distanceDifference, 0);
+        swerve.driveRobotRelative(new ChassisSpeeds(0, 0, rotation));
+        // if(LimelightHelpers.getTV("limelight-right")){
+        //     double xVelocity = pidController.calculate(LimelightHelpers.getTX("limelight-right"), 0.0);
+        //     swerve.driveRobotRelative(new ChassisSpeeds(xVelocity * swerve.maximumSpeed, 0, 0));
+        // }else{
+        //     swerve.driveRobotRelative(new ChassisSpeeds(0, 0, 0));
+        // }
     }
 
    

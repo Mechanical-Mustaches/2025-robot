@@ -27,8 +27,8 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
     SwerveDrive swerveDrive;
-    TimeOfFlight leftDistanceSensor = new TimeOfFlight(31);
-    TimeOfFlight rightDistanceSensor = new TimeOfFlight(30);
+    public TimeOfFlight leftDistanceSensor = new TimeOfFlight(31);
+    public TimeOfFlight rightDistanceSensor = new TimeOfFlight(30);
     // maximumSpeed in meters per second.
     public double maximumSpeed = 5.3;
 
@@ -101,6 +101,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.drive(chassisSpeeds);
     }
 
+    public void resetGyro(){
+        swerveDrive.zeroGyro();
+    }
+
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
             DoubleSupplier angularRotationX) {
         return run(() -> {
@@ -125,7 +129,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("tag distance left", limelightPoseLeft.avgTagDist);
         SmartDashboard.putNumber("tag area right", limelightPoseRight.avgTagArea);
         SmartDashboard.putNumber("tag area left", limelightPoseLeft.avgTagArea);
-
+        
+        SmartDashboard.putNumber("april tag position", LimelightHelpers.getTX("limelight-right"));
 
         if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
             swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);

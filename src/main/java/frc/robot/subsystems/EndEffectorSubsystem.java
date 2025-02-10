@@ -34,6 +34,12 @@ public class EndEffectorSubsystem extends SubsystemBase {
     public void effectorSpin(){
         effectorLeft.set(-0.2);
     }
+    public void effectorScore(){
+        effectorLeft.set(-0.3);
+    }
+    public void effectorInverse(){
+        effectorLeft.set(0.2);
+    }
    
     public void effectorStop(){
         effectorLeft.set(0);
