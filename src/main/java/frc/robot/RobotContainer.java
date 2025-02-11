@@ -132,6 +132,8 @@ public class RobotContainer {
     m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
+  m_gunnerController.button(10).whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem));
+
    m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
    m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
    m_driverController.x().onTrue(new SequentialCommandGroup(
@@ -144,7 +146,6 @@ public class RobotContainer {
     m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
     m_gunnerController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
     
-    m_driverController.button(4).whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem));
     m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
     m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
 
