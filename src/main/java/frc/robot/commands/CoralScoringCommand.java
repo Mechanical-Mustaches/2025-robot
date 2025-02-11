@@ -1,17 +1,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 
 public class CoralScoringCommand extends Command  {
     EndEffectorSubsystem endEffector; 
+    ElevatorSubsystem elevatorSubsystem;
 
-    public CoralScoringCommand(EndEffectorSubsystem endEffector){
+    public CoralScoringCommand(EndEffectorSubsystem endEffector, ElevatorSubsystem elevatorSubsystem){
         this.endEffector = endEffector;
+        this.elevatorSubsystem = elevatorSubsystem;
     }
     @Override
     public void initialize(){
-        endEffector.effectorScore();
+        if (elevatorSubsystem.getEncoderValue() <=0.1){
+            endEffector.effectorScore();
+        } else {
+            endEffector.L1Score();
+        }
     }
     @Override
     public void end(boolean interupt){
