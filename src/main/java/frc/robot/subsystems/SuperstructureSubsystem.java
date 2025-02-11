@@ -33,6 +33,8 @@ public class SuperstructureSubsystem extends SubsystemBase{
             this.rightEncoderValue = right;
         }
 
+        
+
         public String toString(){
             if (this == Closed) {
                 return "Closed";
@@ -111,6 +113,11 @@ public class SuperstructureSubsystem extends SubsystemBase{
             rightPivot.configure(leftConfig,null,null);
     }
 
+    public void defaultPower(){
+        leftPivot.set(-0.1);
+        rightPivot.set(0.1);
+    }
+
     public void toStage(Stage stage){
         rightPivot.getClosedLoopController().setReference(stage.rightEncoderValue, ControlType.kPosition);
         leftPivot.getClosedLoopController().setReference(stage.leftEncoderValue, ControlType.kPosition);
@@ -135,6 +142,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
     @Override
     public void periodic(){
+        
         SmartDashboard.putNumber("SuperstructureLeftEncoderValue", getLeftEncoderValue());
         SmartDashboard.putNumber("SuperstructureRightEncoderValue", getRightEncoderValue());
         SmartDashboard.putString("SuperstructureStage", Stage.fromValues(getLeftEncoderValue(), getRightEncoderValue()).toString());
