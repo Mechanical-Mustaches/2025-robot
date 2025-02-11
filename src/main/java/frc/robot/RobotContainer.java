@@ -77,7 +77,7 @@ public class RobotContainer {
 
     swerveDriveSubsystem  = new SwerveDriveSubsystem();
    
-    NamedCommands.registerCommand("EndEffector 3 Seconds", new ParallelDeadlineGroup(new WaitCommand(3), new CoralScoringCommand(endEffectorSubsystem)));
+    NamedCommands.registerCommand("EndEffector 3 Seconds", new ParallelDeadlineGroup(new WaitCommand(3), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
     NamedCommands.registerCommand("L4", new ParallelDeadlineGroup(new WaitCommand(8), new ElevatorCommand(elevatorSubsystem, Level.L4)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
@@ -125,7 +125,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
    
-   m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem));
+   m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
    m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(
      new CoralIntakeCommand(endEffectorSubsystem),
     new CoralInverseCommand(endEffectorSubsystem)));
