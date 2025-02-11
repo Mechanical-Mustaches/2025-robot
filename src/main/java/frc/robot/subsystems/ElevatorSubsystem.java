@@ -67,6 +67,9 @@ public class ElevatorSubsystem extends SubsystemBase{
         rightEleMotor.configure(rightConfig,null,null);
     }
 
+    public void intakePosition(){
+        leftEleMotor.getClosedLoopController().setReference(2, ControlType.kPosition);
+    }
     
 
     public void setPosition(Level targetLevel){
