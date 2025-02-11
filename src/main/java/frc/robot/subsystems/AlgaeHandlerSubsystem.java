@@ -12,12 +12,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeHandlerSubsystem extends SubsystemBase{
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
-    private SparkMax intakePivoter = new SparkMax(22, MotorType.kBrushless);
 
     //update motors
 
     public AlgaeHandlerSubsystem(){
-        SparkMaxConfig pivotConfig = new SparkMaxConfig();
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
 
 
@@ -27,12 +25,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         .idleMode(IdleMode.kBrake);
 
 
-        pivotConfig
-            .smartCurrentLimit(50)
-            .idleMode(IdleMode.kBrake);
-           
-            
-        intakePivoter.configure(pivotConfig, null, null);
     }
 
     public void intake(){

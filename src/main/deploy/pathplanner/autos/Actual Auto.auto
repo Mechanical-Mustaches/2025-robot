@@ -13,13 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "L1"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Source"
           }
         },
         {
@@ -32,12 +38,6 @@
           "type": "named",
           "data": {
             "name": "L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
           }
         }
       ]

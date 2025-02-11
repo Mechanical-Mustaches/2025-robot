@@ -77,8 +77,9 @@ public class RobotContainer {
 
     swerveDriveSubsystem  = new SwerveDriveSubsystem();
    
-    NamedCommands.registerCommand("EndEffector 3 Seconds", new ParallelDeadlineGroup(new WaitCommand(3), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
-    NamedCommands.registerCommand("L4", new ParallelDeadlineGroup(new WaitCommand(8), new ElevatorCommand(elevatorSubsystem, Level.L4)));
+    NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
+    NamedCommands.registerCommand("Source", new CoralIntakeCommand(endEffectorSubsystem));
+    NamedCommands.registerCommand("L4", new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L4), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
       ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
