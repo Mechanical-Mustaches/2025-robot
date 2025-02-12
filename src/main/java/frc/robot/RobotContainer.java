@@ -13,6 +13,7 @@ import frc.robot.commands.CoralInverseCommand;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.SuperstructureCommand;
+import frc.robot.commands.SuperstructureDefaultCommand;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
@@ -77,9 +79,8 @@ public class RobotContainer {
 
     swerveDriveSubsystem  = new SwerveDriveSubsystem();
    
-    NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
-    NamedCommands.registerCommand("Source", new CoralIntakeCommand(endEffectorSubsystem));
-    NamedCommands.registerCommand("L4", new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L4), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
+    NamedCommands.registerCommand("EndEffector 3 Seconds", new ParallelDeadlineGroup(new WaitCommand(3), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
+    NamedCommands.registerCommand("L4", new ParallelDeadlineGroup(new WaitCommand(8), new ElevatorCommand(elevatorSubsystem, Level.L4)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
       ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
@@ -112,6 +113,12 @@ public class RobotContainer {
    climberTelemetry.schedule();
   }
 
+  public void superstructureDefault(){
+    SuperstructureDefaultCommand superstructureDefaultCommand = new SuperstructureDefaultCommand(superstructureSubsystem);
+
+    superstructureDefaultCommand.schedule();
+  }
+
   
   
 
@@ -125,6 +132,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
    
    m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
    m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(

@@ -114,8 +114,8 @@ public class SuperstructureSubsystem extends SubsystemBase{
     }
 
     public void defaultPower(){
-        leftPivot.set(-0.1);
-        rightPivot.set(0.1);
+        leftPivot.set(-0.05);
+        rightPivot.set(0.05);
     }
 
     public void toStage(Stage stage){
