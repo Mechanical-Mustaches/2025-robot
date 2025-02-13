@@ -20,8 +20,8 @@ public class SuperstructureSubsystem extends SubsystemBase{
     public enum Stage{
         Unknown(Double.POSITIVE_INFINITY,Double.NEGATIVE_INFINITY),
         Closed(0,0),
-        S1(-0.02,-0.1),
-        S2(0.26,-0.19);
+        S1(-0.36,-0.19),
+        S2(0.21,-0.19);
         
         private static final double tolerance = 0.1;
 
@@ -95,7 +95,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
-            .pid(1, 0.000025, 0.00003);
+            .pid(5, 0.00005, 0.00003);
             
 
         leftConfig
@@ -130,7 +130,10 @@ public class SuperstructureSubsystem extends SubsystemBase{
         motor.set(0);
         
     }
-
+    public void resetEncoders(){
+        rightPivot.getEncoder().setPosition(0);
+        leftPivot.getEncoder().setPosition(0);
+    }
     public double getLeftEncoderValue(){
         return leftPivot.getEncoder().getPosition();
     }

@@ -13,7 +13,8 @@ public class SuperstructureDefaultCommand extends Command{
 
     @Override
     public void initialize() {
-        superstructureSubsystem.toStage(Stage.Closed);
+        superstructureSubsystem.moveMotor(superstructureSubsystem.getLeftMotor(), 0.2);
+        superstructureSubsystem.moveMotor(superstructureSubsystem.getRightMotor(), -0.2);
     }
 
     @Override

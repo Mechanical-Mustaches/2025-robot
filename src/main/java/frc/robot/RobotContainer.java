@@ -15,10 +15,11 @@ import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.SuperstructureDefaultCommand;
 import frc.robot.commands.SuperstructureMotorMove;
+import frc.robot.commands.SuperstructureEncoderResetCommand;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.ElevatorTelemetry;
@@ -115,11 +116,11 @@ public class RobotContainer {
    climberTelemetry.schedule();
   }
 
-  public void superstructureDefault(){
-    SuperstructureDefaultCommand superstructureDefaultCommand = new SuperstructureDefaultCommand(superstructureSubsystem);
-    superstructureDefaultCommand.schedule();
-    SmartDashboard.putString("superstructureDefaultCommand", "true");
-  }
+  // public void superstructureDefault(){
+  //   SuperstructureDefaultCommand superstructureDefaultCommand = new SuperstructureDefaultCommand(superstructureSubsystem);
+  //   superstructureDefaultCommand.schedule();
+  //   SmartDashboard.putString("superstructureDefaultCommand", "true");
+  // }
 
   
   
@@ -141,6 +142,7 @@ public class RobotContainer {
   //    new CoralIntakeCommand(endEffectorSubsystem),
   //     new CoralInverseCommand(endEffectorSubsystem)));
 
+    m_driverController.povDown().onTrue(new SuperstructureEncoderResetCommand(superstructureSubsystem));
     m_driverController.leftTrigger().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),0.2));
     m_driverController.rightTrigger().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getRightMotor(),-0.2));
     m_driverController.leftBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),-0.2));
@@ -155,10 +157,8 @@ public class RobotContainer {
 
    m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
    m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
-   m_driverController.x().onTrue(new SequentialCommandGroup(
-    new SuperstructureCommand(superstructureSubsystem ,SuperstructureSubsystem.Stage.S1)
-    // new SuperstructureCommand(superstructureSubsystem,SuperstructureSubsystem.Stage.S2)
-  ));
+   m_driverController.x().onTrue(new SequentialCommandGroup(new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), -0.2), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), -0.2), new WaitCommand(1.5), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), 0.2), new WaitCommand(3), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), 0), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0)));
+    
   
 
     m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem ));
