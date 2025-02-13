@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase{
 
+    EndEffectorSubsystem endEffector; 
 
     public enum Level{
         L1(0),
@@ -35,6 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     private SparkMax rightEleMotor = new SparkMax(17, MotorType.kBrushless);
 
     public ElevatorSubsystem(){
+        
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         SparkMaxConfig rightConfig = new SparkMaxConfig();
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
@@ -73,13 +75,25 @@ public class ElevatorSubsystem extends SubsystemBase{
 
    
 
-    public void setPosition(Level targetLevel){
-       
-        if(getEncoderValue() > targetLevel.encoderValue){
-            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
-        } else {
-            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
+    public void setPosition(Level targetLevel, EndEffectorSubsystem endEffector){
+        this.endEffector = endEffector;
+        if (getEncoderValue() < 2.5){
+            if (endEffector.isCoralSeenFront()){
+                if(getEncoderValue() > targetLevel.encoderValue){
+                    leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
+                } else {
+                    leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
+                }
         }
+        
+        }else{
+            if(getEncoderValue() > targetLevel.encoderValue){
+                leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
+            } else {
+                leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
+            }
+        }
+        
     }
 
     public void adjust(boolean up){

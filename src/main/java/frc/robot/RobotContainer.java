@@ -83,7 +83,7 @@ public class RobotContainer {
     swerveDriveSubsystem  = new SwerveDriveSubsystem();
    
     NamedCommands.registerCommand("EndEffector 3 Seconds", new ParallelDeadlineGroup(new WaitCommand(3), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
-    NamedCommands.registerCommand("L4", new ParallelDeadlineGroup(new WaitCommand(8), new ElevatorCommand(elevatorSubsystem, Level.L4)));
+    NamedCommands.registerCommand("L4", new ParallelDeadlineGroup(new WaitCommand(8), new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
       ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
@@ -148,7 +148,8 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),-0.2));
     m_driverController.rightBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getRightMotor(),0.2));
 
-    m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.LIntake), new CoralIntakeCommand(endEffectorSubsystem), new ElevatorCommand(elevatorSubsystem, Level.L1)));
+    m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem), new CoralIntakeCommand(endEffectorSubsystem), new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem)));
+    m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem), new CoralIntakeCommand(endEffectorSubsystem), new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem)));
     m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
@@ -160,10 +161,10 @@ public class RobotContainer {
     
   
 
-    m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1 ));
-    m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2 ));
-    m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3 ));
-    m_gunnerController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4 ));
+    m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem ));
+    m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2, endEffectorSubsystem ));
+    m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3, endEffectorSubsystem ));
+    m_gunnerController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4, endEffectorSubsystem ));
     
    // m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
    // m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
