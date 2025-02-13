@@ -14,6 +14,7 @@ import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.SuperstructureDefaultCommand;
+import frc.robot.commands.SuperstructureMotorMove;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -116,8 +117,8 @@ public class RobotContainer {
 
   public void superstructureDefault(){
     SuperstructureDefaultCommand superstructureDefaultCommand = new SuperstructureDefaultCommand(superstructureSubsystem);
-
     superstructureDefaultCommand.schedule();
+    SmartDashboard.putString("superstructureDefaultCommand", "true");
   }
 
   
@@ -139,6 +140,13 @@ public class RobotContainer {
   //  m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(
   //    new CoralIntakeCommand(endEffectorSubsystem),
   //     new CoralInverseCommand(endEffectorSubsystem)));
+
+    m_driverController.leftTrigger().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),0.2));
+    m_driverController.rightTrigger().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getRightMotor(),-0.2));
+    m_driverController.leftBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),-0.2));
+    m_driverController.rightBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getRightMotor(),0.2));
+
+    m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem), new CoralIntakeCommand(endEffectorSubsystem), new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem)));
     m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem), new CoralIntakeCommand(endEffectorSubsystem), new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem)));
     m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
@@ -151,14 +159,15 @@ public class RobotContainer {
     new SuperstructureCommand(superstructureSubsystem ,SuperstructureSubsystem.Stage.S1)
     // new SuperstructureCommand(superstructureSubsystem,SuperstructureSubsystem.Stage.S2)
   ));
+  
 
     m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem ));
     m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2, endEffectorSubsystem ));
     m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3, endEffectorSubsystem ));
     m_gunnerController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4, endEffectorSubsystem ));
     
-    m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
-    m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
+   // m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
+   // m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
 
     m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
     m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));

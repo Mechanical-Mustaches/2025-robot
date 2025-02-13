@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SuperstructureSubsystem;
+import frc.robot.subsystems.SuperstructureSubsystem.Stage;
 
 public class SuperstructureDefaultCommand extends Command{
     SuperstructureSubsystem superstructureSubsystem;
@@ -12,7 +13,7 @@ public class SuperstructureDefaultCommand extends Command{
 
     @Override
     public void initialize() {
-        superstructureSubsystem.defaultPower();
+        superstructureSubsystem.toStage(Stage.Closed);
     }
 
     @Override
