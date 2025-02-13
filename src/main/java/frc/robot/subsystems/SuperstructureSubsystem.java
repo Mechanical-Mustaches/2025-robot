@@ -23,7 +23,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
         S1(-0.02,-0.1),
         S2(0.26,-0.19);
         
-        private static final double tolerance = 0.15;
+        private static final double tolerance = 0.1;
 
         public final double rightEncoderValue;
         public final double leftEncoderValue;
@@ -95,7 +95,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
-            .pid(1, 0, 0);
+            .pid(1, 0.000025, 0.00003);
             
 
         leftConfig
@@ -113,11 +113,10 @@ public class SuperstructureSubsystem extends SubsystemBase{
             rightPivot.configure(leftConfig,null,null);
     }
 
-    public void defaultPower(){
-        leftPivot.set(-0.05);
-        rightPivot.set(0.05);
+    
+    public void moveMotor(SparkMax motor,double power){
+        motor.set(power);
     }
-
     public void toStage(Stage stage){
         rightPivot.getClosedLoopController().setReference(stage.rightEncoderValue, ControlType.kPosition);
         leftPivot.getClosedLoopController().setReference(stage.leftEncoderValue, ControlType.kPosition);
@@ -127,8 +126,9 @@ public class SuperstructureSubsystem extends SubsystemBase{
         return Stage.fromValues(getLeftEncoderValue(), getRightEncoderValue());
     }
 
-    public void stop(){
-        leftPivot.set(0);
+    public void stop(SparkMax motor){
+        motor.set(0);
+        
     }
 
     public double getLeftEncoderValue(){
@@ -136,6 +136,13 @@ public class SuperstructureSubsystem extends SubsystemBase{
     }
     public double getRightEncoderValue(){
         return rightPivot.getEncoder().getPosition();
+    }
+
+    public SparkMax getLeftMotor(){
+        return leftPivot;
+    }
+    public SparkMax getRightMotor(){
+        return rightPivot;
     }
 
     
