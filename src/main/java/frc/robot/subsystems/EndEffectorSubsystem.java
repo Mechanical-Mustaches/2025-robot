@@ -27,23 +27,25 @@ public class EndEffectorSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake);
 
         rightConfig
-            .apply(leftConfig)
-            .follow(13, true);
+            .smartCurrentLimit(50)
+            .idleMode(IdleMode.kBrake);
             
         effectorLeft.configure(leftConfig, null, null);
         effectorRight.configure(rightConfig, null, null);
     }
     public void effectorSpin(){
         effectorLeft.set(-0.2);
+        effectorRight.set(0.2);
     }
 
     public void effectorScore(){
         effectorLeft.set(-0.4);
+        effectorRight.set(0.4);
     }
 
     public void L1Score(){
-        effectorLeft.set(-0.4);
-        effectorRight.set(0.2);
+        effectorLeft.set(-0.2);
+        effectorRight.set(0.6);
     }
 
     public void effectorInverse(){
@@ -52,6 +54,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
    
     public void effectorStop(){
         effectorLeft.set(0);
+        effectorRight.set(0);
     }
 
     @Override

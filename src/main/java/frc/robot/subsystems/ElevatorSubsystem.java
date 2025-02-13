@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase{
 
+
     public enum Level{
         L1(0),
         L2(6.5),
-        L3(22),
-        L4(46);
+        L3(20.5),
+        L4(46),
+        LIntake(1);
 
         public final double encoderValue;
 
@@ -36,6 +38,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         SparkMaxConfig rightConfig = new SparkMaxConfig();
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
+
+        
         
 
         
@@ -67,10 +71,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         rightEleMotor.configure(rightConfig,null,null);
     }
 
-    public void intakePosition(){
-        leftEleMotor.getClosedLoopController().setReference(2, ControlType.kPosition);
-    }
-    
+   
 
     public void setPosition(Level targetLevel){
        

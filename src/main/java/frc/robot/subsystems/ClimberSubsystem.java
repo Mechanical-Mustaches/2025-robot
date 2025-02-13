@@ -21,7 +21,7 @@ public class ClimberSubsystem extends SubsystemBase {
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
-            .pid(0.1,0.00001,0)
+            .pid(0.1,0.00001,0.0001)
             .maxOutput(.5)
             .minOutput(-.5);
 
@@ -43,12 +43,13 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void verticleClimber(){
-        climber1.getClosedLoopController().setReference(0, ControlType.kPosition);
+        climber1.getClosedLoopController().setReference(12, ControlType.kPosition);
     }
 
     public void angledClimber(){
-        climber1.getClosedLoopController().setReference(-9.5, ControlType.kPosition);  
+        climber1.getClosedLoopController().setReference(0, ControlType.kPosition);  
     }
+    
     public void climberUp(){
         climber1.set(-0.2);
     }

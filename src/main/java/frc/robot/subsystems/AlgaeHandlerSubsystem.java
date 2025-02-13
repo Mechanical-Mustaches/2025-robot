@@ -2,8 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
-
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -12,19 +11,33 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeHandlerSubsystem extends SubsystemBase{
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
+    private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
 
     //update motors
 
     public AlgaeHandlerSubsystem(){
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
+        SparkMaxConfig pivotConfig = new SparkMaxConfig();
+        ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
+        pidConfig
+        .pid(0, 0, 0)
+        .maxOutput(.2)
+        .minOutput(-.2);
 
-       
         intakeConfig
         .smartCurrentLimit(20)
         .idleMode(IdleMode.kBrake);
 
+        pivotConfig
+        .smartCurrentLimit(50)
+        .idleMode(IdleMode.kBrake);
 
+
+    }
+
+    public double getEncoderValue(){
+        return pivot.getEncoder().getPosition();
     }
 
     public void intake(){

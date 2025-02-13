@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -127,9 +128,10 @@ public class RobotContainer {
   private void configureBindings() {
    
    m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
-   m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(
-     new CoralIntakeCommand(endEffectorSubsystem),
-    new CoralInverseCommand(endEffectorSubsystem)));
+  //  m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(
+  //    new CoralIntakeCommand(endEffectorSubsystem),
+  //     new CoralInverseCommand(endEffectorSubsystem)));
+    m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.LIntake), new CoralIntakeCommand(endEffectorSubsystem), new ElevatorCommand(elevatorSubsystem, Level.L1)));
     m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
