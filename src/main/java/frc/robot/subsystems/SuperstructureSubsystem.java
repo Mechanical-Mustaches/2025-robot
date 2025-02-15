@@ -100,7 +100,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
             
 
         leftConfig
-            .smartCurrentLimit(50)
+            .smartCurrentLimit(5)
             .idleMode(IdleMode.kBrake)
             .apply(pidConfig);
         

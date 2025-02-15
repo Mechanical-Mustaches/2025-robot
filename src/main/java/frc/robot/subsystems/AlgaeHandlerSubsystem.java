@@ -14,7 +14,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
 
-    //update motors
+    
 
     public AlgaeHandlerSubsystem(){
         SparkMaxConfig intakeConfig = new SparkMaxConfig();

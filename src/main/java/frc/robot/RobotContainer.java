@@ -16,7 +16,6 @@ import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.SuperstructureDefaultCommand;
 import frc.robot.commands.SuperstructureMotorMove;
-import frc.robot.commands.VerticalPivotCommand;
 import frc.robot.commands.SuperstructureEncoderResetCommand;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
