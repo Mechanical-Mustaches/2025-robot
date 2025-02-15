@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
@@ -21,7 +22,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
-        .pid(0, 0, 0)
+        .pid(0.1, 0, 0)
         .maxOutput(.2)
         .minOutput(-.2);
 
@@ -38,6 +39,18 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
 
     public double getEncoderValue(){
         return pivot.getEncoder().getPosition();
+    }
+
+    public void horizontalPivot(){
+        pivot.getClosedLoopController().setReference(0, ControlType.kPosition);
+    }
+
+    public void verticalPivot(){
+        pivot.getClosedLoopController().setReference(8, ControlType.kPosition);  
+    }
+
+    public void stopPivot(){
+        pivot.set(0);
     }
 
     public void intake(){
