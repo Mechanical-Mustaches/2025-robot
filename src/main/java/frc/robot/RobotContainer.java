@@ -160,7 +160,15 @@ public class RobotContainer {
 
    m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
    m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
-   m_driverController.x().onTrue(new SequentialCommandGroup(new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), -0.2), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), -0.2), new WaitCommand(1.5), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), 0.2), new WaitCommand(3), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), 0), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0)));
+   m_driverController.x().onTrue(new SequentialCommandGroup(
+    new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), -0.2), 
+    new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), -0.2), 
+    new WaitCommand(1.5), 
+    new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), 0.2), 
+    new WaitCommand(3), 
+    new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), 0), 
+    new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0))
+  );
     
    m_gunnerController.button(7).onTrue(new VerticalPivotCommand(algaeHandlerSubsystem));
    m_gunnerController.button(10).onTrue(new HorizontalPivotCommand(algaeHandlerSubsystem));

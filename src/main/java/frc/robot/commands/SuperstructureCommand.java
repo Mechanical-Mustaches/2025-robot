@@ -17,6 +17,7 @@ public class SuperstructureCommand extends Command{
     @Override
     public void initialize() {
         superstructure.toStage(targetStage);
+        
     }
     
     
