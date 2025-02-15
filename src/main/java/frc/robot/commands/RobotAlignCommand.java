@@ -10,17 +10,28 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 public class RobotAlignCommand extends Command{
 
     SwerveDriveSubsystem swerve;
-    private final PIDController pidController = new PIDController(0.01, 0, 1);
-
+    private PIDController pidController = new PIDController(0.015, 0.0005, 1);
+    private PIDController wallPidController = new PIDController(0.015, 0, 0);
     public RobotAlignCommand(SwerveDriveSubsystem swerve){
     this.swerve = swerve;
+    }
+    @Override
+    public void initialize(){
+        pidController.reset();
+        wallPidController.reset();
+
     }
 
     @Override
     public void execute(){
         double distanceDifference = swerve.leftDistanceSensor.getRange() - swerve.rightDistanceSensor.getRange() - 20;
         double rotation = pidController.calculate(distanceDifference, 0);
-        swerve.driveRobotRelative(new ChassisSpeeds(0, 0, rotation));
+        if (Math.abs(distanceDifference) < 2){
+            rotation = 0;
+        }
+        double distanceToWall = (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
+        double vx = -wallPidController.calculate(distanceToWall, 280);
+        swerve.driveRobotRelative(new ChassisSpeeds(vx, 0, rotation));
         // if(LimelightHelpers.getTV("limelight-right")){
         //     double xVelocity = pidController.calculate(LimelightHelpers.getTX("limelight-right"), 0.0);
         //     swerve.driveRobotRelative(new ChassisSpeeds(xVelocity * swerve.maximumSpeed, 0, 0));

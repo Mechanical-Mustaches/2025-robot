@@ -141,5 +141,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
         SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());
+        SmartDashboard.putNumber("distanceSensorSampleRate", leftDistanceSensor.getSampleTime());
     }
 }
