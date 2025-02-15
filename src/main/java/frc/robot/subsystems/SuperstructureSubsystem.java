@@ -16,6 +16,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
     private SparkMax leftPivot = new SparkMax(20,MotorType.kBrushless);
     private SparkMax rightPivot = new SparkMax(21,MotorType.kBrushless);
     private Stage currentStage = Stage.Closed;
+    private boolean trapdoorReleased = false;
 
     public enum Stage{
         Unknown(Double.POSITIVE_INFINITY,Double.NEGATIVE_INFINITY),
@@ -115,11 +116,15 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
     
     public void moveMotor(SparkMax motor,double power){
+        trapdoorReleased = true;
         motor.set(power);
     }
     public void toStage(Stage stage){
+        leftPivot.set(0);
+        rightPivot.set(0);
         rightPivot.getClosedLoopController().setReference(stage.rightEncoderValue, ControlType.kPosition);
         leftPivot.getClosedLoopController().setReference(stage.leftEncoderValue, ControlType.kPosition);
+        trapdoorReleased = true;
     }
 
     public Stage getStage(){
@@ -147,6 +152,9 @@ public class SuperstructureSubsystem extends SubsystemBase{
     public SparkMax getRightMotor(){
         return rightPivot;
     }
+    public boolean getTrapdoorState(){
+        return trapdoorReleased;
+    }
 
     
 
@@ -156,6 +164,11 @@ public class SuperstructureSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("SuperstructureLeftEncoderValue", getLeftEncoderValue());
         SmartDashboard.putNumber("SuperstructureRightEncoderValue", getRightEncoderValue());
         SmartDashboard.putString("SuperstructureStage", Stage.fromValues(getLeftEncoderValue(), getRightEncoderValue()).toString());
+
+        if(!trapdoorReleased){
+            leftPivot.set(-0.1);
+            rightPivot.set(0.1);
+        }
     }
 
 
