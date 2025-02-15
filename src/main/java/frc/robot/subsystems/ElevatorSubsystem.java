@@ -77,23 +77,29 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public void setPosition(Level targetLevel, EndEffectorSubsystem endEffector){
         this.endEffector = endEffector;
-        if (getEncoderValue() < 2.5){
-            if (endEffector.isCoralSeenFront()){
-                if(getEncoderValue() > targetLevel.encoderValue){
-                    leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
-                } else {
-                    leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
-                }
-        }
+        // if (getEncoderValue() < 2.5){
+        //     if (endEffector.isCoralSeenFront()){
+        //         if(getEncoderValue() > targetLevel.encoderValue){
+        //             leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
+        //         } else {
+        //             leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
+        //         }
+        // }
         
-        }else{
-            if(getEncoderValue() > targetLevel.encoderValue){
-                leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
-            } else {
-                leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
-            }
-        }
+        // }else{
+        //     if(getEncoderValue() > targetLevel.encoderValue){
+        //         leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
+        //     } else {
+        //         leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
+        //     }
+        // }
         
+
+        if(getEncoderValue() > targetLevel.encoderValue){
+                     leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
+                 } else {
+                     leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
+                 }
     }
 
     public void adjust(boolean up){

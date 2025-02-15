@@ -15,6 +15,7 @@ import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.SuperstructureDefaultCommand;
 import frc.robot.commands.SuperstructureMotorMove;
+import frc.robot.commands.VerticalPivotCommand;
 import frc.robot.commands.SuperstructureEncoderResetCommand;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.ElevatorTelemetry;
+import frc.robot.commands.HorizontalPivotCommand;
 import frc.robot.commands.RobotAlignCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -82,8 +84,9 @@ public class RobotContainer {
 
     swerveDriveSubsystem  = new SwerveDriveSubsystem();
    
-    NamedCommands.registerCommand("EndEffector 3 Seconds", new ParallelDeadlineGroup(new WaitCommand(3), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
-    NamedCommands.registerCommand("L4", new ParallelDeadlineGroup(new WaitCommand(8), new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem)));
+    NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
+    NamedCommands.registerCommand("Source", new CoralIntakeCommand(endEffectorSubsystem));
+    NamedCommands.registerCommand("L4", new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem), new WaitCommand(1), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
       ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
@@ -145,7 +148,7 @@ public class RobotContainer {
     m_driverController.povDown().onTrue(new SuperstructureEncoderResetCommand(superstructureSubsystem));
     m_driverController.leftTrigger().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),0.2));
     m_driverController.rightTrigger().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getRightMotor(),-0.2));
-    m_driverController.leftBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),-0.2));
+ //   m_driverController.leftBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),-0.2));
     m_driverController.rightBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getRightMotor(),0.2));
 
     m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem), new CoralIntakeCommand(endEffectorSubsystem), new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem)));
@@ -153,13 +156,14 @@ public class RobotContainer {
     m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
-  m_gunnerController.button(10).whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem));
+  
 
    m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
    m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
    m_driverController.x().onTrue(new SequentialCommandGroup(new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), -0.2), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), -0.2), new WaitCommand(1.5), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), 0.2), new WaitCommand(3), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), 0), new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0)));
     
-  
+   m_gunnerController.button(7).onTrue(new VerticalPivotCommand(algaeHandlerSubsystem));
+   m_gunnerController.button(10).onTrue(new HorizontalPivotCommand(algaeHandlerSubsystem));
 
     m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem ));
     m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2, endEffectorSubsystem ));
