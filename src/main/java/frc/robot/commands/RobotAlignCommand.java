@@ -11,7 +11,8 @@ public class RobotAlignCommand extends Command{
 
     SwerveDriveSubsystem swerve;
     private PIDController pidController = new PIDController(0.015, 0.0005, 1);
-    private PIDController wallPidController = new PIDController(0.015, 0, 0);
+    private PIDController wallPidController = new PIDController(0.01, 0, 2);
+    private PIDController tagPidController = new PIDController(0.1, 0, 0);
     public RobotAlignCommand(SwerveDriveSubsystem swerve){
     this.swerve = swerve;
     }
@@ -31,7 +32,12 @@ public class RobotAlignCommand extends Command{
         }
         double distanceToWall = (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
         double vx = -wallPidController.calculate(distanceToWall, 280);
-        swerve.driveRobotRelative(new ChassisSpeeds(vx, 0, rotation));
+        // double tagPosition = LimelightHelpers.getTX("limelight-right");
+        // double vy = 0;
+        // if (LimelightHelpers.getTV("limelight-right")){
+        //     vy = tagPidController.calculate(tagPosition, -13);
+        // }
+         swerve.driveRobotRelative(new ChassisSpeeds(vx, 0, rotation));
         // if(LimelightHelpers.getTV("limelight-right")){
         //     double xVelocity = pidController.calculate(LimelightHelpers.getTX("limelight-right"), 0.0);
         //     swerve.driveRobotRelative(new ChassisSpeeds(xVelocity * swerve.maximumSpeed, 0, 0));

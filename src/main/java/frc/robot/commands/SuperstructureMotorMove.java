@@ -30,9 +30,15 @@ public class SuperstructureMotorMove extends Command{
     }
   
    
+    // @Override
+    // public void end(boolean interrupted) {
+    //     superstructureSubsystem.stop(motor); 
+    // }
+
     @Override
-    public void end(boolean interrupted) {
-        superstructureSubsystem.stop(motor); 
+    public boolean isFinished(){
+        return true;
     }
+
     
 }

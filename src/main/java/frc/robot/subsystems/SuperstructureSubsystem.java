@@ -18,6 +18,10 @@ public class SuperstructureSubsystem extends SubsystemBase{
     private Stage currentStage = Stage.Closed;
     private boolean trapdoorReleased = false;
 
+    SparkMaxConfig trapdoorConfig = new SparkMaxConfig();
+
+    
+
     public enum Stage{
         Unknown(Double.POSITIVE_INFINITY,Double.NEGATIVE_INFINITY),
         Closed(0,0),
@@ -93,6 +97,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
     public SuperstructureSubsystem(){
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         SparkMaxConfig rightConfig = new SparkMaxConfig();
+       
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
@@ -100,7 +105,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
             
 
         leftConfig
-            .smartCurrentLimit(5)
+            .smartCurrentLimit(50)
             .idleMode(IdleMode.kBrake)
             .apply(pidConfig);
         
@@ -112,11 +117,17 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
             leftPivot.configure(leftConfig,null,null);
             rightPivot.configure(leftConfig,null,null);
+        
     }
 
     
     public void moveMotor(SparkMax motor,double power){
-        trapdoorReleased = true;
+        // trapdoorReleased = true;
+        // trapdoorConfig
+        // .idleMode(IdleMode.kBrake)
+        // .smartCurrentLimit(50);
+        // leftPivot.configure(trapdoorConfig,null,null);
+        // rightPivot.configure(trapdoorConfig,null,null);
         motor.set(power);
     }
     public void toStage(Stage stage){
@@ -165,10 +176,10 @@ public class SuperstructureSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("SuperstructureRightEncoderValue", getRightEncoderValue());
         SmartDashboard.putString("SuperstructureStage", Stage.fromValues(getLeftEncoderValue(), getRightEncoderValue()).toString());
 
-        if(!trapdoorReleased){
-            leftPivot.set(-0.1);
-            rightPivot.set(0.1);
-        }
+        // if(!trapdoorReleased){
+        //     leftPivot.set(-0.1);
+        //     rightPivot.set(0.1);
+        // }
     }
 
 

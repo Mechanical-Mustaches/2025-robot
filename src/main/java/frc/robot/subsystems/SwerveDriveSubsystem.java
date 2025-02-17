@@ -119,22 +119,23 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     @Override
     public void periodic(){
         LimelightHelpers.PoseEstimate limelightPoseRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
-        LimelightHelpers.PoseEstimate limelightPoseLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+        // LimelightHelpers.PoseEstimate limelightPoseLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
 
         SmartDashboard.putNumber("# of tags right", limelightPoseRight.tagCount);
-        SmartDashboard.putNumber("# of tags left", limelightPoseLeft.tagCount);
+        // SmartDashboard.putNumber("# of tags left", limelightPoseLeft.tagCount);
         SmartDashboard.putNumber("tag span right", limelightPoseRight.tagSpan);
-        SmartDashboard.putNumber("tag span left", limelightPoseLeft.tagSpan);
+        // SmartDashboard.putNumber("tag span left", limelightPoseLeft.tagSpan);
         SmartDashboard.putNumber("tag distance right", limelightPoseRight.avgTagDist);
-        SmartDashboard.putNumber("tag distance left", limelightPoseLeft.avgTagDist);
+        // SmartDashboard.putNumber("tag distance left", limelightPoseLeft.avgTagDist);
         SmartDashboard.putNumber("tag area right", limelightPoseRight.avgTagArea);
-        SmartDashboard.putNumber("tag area left", limelightPoseLeft.avgTagArea);
+        // SmartDashboard.putNumber("tag area left", limelightPoseLeft.avgTagArea);
         
         SmartDashboard.putNumber("april tag position", LimelightHelpers.getTX("limelight-right"));
+        SmartDashboard.putBoolean("april tag TV", LimelightHelpers.getTV("limelight-right"));
 
-        if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
-            swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
-        }
+        // if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
+        //     swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
+        // }
         if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
             swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
         }
