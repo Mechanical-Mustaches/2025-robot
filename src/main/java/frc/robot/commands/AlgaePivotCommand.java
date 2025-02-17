@@ -5,29 +5,27 @@ import frc.robot.subsystems.AlgaeHandlerSubsystem;
 
 public class AlgaePivotCommand extends Command{
     AlgaeHandlerSubsystem pivot;
-    Boolean horizontalPivot;
+    AlgaeHandlerSubsystem intakeActivator;
 
-    public AlgaePivotCommand(AlgaeHandlerSubsystem pivot, boolean horizontalPivot){
+    public AlgaePivotCommand(AlgaeHandlerSubsystem pivot, AlgaeHandlerSubsystem intakeActivator){
     this.pivot = pivot;
-    this.horizontalPivot = horizontalPivot;
+    this.intakeActivator = intakeActivator;
     }
     @Override
     public void initialize(){
-        if(horizontalPivot){
-            pivot.horizontalPivot();
-        } else{
-            pivot.verticalPivot();
-        }
-        
+        intakeActivator.intake();
     }
-   
-    // @Override
-    // public void end(boolean interupt){
-    //    pivot.stopPivot();
-    // }
 
     @Override
-    public boolean isFinished(){
-        return true;
+    public void execute(){
+        if (intakeActivator.isAlgaeDetected() > 5){
+            pivot.horizontalPivot();
+        }
+    }
+
+    @Override
+    public void end(boolean interupt){
+        intakeActivator.stopIntake();
+        pivot.verticalPivot();
     }
 }

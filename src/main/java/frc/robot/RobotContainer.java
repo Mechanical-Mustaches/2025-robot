@@ -169,8 +169,7 @@ public class RobotContainer {
     new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0))
   );
     
-   m_gunnerController.button(7).onTrue(new AlgaePivotCommand(algaeHandlerSubsystem, false));
-   m_gunnerController.button(10).onTrue(new AlgaePivotCommand(algaeHandlerSubsystem, true));
+   m_gunnerController.button(7).whileTrue(new AlgaePivotCommand(algaeHandlerSubsystem, algaeHandlerSubsystem));
 
     m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem ));
     m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2, endEffectorSubsystem ));
