@@ -148,7 +148,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
     }
 
     public void keepClosed(){
-        leftPivot.set(-0.1);
+        leftPivot.set(0.1);
         rightPivot.set(0.1);
     }
 

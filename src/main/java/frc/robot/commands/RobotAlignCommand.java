@@ -32,18 +32,22 @@ public class RobotAlignCommand extends Command{
         }
         double distanceToWall = (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
         double vx = -wallPidController.calculate(distanceToWall, 280);
-        // double tagPosition = LimelightHelpers.getTX("limelight-right");
-        // double vy = 0;
-        // if (LimelightHelpers.getTV("limelight-right")){
-        //     vy = tagPidController.calculate(tagPosition, -13);
-        // }
-         swerve.driveRobotRelative(new ChassisSpeeds(vx, 0, rotation));
-        // if(LimelightHelpers.getTV("limelight-right")){
-        //     double xVelocity = pidController.calculate(LimelightHelpers.getTX("limelight-right"), 0.0);
-        //     swerve.driveRobotRelative(new ChassisSpeeds(xVelocity * swerve.maximumSpeed, 0, 0));
-        // }else{
-        //     swerve.driveRobotRelative(new ChassisSpeeds(0, 0, 0));
-        // }
+         double tagPosition = LimelightHelpers.getTX("limelight-right");
+         double vy = 0;
+         if (LimelightHelpers.getTV("limelight-right")){
+             vy = tagPidController.calculate(tagPosition, -13);
+         } else {
+            
+         }
+          swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
+
+
+        //  if(LimelightHelpers.getTV("limelight-right")){
+        //      double xVelocity = pidController.calculate(LimelightHelpers.getTX("limelight-right"), 0.0);
+        //      swerve.driveRobotRelative(new ChassisSpeeds(xVelocity * swerve.maximumSpeed, 0, 0));
+        //  }else{
+        //      swerve.driveRobotRelative(new ChassisSpeeds(0, 0, 0));
+        //  }
     }
 
    

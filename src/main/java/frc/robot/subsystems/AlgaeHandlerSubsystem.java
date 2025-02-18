@@ -22,7 +22,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
-        .pid(0.5, 0.00001, 0)
+        .pid(0.1, 0.00001, 0)
         .maxOutput(.2)
         .minOutput(-.2);
 
@@ -59,6 +59,10 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
 
     public void pivotDown(){
         pivot.set(-.2);
+    }
+
+    public void resetEncoder(){
+        pivot.getEncoder().setPosition(0);
     }
 
     public void intake(){

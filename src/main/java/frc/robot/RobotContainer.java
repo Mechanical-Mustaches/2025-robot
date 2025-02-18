@@ -154,7 +154,7 @@ public class RobotContainer {
     m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
-  
+  m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
 
    m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
    m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
