@@ -146,6 +146,17 @@ public class SuperstructureSubsystem extends SubsystemBase{
         motor.set(0);
         
     }
+
+    public void keepClosed(){
+        leftPivot.set(-0.1);
+        rightPivot.set(0.1);
+    }
+
+    public void keepClosedStop(){
+        leftPivot.set(0);
+        rightPivot.set(0);
+    }
+
     public void resetEncoders(){
         rightPivot.getEncoder().setPosition(0);
         leftPivot.getEncoder().setPosition(0);
@@ -180,6 +191,8 @@ public class SuperstructureSubsystem extends SubsystemBase{
         //     leftPivot.set(-0.1);
         //     rightPivot.set(0.1);
         // }
+
+        
     }
 
 

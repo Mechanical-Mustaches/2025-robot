@@ -14,6 +14,7 @@ public class AlgaePivotCommand extends Command{
     @Override
     public void initialize(){
         intakeActivator.intake();
+        pivot.verticalPivot();
     }
 
     @Override
