@@ -57,6 +57,13 @@ public class ClimberSubsystem extends SubsystemBase {
     public void climberStop(){
         climber.set(0);
     }
+    public boolean isDone(){
+        if(climber.getEncoder().getPosition() > 11.9){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
     
