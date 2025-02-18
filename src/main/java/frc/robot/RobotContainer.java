@@ -158,7 +158,7 @@ public class RobotContainer {
 
    m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
    m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
-   m_driverController.x().onTrue(new SequentialCommandGroup(
+   m_driverController.button(1).onTrue(new SequentialCommandGroup(
     new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), -0.2), 
     new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), -0.2), 
     new WaitCommand(0.5), 
