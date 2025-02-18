@@ -21,6 +21,7 @@ public class AlgaePivotCommand extends Command{
     public void execute(){
         if (intakeActivator.isAlgaeDetected() > 5){
             pivot.horizontalPivot();
+            intakeActivator.stopIntake();
         }
     }
 

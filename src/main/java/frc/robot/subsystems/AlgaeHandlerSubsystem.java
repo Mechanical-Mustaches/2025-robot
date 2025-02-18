@@ -77,7 +77,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         intakeActivator.set(0);
     }
     public double isAlgaeDetected(){
-        if (intakeActivator.getOutputCurrent() > 5){
+        if (intakeActivator.getOutputCurrent() > 8){
             return intakeActivator.getOutputCurrent() -6;
         }else{
             return 0;
