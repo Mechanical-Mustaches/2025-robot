@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.ElevatorTelemetry;
+import frc.robot.commands.KeepClosedCommand;
 import frc.robot.commands.RobotAlignCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -136,11 +137,12 @@ public class RobotContainer {
 
    m_driverController.rightTrigger().whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
    m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
-   m_gunnerController.button(11).whileTrue(new SequentialCommandGroup(
-    new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem), 
-    new CoralIntakeCommand(endEffectorSubsystem), 
-    new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem),
-    new InstantCommand(() -> superstructureSubsystem.keepClosed())
+   m_gunnerController.button(11).whileTrue(new ParallelCommandGroup(
+    new SequentialCommandGroup(
+     new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem), 
+     new CoralIntakeCommand(endEffectorSubsystem), 
+     new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem)),
+    new KeepClosedCommand(superstructureSubsystem)
    ));
 
     m_driverController.povDown().onTrue(new SuperstructureEncoderResetCommand(superstructureSubsystem));
@@ -176,11 +178,11 @@ public class RobotContainer {
    // m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
    // m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
 
-    m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
-    m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    m_pitController.y().onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
-    m_pitController.y().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
+    // m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
+    // m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    // m_pitController.y().onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
+    // m_pitController.y().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    // m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
    
     m_pitController.povDown().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotDown()));
     m_pitController.povUp().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotUp()));

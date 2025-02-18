@@ -44,12 +44,12 @@ public class ClimberSubsystem extends SubsystemBase {
         climber.getClosedLoopController().setReference(0, ControlType.kPosition);  
     }
     
-    public void climberUp(){
-        climber.set(-0.2);
-    }
-    public void climberDown(){
-        climber.set(0.2);
-    }
+    // public void climberUp(){
+    //     climber.set(-0.2);
+    // }
+    // public void climberDown(){
+    //     climber.set(0.2);
+    // }
     public void resetEncoder(){
         climber.getEncoder().setPosition(0);
     }
