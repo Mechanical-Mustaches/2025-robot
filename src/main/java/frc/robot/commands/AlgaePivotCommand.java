@@ -19,10 +19,7 @@ public class AlgaePivotCommand extends Command{
 
     @Override
     public void execute(){
-        if (intakeActivator.isAlgaeDetected() > 5){
-            pivot.horizontalPivot();
-            intakeActivator.stopIntake();
-        }
+        pivot.pivot();
     }
 
     @Override
