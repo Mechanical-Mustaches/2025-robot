@@ -49,6 +49,12 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         pivot.getClosedLoopController().setReference(7, ControlType.kPosition);  
     }
 
+    public void pivot(){
+        if(isAlgaeDetected()>5){
+            pivot.getClosedLoopController().setReference(0, ControlType.kPosition);
+        }
+    }
+
     public void stopPivot(){
         pivot.set(0);
     }
@@ -83,10 +89,18 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
             return 0;
         }
     }
-    @Override
+
+
+    public void dumbPivot(double speed){
+        pivot.set(speed);
+    }
+
+     @Override
     public void periodic(){
         SmartDashboard.putNumber("algae detection value", isAlgaeDetected());
+        SmartDashboard.putNumber("pivotEncoderValue", pivot.getEncoder().getPosition());
     }
+   
     
 
 }
