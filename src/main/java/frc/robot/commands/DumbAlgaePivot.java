@@ -9,6 +9,7 @@ public class DumbAlgaePivot extends Command{
 
     public DumbAlgaePivot(AlgaeHandlerSubsystem subsystem,double speed){
         algaeHandlerSubsystem = subsystem;
+        motorSpeed = speed;
     }
 
     @Override
