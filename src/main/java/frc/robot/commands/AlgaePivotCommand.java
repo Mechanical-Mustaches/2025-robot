@@ -30,4 +30,5 @@ public class AlgaePivotCommand extends Command{
         intakeActivator.stopIntake();
         pivot.verticalPivot();
     }
+    
 }

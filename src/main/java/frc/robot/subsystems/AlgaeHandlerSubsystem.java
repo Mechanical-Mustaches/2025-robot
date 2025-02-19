@@ -7,7 +7,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeHandlerSubsystem extends SubsystemBase{
@@ -77,13 +77,16 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         intakeActivator.set(0);
     }
     public double isAlgaeDetected(){
-        if (intakeActivator.getOutputCurrent() > 8){
+        if (intakeActivator.getOutputCurrent() > 15){
             return intakeActivator.getOutputCurrent() -6;
         }else{
             return 0;
         }
     }
-   
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("algae detection value", isAlgaeDetected());
+    }
     
 
 }
