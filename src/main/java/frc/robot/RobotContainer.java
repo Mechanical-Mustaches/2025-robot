@@ -13,6 +13,8 @@ import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.CoralInverseCommand;
 import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.CoralScoringCommand;
+import frc.robot.commands.DumbAlgaeIntakeCommand;
+import frc.robot.commands.DumbAlgaePivot;
 import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.SuperstructureDefaultCommand;
 import frc.robot.commands.SuperstructureMotorMove;
@@ -168,8 +170,12 @@ public class RobotContainer {
     new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0))
   );
     
-   m_gunnerController.button(7).whileTrue(new AlgaePivotCommand(algaeHandlerSubsystem, algaeHandlerSubsystem));
+   m_gunnerController.button(4).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, 0.1));
+   m_gunnerController.button(7).whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem));
+   m_gunnerController.button(10).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, -0.1));
   
+   //m_gunnerController.button(7).whileTrue(new AlgaePivotCommand(algaeHandlerSubsystem, algaeHandlerSubsystem));
+
     m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem ));
     m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2, endEffectorSubsystem ));
     m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3, endEffectorSubsystem ));

@@ -90,6 +90,11 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         }
     }
 
+
+    public void dumbPivot(double speed){
+        pivot.set(speed);
+    }
+
      @Override
     public void periodic(){
         SmartDashboard.putNumber("algae detection value", isAlgaeDetected());
