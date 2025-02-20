@@ -31,7 +31,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         .idleMode(IdleMode.kBrake);
 
         pivotConfig
-        .smartCurrentLimit(50)
+        .smartCurrentLimit(10)
         .idleMode(IdleMode.kBrake);
 
 

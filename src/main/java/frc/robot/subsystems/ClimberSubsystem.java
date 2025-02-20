@@ -36,19 +36,19 @@ public class ClimberSubsystem extends SubsystemBase {
         return climber.getEncoder().getPosition();
     }
 
-    public void verticleClimber(){
-        climber.getClosedLoopController().setReference(12, ControlType.kPosition);
+    public void climber1(){
+        climber.getClosedLoopController().setReference(780, ControlType.kPosition);
     }
 
-    public void angledClimber(){
-        climber.getClosedLoopController().setReference(0, ControlType.kPosition);  
+    public void climber2(){
+        climber.getClosedLoopController().setReference(2500, ControlType.kPosition);  
     }
-    
-     public void climberUp(){
+    public void climber0(){
+        climber.getClosedLoopController().setReference(0, ControlType.kPosition);
+    }
+     
+     public void dumbClimb(){
          climber.set(-0.2);
-     }
-     public void climberDown(){
-         climber.set(0.2);
      }
     public void resetEncoder(){
         climber.getEncoder().setPosition(0);

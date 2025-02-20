@@ -1,17 +1,25 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class RobotAlignCommand extends Command{
 
+
+private final CommandXboxController m_driverController =
+      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
     SwerveDriveSubsystem swerve;
+
     private PIDController pidController = new PIDController(0.015, 0.0005, 1);
-    private PIDController wallPidController = new PIDController(0.01, 0, 2);
+    private PIDController wallPidController = new PIDController(0.005, 0, 2);
     private PIDController tagPidController = new PIDController(0.1, 0, 0);
     public RobotAlignCommand(SwerveDriveSubsystem swerve){
     this.swerve = swerve;
@@ -23,6 +31,7 @@ public class RobotAlignCommand extends Command{
 
     }
 
+   
     @Override
     public void execute(){
         double distanceDifference = swerve.leftDistanceSensor.getRange() - swerve.rightDistanceSensor.getRange() - 20;
@@ -39,6 +48,9 @@ public class RobotAlignCommand extends Command{
         //  } else {
 
         //  }
+
+
+   
           swerve.driveRobotRelative(new ChassisSpeeds(vx, 0, rotation));
 
 

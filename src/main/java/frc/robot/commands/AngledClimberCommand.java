@@ -11,7 +11,7 @@ public class AngledClimberCommand extends Command{
     }
     @Override
     public void initialize(){
-        climber.angledClimber();
+        
     }
    
      @Override

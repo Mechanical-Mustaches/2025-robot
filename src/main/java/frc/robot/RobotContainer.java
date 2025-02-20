@@ -158,8 +158,14 @@ public class RobotContainer {
 
    m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
 
-   m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
-   m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
+  //  m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
+  //  m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
+
+     m_gunnerController.button(2).onTrue(new InstantCommand(() -> climberSubsystem.climber1()));
+     m_gunnerController.button(2).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+     m_gunnerController.button(5).onTrue(new InstantCommand(() -> climberSubsystem.climber2()));
+     m_gunnerController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+
    m_gunnerController.button(1).onTrue(new SequentialCommandGroup(
     new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), -0.2), 
     new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), -0.2), 
@@ -184,11 +190,9 @@ public class RobotContainer {
    // m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
    // m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));
 
-    // m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.climberUp()));
-    // m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    // m_pitController.y().onTrue(new InstantCommand(() -> climberSubsystem.climberDown()));
-    // m_pitController.y().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    // m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
+     m_pitController.b().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+     m_pitController.b().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+     m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
    
     m_pitController.povDown().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotDown()));
     m_pitController.povUp().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotUp()));
