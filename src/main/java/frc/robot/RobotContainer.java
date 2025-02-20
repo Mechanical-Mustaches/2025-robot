@@ -88,7 +88,7 @@ public class RobotContainer {
    
     NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
     NamedCommands.registerCommand("Source", new CoralIntakeCommand(endEffectorSubsystem));
-    NamedCommands.registerCommand("L4", new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem), new WaitCommand(1), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
+    NamedCommands.registerCommand("L4", new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false), new WaitCommand(1), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
       ()-> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
@@ -141,9 +141,9 @@ public class RobotContainer {
    m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
    m_gunnerController.button(11).whileTrue(new ParallelCommandGroup(
     new SequentialCommandGroup(
-     new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem), 
+     new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem, false), 
      new CoralIntakeCommand(endEffectorSubsystem), 
-     new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem)),
+     new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)),
     new KeepClosedCommand(superstructureSubsystem)
    ));
 
@@ -176,10 +176,10 @@ public class RobotContainer {
   
    //m_gunnerController.button(7).whileTrue(new AlgaePivotCommand(algaeHandlerSubsystem, algaeHandlerSubsystem));
 
-    m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem ));
-    m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2, endEffectorSubsystem ));
-    m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3, endEffectorSubsystem ));
-    m_gunnerController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4, endEffectorSubsystem ));
+    m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem, m_gunnerController.button(7).getAsBoolean()));
+    m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2, endEffectorSubsystem, false ));
+    m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3, endEffectorSubsystem, false ));
+    m_gunnerController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4, endEffectorSubsystem, false ));
     
    // m_driverController.rightTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, true));
    // m_driverController.leftTrigger().whileTrue(new DumbElevatorCommand(elevatorSubsystem, false));

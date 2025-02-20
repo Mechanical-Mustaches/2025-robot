@@ -54,6 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase{
             .pid(0.05,0.00001,0.00006,ClosedLoopSlot.kSlot1)
            // .maxOutput(0,ClosedLoopSlot.kSlot1)
             //.minOutput(-0.6,ClosedLoopSlot.kSlot1)
+            .pid(0.02,0.000001,0.00006,ClosedLoopSlot.kSlot2)
 
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
@@ -119,6 +120,11 @@ public class ElevatorSubsystem extends SubsystemBase{
         leftEleMotor.set(0);
     } public void clearPosition(){
         //TODO: clear set position on enabling
+    }
+    public void algaeDescent(){
+        leftEleMotor.getClosedLoopController().setReference(Level.L1.encoderValue, 
+        ControlType.kPosition,ClosedLoopSlot.kSlot2);
+                 
     }
 
 }
