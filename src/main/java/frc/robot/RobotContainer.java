@@ -158,13 +158,8 @@ public class RobotContainer {
 
    m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
 
-  //  m_gunnerController.button(2).onTrue(new VerticleClimberCommand(climberSubsystem));
-  //  m_gunnerController.button(5).onTrue(new AngledClimberCommand(climberSubsystem));
-
-     m_gunnerController.button(2).onTrue(new InstantCommand(() -> climberSubsystem.climber1()));
-     m_gunnerController.button(2).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-     m_gunnerController.button(5).onTrue(new InstantCommand(() -> climberSubsystem.climber2()));
-     m_gunnerController.button(5).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    m_gunnerController.button(5).onTrue(new VerticleClimberCommand(climberSubsystem));
+    m_gunnerController.button(2).onTrue(new AngledClimberCommand(climberSubsystem));
 
    m_gunnerController.button(1).onTrue(new SequentialCommandGroup(
     new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), -0.2), 
