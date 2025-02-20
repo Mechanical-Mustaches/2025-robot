@@ -177,7 +177,7 @@ public class RobotContainer {
   
    //m_gunnerController.button(7).whileTrue(new AlgaePivotCommand(algaeHandlerSubsystem, algaeHandlerSubsystem));
 
-    m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem, m_gunnerController.button(7).getAsBoolean()));
+    m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L1, endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
     m_gunnerController.button(9).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L2, endEffectorSubsystem, false ));
     m_gunnerController.button(6).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L3, endEffectorSubsystem, false ));
     m_gunnerController.button(3).onTrue(new ElevatorCommand(elevatorSubsystem,ElevatorSubsystem.Level.L4, endEffectorSubsystem, false ));

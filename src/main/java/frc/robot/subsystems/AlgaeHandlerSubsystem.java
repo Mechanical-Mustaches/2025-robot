@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class AlgaeHandlerSubsystem extends SubsystemBase{
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
+    private boolean intakingAlgae = false;
 
     
 
@@ -73,6 +74,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
 
     public void intake(){
         intakeActivator.set(1);
+        intakingAlgae = true;
     }
 
    /*  public void reverseIntake(){
@@ -81,6 +83,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         */
     public void stopIntake(){
         intakeActivator.set(0);
+        intakingAlgae = false;
     }
     public double isAlgaeDetected(){
         if (intakeActivator.getOutputCurrent() > 15){
@@ -89,6 +92,12 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
             return 0;
         }
     }
+
+    public boolean isIntakingAlgae(){
+        return intakingAlgae;
+    }
+
+
 
 
     public void dumbPivot(double speed){
