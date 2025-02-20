@@ -11,7 +11,7 @@ public class VerticleClimberCommand extends Command{
     }
     @Override
     public void initialize(){
-        
+        climber.climber1();
     }
    
     @Override
