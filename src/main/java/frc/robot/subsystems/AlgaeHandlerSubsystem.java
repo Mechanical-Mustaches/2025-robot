@@ -108,6 +108,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
     public void periodic(){
         SmartDashboard.putNumber("algae detection value", isAlgaeDetected());
         SmartDashboard.putNumber("pivotEncoderValue", pivot.getEncoder().getPosition());
+        SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
     }
    
     

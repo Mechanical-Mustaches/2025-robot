@@ -8,18 +8,18 @@ public class ElevatorCommand extends Command{
     private final ElevatorSubsystem elevator;
     private ElevatorSubsystem.Level targetLevel;
     EndEffectorSubsystem endEffector; 
-    private boolean hasAlgae;
+    private boolean isIntakingAlgae;
 
-    public ElevatorCommand(ElevatorSubsystem subsystem, ElevatorSubsystem.Level level, EndEffectorSubsystem endEffector, boolean hasAlgae){
+    public ElevatorCommand(ElevatorSubsystem subsystem, ElevatorSubsystem.Level level, EndEffectorSubsystem endEffector, boolean isIntakingAlgae){
         elevator = subsystem;
         targetLevel = level;
         this.endEffector = endEffector;
-        this.hasAlgae = hasAlgae;
+        this.isIntakingAlgae = isIntakingAlgae;
     }
 
     @Override
     public void initialize() {
-        if(!hasAlgae){
+        if(!isIntakingAlgae){
         elevator.setPosition(targetLevel, endEffector);
         } else{
             elevator.algaeDescent();
