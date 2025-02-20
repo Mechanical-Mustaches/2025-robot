@@ -32,14 +32,14 @@ public class RobotAlignCommand extends Command{
         }
         double distanceToWall = (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
         double vx = -wallPidController.calculate(distanceToWall,310);
-         double tagPosition = LimelightHelpers.getTX("limelight-right");
-         double vy = 0;
-         if (LimelightHelpers.getTV("limelight-right")){
-             vy = tagPidController.calculate(tagPosition, -13);
-         } else {
+        //  double tagPosition = LimelightHelpers.getTX("limelight-right");
+        //  double vy = 0;
+        //  if (LimelightHelpers.getTV("limelight-right")){
+        //      vy = tagPidController.calculate(tagPosition, -13);
+        //  } else {
 
-         }
-          swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
+        //  }
+          swerve.driveRobotRelative(new ChassisSpeeds(vx, 0, rotation));
 
 
         //  if(LimelightHelpers.getTV("limelight-right")){
