@@ -37,7 +37,8 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void climber1(){
-        climber.getClosedLoopController().setReference(780, ControlType.kPosition);
+        climber.getClosedLoopController().setReference(8, ControlType.kPosition);
+        //previously 780
     }
 
     public void climber2(){
@@ -50,6 +51,7 @@ public class ClimberSubsystem extends SubsystemBase {
      public void dumbClimb(){
          climber.set(-0.2);
      }
+
     public void resetEncoder(){
         climber.getEncoder().setPosition(0);
     }
