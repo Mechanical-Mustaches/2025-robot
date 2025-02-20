@@ -54,7 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase{
             .pid(0.05,0.00001,0.00006,ClosedLoopSlot.kSlot1)
            // .maxOutput(0,ClosedLoopSlot.kSlot1)
             //.minOutput(-0.6,ClosedLoopSlot.kSlot1)
-            .pid(0.02,0.0000001,0.00006,ClosedLoopSlot.kSlot2)
+            .pid(0.01,0.0000001,0.00006,ClosedLoopSlot.kSlot2)
 
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
