@@ -15,6 +15,36 @@
           "data": {
             "name": "L1"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SourceBottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Source"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score2Bottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source2Bottom"
+          }
         }
       ]
     }

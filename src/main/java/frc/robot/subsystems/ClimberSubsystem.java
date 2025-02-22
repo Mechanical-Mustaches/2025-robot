@@ -52,6 +52,10 @@ public class ClimberSubsystem extends SubsystemBase {
          climber.set(-0.2);
      }
 
+     public void dumbClimbComp(){
+        climber.set(0.2);
+     }
+
     public void resetEncoder(){
         climber.getEncoder().setPosition(0);
     }

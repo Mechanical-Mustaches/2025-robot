@@ -161,7 +161,7 @@ public class RobotContainer {
   //  m_gunnerController.button(5).onTrue(new VerticleClimberCommand(climberSubsystem));
   //  m_gunnerController.button(2).onTrue(new AngledClimberCommand(climberSubsystem));
 
-     m_gunnerController.button(2).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+     m_gunnerController.button(2).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
      m_gunnerController.button(2).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
     
    m_gunnerController.button(1).onTrue(new SequentialCommandGroup(
