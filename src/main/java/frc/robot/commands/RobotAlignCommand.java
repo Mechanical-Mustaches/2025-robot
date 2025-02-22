@@ -35,12 +35,19 @@ private final CommandXboxController m_driverController =
     @Override
     public void execute(){
         double distanceDifference = swerve.leftDistanceSensor.getRange() - swerve.rightDistanceSensor.getRange() - 20;
-        double rotation = pidController.calculate(distanceDifference, 0);
-        if (Math.abs(distanceDifference) < 2){
-            rotation = 0;
-        }
+        // double rotation =
+        double rotation = 0;
+        double vx = 0;
         double distanceToWall = (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
-        double vx = -wallPidController.calculate(distanceToWall,310);
+        boolean distanceValidity = swerve.leftDistanceSensor.getRange() > 0 && swerve.rightDistanceSensor.getRange() > 0;
+        if (Math.abs(distanceDifference) > 2 && distanceValidity){
+            rotation = pidController.calculate(distanceDifference, 0);
+        }
+        if (Math.abs(310 - distanceToWall) > 10 && distanceValidity){
+            vx = -wallPidController.calculate(distanceToWall,310);
+        }
+       
+        
         //  double tagPosition = LimelightHelpers.getTX("limelight-right");
         //  double vy = 0;
         //  if (LimelightHelpers.getTV("limelight-right")){
