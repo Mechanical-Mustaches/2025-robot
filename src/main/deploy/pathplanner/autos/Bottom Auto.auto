@@ -45,6 +45,24 @@
           "data": {
             "pathName": "Source2Bottom"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Source"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score3Bottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
+          }
         }
       ]
     }
