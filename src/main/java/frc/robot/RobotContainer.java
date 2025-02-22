@@ -18,6 +18,7 @@ import frc.robot.commands.DumbAlgaePivot;
 import frc.robot.commands.SuperstructureCommand;
 import frc.robot.commands.SuperstructureDefaultCommand;
 import frc.robot.commands.SuperstructureMotorMove;
+import frc.robot.commands.SwerveDriveTestCommand;
 import frc.robot.commands.SuperstructureEncoderResetCommand;
 import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
@@ -147,7 +148,11 @@ public class RobotContainer {
     new KeepClosedCommand(superstructureSubsystem)
    ));
 
-    m_driverController.povDown().onTrue(new SuperstructureEncoderResetCommand(superstructureSubsystem));
+    m_driverController.povDown().whileTrue(new SwerveDriveTestCommand(swerveDriveSubsystem, 0, -4, 0)); 
+    m_driverController.povUp().whileTrue(new SwerveDriveTestCommand(swerveDriveSubsystem, 0, 4, 0));
+    m_driverController.povRight().whileTrue(new SwerveDriveTestCommand(swerveDriveSubsystem, 0, 0, 4));
+    m_driverController.povLeft().whileTrue(new SwerveDriveTestCommand(swerveDriveSubsystem, 0, 0, -4));   
+    //m_driverController.povDown().onTrue(new SuperstructureEncoderResetCommand(superstructureSubsystem));
    // m_driverController.leftTrigger().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),0.2));
  //   m_driverController.rightTrigger().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getRightMotor(),-0.2));
  //   m_driverController.leftBumper().whileTrue(new SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),-0.2));
