@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ScoreTop"
+            "pathName": "ScoreMiddle"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SourceTop"
+            "pathName": "SourceMiddle"
           }
         },
         {
@@ -31,31 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score2Top"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source 2Top"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Source"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score3Top"
+            "pathName": "Score2Middle"
           }
         },
         {
