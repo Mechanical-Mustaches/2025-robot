@@ -21,11 +21,12 @@ public class AngledClimberCommand extends Command{
 
     @Override
     public boolean isFinished(){
-        if(climber.isDone()){
-            climber.climberStop();
-            return true;
-        } else {
-            return false;
-        }
+        return true;
+        // if(climber.isDone()){
+        //     climber.climberStop();
+        //     return true;
+        // } else {
+        //     return false;
+        // }
     }
 }
