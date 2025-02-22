@@ -14,18 +14,18 @@ public class AngledClimberCommand extends Command{
         climber.climber2();
     }
    
-     @Override
-     public void end(boolean interupt){
-        climber.climberStop();
-     }
+    //  @Override
+    //  public void end(boolean interupt){
+    //     climber.climberStop();
+    //  }
 
-    // @Override
-    // public boolean isFinished(){
-    //     if(climber.isDone()){
-    //         climber.climberStop();
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
+    @Override
+    public boolean isFinished(){
+        if(climber.isDone()){
+            climber.climberStop();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
