@@ -18,7 +18,7 @@ public class ClimberCommand extends Command{
 
     @Override
     public void initialize() {
-        climberSubsystem.dumbClimbComp();
+        climberSubsystem.climb();
     }
 
     @Override
