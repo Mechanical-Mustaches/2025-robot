@@ -136,9 +136,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         // if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
         //     swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
         // }
-        if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
-            swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
-        }
+        // if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
+        //     swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
+        // }
 
         SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
         SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());
