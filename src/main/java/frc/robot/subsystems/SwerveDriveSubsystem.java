@@ -105,6 +105,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         swerveDrive.zeroGyro();
     }
 
+    public double getMaximumChassisVelocity() { return this.swerveDrive.getMaximumChassisVelocity(); }
+
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
             DoubleSupplier angularRotationX) {
         return run(() -> {
@@ -116,6 +118,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                     false);
         });
     }
+
     @Override
     public void periodic(){
         LimelightHelpers.PoseEstimate limelightPoseRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
@@ -136,9 +139,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         // if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
         //     swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
         // }
-        // if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
-        //     swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
-        // }
+        if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
+            swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
+        }
 
         SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
         SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());

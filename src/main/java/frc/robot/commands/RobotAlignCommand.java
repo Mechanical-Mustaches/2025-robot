@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -21,8 +23,12 @@ private final CommandXboxController m_driverController =
     private PIDController pidController = new PIDController(0.015, 0.0005, 1);
     private PIDController wallPidController = new PIDController(0.005, 0, 2);
     private PIDController tagPidController = new PIDController(0.1, 0, 0);
-    public RobotAlignCommand(SwerveDriveSubsystem swerve){
+    
+    private DoubleSupplier horizontalInput;
+
+    public RobotAlignCommand(SwerveDriveSubsystem swerve, DoubleSupplier horizontalInput){
     this.swerve = swerve;
+    this.horizontalInput = horizontalInput;
     }
     @Override
     public void initialize(){
@@ -40,10 +46,10 @@ private final CommandXboxController m_driverController =
         double vx = 0;
         double distanceToWall = (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
         boolean distanceValidity = swerve.leftDistanceSensor.getRange() > 0 && swerve.rightDistanceSensor.getRange() > 0;
-        if (Math.abs(distanceDifference) > 2 && distanceValidity){
+        if (Math.abs(distanceDifference) > 10 && distanceValidity){
             rotation = pidController.calculate(distanceDifference, 0);
         }
-        if (Math.abs(310 - distanceToWall) > 10 && distanceValidity){
+        if (Math.abs(310 - distanceToWall) > 30 && distanceValidity){
             vx = -wallPidController.calculate(distanceToWall,310);
         }
        
@@ -58,7 +64,7 @@ private final CommandXboxController m_driverController =
 
 
    
-          swerve.driveRobotRelative(new ChassisSpeeds(vx, 0, rotation));
+          swerve.driveRobotRelative(new ChassisSpeeds(vx, horizontalInput.getAsDouble() * swerve.getMaximumChassisVelocity(), rotation));
 
 
         //  if(LimelightHelpers.getTV("limelight-right")){

@@ -5,27 +5,17 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AlgaeIntakeCommand;
-import frc.robot.commands.AlgaePivotCommand;
-import frc.robot.commands.AngledClimberCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.CoralIntakeCommand;
-import frc.robot.commands.CoralInverseCommand;
-import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.DumbAlgaeIntakeCommand;
 import frc.robot.commands.DumbAlgaePivot;
-import frc.robot.commands.SuperstructureCommand;
-import frc.robot.commands.SuperstructureDefaultCommand;
 import frc.robot.commands.SuperstructureMotorMove;
 import frc.robot.commands.SwerveDriveTestCommand;
-import frc.robot.commands.SuperstructureEncoderResetCommand;
-import frc.robot.commands.VerticleClimberCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ElevatorCommand;
-import frc.robot.commands.DumbElevatorCommand;
 import frc.robot.commands.ElevatorTelemetry;
 import frc.robot.commands.KeepClosedCommand;
 import frc.robot.commands.RobotAlignCommand;
@@ -40,11 +30,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -74,8 +66,9 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
+    private final XboxController driveController_HID = m_driverController.getHID();
 
-  private final CommandXboxController m_pitController = new CommandXboxController(OperatorConstants.kPitControllerPort);
+//   private final CommandXboxController m_pitController = new CommandXboxController(OperatorConstants.kPitControllerPort);
 
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
 
@@ -87,15 +80,17 @@ public class RobotContainer {
     swerveDriveSubsystem = new SwerveDriveSubsystem();
 
     NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
-    NamedCommands.registerCommand("Source", new CoralIntakeCommand(endEffectorSubsystem));
+    NamedCommands.registerCommand("Source",  new ParallelDeadlineGroup(
+        new CoralIntakeCommand(endEffectorSubsystem),
+        new KeepClosedCommand(superstructureSubsystem)));
     NamedCommands.registerCommand("L4",
         new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
             new WaitCommand(1), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.1),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.1),
-        () -> -MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.1)
+        () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
+        () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
+        () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(4), 0.1)
 
     ));
 
@@ -154,7 +149,7 @@ public class RobotContainer {
     m_driverController.rightBumper()
         .whileTrue(new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0.2));
 
-    m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem));
+    m_driverController.y().whileTrue(new RobotAlignCommand(swerveDriveSubsystem,  () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1)));
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
     m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
@@ -200,14 +195,14 @@ public class RobotContainer {
     // m_driverController.leftTrigger().whileTrue(new
     // DumbElevatorCommand(elevatorSubsystem, false));
 
-    m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
-    m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    m_pitController.b().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
-    m_pitController.b().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
+    // m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
+    // m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    // m_pitController.b().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+    // m_pitController.b().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+    // m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
 
-    m_pitController.povDown().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotDown()));
-    m_pitController.povUp().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotUp()));
+    // m_pitController.povDown().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotDown()));
+    // m_pitController.povUp().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotUp()));
   }
 
   public Command getAutonomousCommand() {
