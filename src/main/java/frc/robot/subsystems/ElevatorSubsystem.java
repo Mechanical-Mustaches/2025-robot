@@ -17,8 +17,8 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public enum Level{
         L1(0),
-        L2(6.5),
-        L3(20.5),
+        L2(6),
+        L3(20),
         L4(46),
         LIntake(1);
 
