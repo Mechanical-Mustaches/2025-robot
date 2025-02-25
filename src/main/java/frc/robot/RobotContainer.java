@@ -83,13 +83,30 @@ public class RobotContainer {
     NamedCommands.registerCommand("Source",  new ParallelDeadlineGroup(
         new CoralIntakeCommand(endEffectorSubsystem),
         new KeepClosedCommand(superstructureSubsystem)));
-    NamedCommands.registerCommand("L4",
-        new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
-            new WaitCommand(1), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
+    NamedCommands.registerCommand("L4 left",
+        new SequentialCommandGroup(new ParallelCommandGroup(
+          new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
+          new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, true),
+          new WaitCommand(2)),
+        new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
+        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
 
-    NamedCommands.registerCommand("L4",
+     NamedCommands.registerCommand("L4 right",
+        new SequentialCommandGroup(new ParallelCommandGroup(
+          new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
+          new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true),
+          new WaitCommand(2)),
+        new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
+        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
+
+      NamedCommands.registerCommand("L4", 
+        new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false)
+      );
+    
+        NamedCommands.registerCommand("L2",
         new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L2, endEffectorSubsystem, false),
             new WaitCommand(0.2), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
+            
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
         () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
@@ -158,8 +175,8 @@ public class RobotContainer {
       () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
       RobotAlignCommand.Mode.manual
     ));
-    m_driverController.x().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left));
-    m_driverController.b().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right));
+    m_driverController.x().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, false));
+    m_driverController.b().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, false));
 
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
