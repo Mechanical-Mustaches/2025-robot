@@ -17,11 +17,15 @@ public class CoralScoringCommand extends Command  {
     public void initialize(){
          if (elevatorSubsystem.getEncoderValue() <=0.5){
              endEffector.L1Score();
-         } else {
-             endEffector.effectorScore();
+         } else if (elevatorSubsystem.getEncoderValue() > 30){
+            endEffector.L4Score();
+         } else{
+            endEffector.effectorScore();
+         }
+           
          }
         
-    }
+    
     @Override
     public void end(boolean interupt){
        endEffector.effectorStop();

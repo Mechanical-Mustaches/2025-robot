@@ -14,22 +14,35 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class RobotAlignCommand extends Command{
 
-
-private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    public enum Mode{
+        left,
+        right,
+        manual
+    }
+    private Mode mode;
 
     SwerveDriveSubsystem swerve;
 
-    private PIDController pidController = new PIDController(0.015, 0.0005, 1);
-    private PIDController wallPidController = new PIDController(0.005, 0, 2);
-    private PIDController tagPidController = new PIDController(0.1, 0, 0);
+    private PIDController pidController = new PIDController(0.015, 0.0005, 0);
+    private PIDController wallPidController = new PIDController(0.005, 0, 0);
+    private PIDController tagPidController = new PIDController(0.05, 0, 0);
     
     private DoubleSupplier horizontalInput;
 
-    public RobotAlignCommand(SwerveDriveSubsystem swerve, DoubleSupplier horizontalInput){
-    this.swerve = swerve;
-    this.horizontalInput = horizontalInput;
+    public RobotAlignCommand(SwerveDriveSubsystem swerve, DoubleSupplier horizontalInput, Mode mode){
+        this.swerve = swerve;
+        this.horizontalInput = horizontalInput;
+        this.mode = mode;
     }
+
+    public RobotAlignCommand(SwerveDriveSubsystem swerve, Mode mode){
+        if (mode == Mode.manual){
+            throw new IllegalArgumentException("must supply hotizontalInput in manual mode");
+        }
+        this.swerve = swerve;
+        this.mode = mode;
+    }   
+
     @Override
     public void initialize(){
         pidController.reset();
@@ -46,25 +59,47 @@ private final CommandXboxController m_driverController =
         double vx = 0;
         double distanceToWall = (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
         boolean distanceValidity = swerve.leftDistanceSensor.getRange() > 0 && swerve.rightDistanceSensor.getRange() > 0;
-        if (Math.abs(distanceDifference) > 10 && distanceValidity){
+        if (Math.abs(distanceDifference) > 15 && distanceValidity){
             rotation = pidController.calculate(distanceDifference, 0);
         }
-        if (Math.abs(310 - distanceToWall) > 30 && distanceValidity){
-            vx = -wallPidController.calculate(distanceToWall,310);
+        if (Math.abs(250 - distanceToWall) > 20 && distanceValidity){
+            vx = -wallPidController.calculate(distanceToWall,250);
+            //previously 310
         }
        
-        
-        //  double tagPosition = LimelightHelpers.getTX("limelight-right");
-        //  double vy = 0;
-        //  if (LimelightHelpers.getTV("limelight-right")){
-        //      vy = tagPidController.calculate(tagPosition, -13);
-        //  } else {
-
-        //  }
+         double vy = 0;
+        if (mode == Mode.manual){
+            vy = (horizontalInput.getAsDouble() * swerve.getMaximumChassisVelocity())/2;
+        } else if(mode == Mode.left){
+            if (LimelightHelpers.getTV("limelight-right")){
+                double tagPosition = LimelightHelpers.getTX("limelight-right");
+                if (tagPosition > 0){
+                    vy = swerve.getMaximumChassisVelocity()/10;
+                }
+                else if (Math.abs(tagPosition + 17.1) > 0.6){
+                    vy = tagPidController.calculate(tagPosition, -17.1);
+                }
+            } else{
+                vy = swerve.getMaximumChassisVelocity()/10;
+            }
+        } else if(mode == Mode.right){
+            if (LimelightHelpers.getTV("limelight-left")){
+                double tagPosition = LimelightHelpers.getTX("limelight-left");
+                if (tagPosition < 0){
+                    vy = -swerve.getMaximumChassisVelocity()/10;
+                }
+                else if (Math.abs(tagPosition - 10.7) > 0.6){
+                    vy = tagPidController.calculate(tagPosition, 10.7);
+                }
+            } else{
+                vy = -swerve.getMaximumChassisVelocity()/10;
+            }
+        }
+       
 
 
    
-          swerve.driveRobotRelative(new ChassisSpeeds(vx, horizontalInput.getAsDouble() * swerve.getMaximumChassisVelocity(), rotation));
+          swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
 
 
         //  if(LimelightHelpers.getTV("limelight-right")){

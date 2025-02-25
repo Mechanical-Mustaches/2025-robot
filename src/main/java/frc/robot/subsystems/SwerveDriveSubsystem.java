@@ -133,7 +133,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("tag area right", limelightPoseRight.avgTagArea);
         // SmartDashboard.putNumber("tag area left", limelightPoseLeft.avgTagArea);
         
-        SmartDashboard.putNumber("april tag position", LimelightHelpers.getTX("limelight-right"));
+        SmartDashboard.putNumber("right april tag position", LimelightHelpers.getTX("limelight-right"));
+        SmartDashboard.putNumber("left april tag position", LimelightHelpers.getTX("limelight-left"));
         SmartDashboard.putBoolean("april tag TV", LimelightHelpers.getTV("limelight-right"));
 
         // if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){

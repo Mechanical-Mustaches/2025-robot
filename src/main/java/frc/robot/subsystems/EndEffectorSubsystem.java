@@ -48,6 +48,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
         effectorRight.set(0.6);
     }
 
+    public void L4Score(){
+        effectorLeft.set(-0.2);
+        effectorRight.set(0.2);
+    }
+
     public void effectorInverse(){
         effectorLeft.set(0.2);
     }

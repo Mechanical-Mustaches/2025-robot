@@ -20,6 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         L2(6.5),
         L3(20.5),
         L4(46),
+        //previously 46
         LIntake(1);
 
         public final double encoderValue;
