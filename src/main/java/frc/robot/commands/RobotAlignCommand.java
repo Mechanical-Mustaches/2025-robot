@@ -8,23 +8,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
-public class RobotAlignCommand extends Command{
+public class RobotAlignCommand extends Command {
 
-    public enum Mode{
+    public enum Mode {
         left,
         right,
         manual
     }
-    private Mode mode;
 
-    SwerveDriveSubsystem swerve;
+    private SwerveDriveSubsystem swerve;
+    private Mode mode;
     private boolean autoFinish;
+    private DoubleSupplier horizontalInput;
 
     private PIDController pidController = new PIDController(0.015, 0.0005, 0);
     private PIDController wallPidController = new PIDController(0.005, 0, 0);
     private PIDController tagPidController = new PIDController(0.05, 0, 0);
-    
-    private DoubleSupplier horizontalInput;
+
     private final double rotationTolerance = 15;
     private final double distanceTolerance = 20;
     private final double tagTolerance = 0.6;
@@ -34,107 +34,98 @@ public class RobotAlignCommand extends Command{
     private final double leftModeTagSetpoint = -17.1;
     private final double rightModeTagSetpoint = 18.1;
 
-    public RobotAlignCommand(SwerveDriveSubsystem swerve, DoubleSupplier horizontalInput, Mode mode){
+    public RobotAlignCommand(SwerveDriveSubsystem swerve, DoubleSupplier horizontalInput, Mode mode) {
+        if (mode == Mode.manual && horizontalInput == null) {
+            throw new IllegalArgumentException("must supply hotizontalInput in manual mode");
+        }
+
         this.swerve = swerve;
         this.horizontalInput = horizontalInput;
         this.mode = mode;
         this.autoFinish = false;
-        defaultVelocity = swerve.getMaximumChassisVelocity()/10;
+        defaultVelocity = swerve.getMaximumChassisVelocity() / 10;
     }
 
-    public RobotAlignCommand(SwerveDriveSubsystem swerve, Mode mode, boolean autoFinish){
-        if (mode == Mode.manual){
-            throw new IllegalArgumentException("must supply hotizontalInput in manual mode");
-        }
-        this.swerve = swerve;
-        this.mode = mode;
-        this.autoFinish = autoFinish;
-        defaultVelocity = swerve.getMaximumChassisVelocity()/10;
-    }   
+    public RobotAlignCommand(SwerveDriveSubsystem swerve, Mode mode, boolean autoFinish) {
+        this(swerve, null, mode);
+    }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         pidController.reset();
         wallPidController.reset();
-
     }
-    private double getDistanceDifference(){
+
+    private double getDistanceDifference() {
         return swerve.leftDistanceSensor.getRange() - swerve.rightDistanceSensor.getRange() - 20;
     }
-    private double getDistanceToWall(){
-        return (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
+
+    private double getDistanceToWall() {
+        return (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange()) / 2;
     }
-   
+
     @Override
-    public void execute(){
+    public void execute() {
         double distanceDifference = getDistanceDifference();
-        // double rotation =
         double rotation = 0;
         double vx = 0;
         double distanceToWall = getDistanceToWall();
-        boolean distanceValidity = swerve.leftDistanceSensor.getRange() > 0 && swerve.rightDistanceSensor.getRange() > 0;
-        if (Math.abs(distanceDifference) > rotationTolerance && distanceValidity){
+        boolean distanceValidity = swerve.leftDistanceSensor.getRange() > 0
+                && swerve.rightDistanceSensor.getRange() > 0;
+        if (Math.abs(distanceDifference) > rotationTolerance && distanceValidity) {
             rotation = pidController.calculate(distanceDifference, 0);
         }
-        if (Math.abs(wallDistanceSetpoint - distanceToWall) > distanceTolerance && distanceValidity){
+        if (Math.abs(wallDistanceSetpoint - distanceToWall) > distanceTolerance && distanceValidity) {
             vx = -wallPidController.calculate(distanceToWall, wallDistanceSetpoint);
-            //previously 310
+            // previously 310
         }
-       
-         double vy = 0;
-        if (mode == Mode.manual){
-            vy = (horizontalInput.getAsDouble() * swerve.getMaximumChassisVelocity())/2;
-        } else if(mode == Mode.left){
-            if (LimelightHelpers.getTV("limelight-right")){
+
+        double vy = 0;
+        if (mode == Mode.manual) {
+            vy = (horizontalInput.getAsDouble() * swerve.getMaximumChassisVelocity()) / 2;
+        } else if (mode == Mode.left) {
+            if (LimelightHelpers.getTV("limelight-right")) {
                 double tagPosition = LimelightHelpers.getTX("limelight-right");
-                if (tagPosition > 0){
+                if (tagPosition > 0) {
                     vy = defaultVelocity;
-                }
-                else if (Math.abs(tagPosition - leftModeTagSetpoint) > tagTolerance){
+                } else if (Math.abs(tagPosition - leftModeTagSetpoint) > tagTolerance) {
                     vy = tagPidController.calculate(tagPosition, leftModeTagSetpoint);
                 }
-            } else{
+            } else {
                 vy = defaultVelocity;
             }
-        } else if(mode == Mode.right){
-            if (LimelightHelpers.getTV("limelight-left")){
+        } else if (mode == Mode.right) {
+            if (LimelightHelpers.getTV("limelight-left")) {
                 double tagPosition = LimelightHelpers.getTX("limelight-left");
-                if (tagPosition < 0){
+                if (tagPosition < 0) {
                     vy = -defaultVelocity;
-                }
-                else if (Math.abs(tagPosition - rightModeTagSetpoint) > tagTolerance){
+                } else if (Math.abs(tagPosition - rightModeTagSetpoint) > tagTolerance) {
                     vy = tagPidController.calculate(tagPosition, rightModeTagSetpoint);
                 }
-            } else{
+            } else {
                 vy = -defaultVelocity;
             }
         }
 
-   
-          swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
-
-
+        swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
     }
 
-   @Override
-   public boolean isFinished(){
-       if (!autoFinish){
-        return false;
-       }
-       boolean isRotated = (Math.abs(getDistanceDifference()) < rotationTolerance);
-       boolean isVerticallyAligned = Math.abs(wallDistanceSetpoint - getDistanceToWall()) < distanceTolerance;
-       boolean isHorizontallyAlignedLeft = this.mode == Mode.left && 
-       LimelightHelpers.getTV("limelight-right") &&
-       Math.abs(LimelightHelpers.getTX("limelight-right") - leftModeTagSetpoint) < tagTolerance;
-       
-       boolean isHorizontallyAlignedRight = this.mode == Mode.right && 
-       LimelightHelpers.getTV("limelight-left") &&
-       Math.abs(LimelightHelpers.getTX("limelight-left") - rightModeTagSetpoint) < tagTolerance;
+    @Override
+    public boolean isFinished() {
+        if (!autoFinish) {
+            return false;
+        }
 
-       return isRotated && isVerticallyAligned && (isHorizontallyAlignedLeft || isHorizontallyAlignedRight);
+        boolean isRotated = (Math.abs(getDistanceDifference()) < rotationTolerance);
+        boolean isVerticallyAligned = Math.abs(wallDistanceSetpoint - getDistanceToWall()) < distanceTolerance;
+        boolean isHorizontallyAlignedLeft = this.mode == Mode.left &&
+                LimelightHelpers.getTV("limelight-right") &&
+                Math.abs(LimelightHelpers.getTX("limelight-right") - leftModeTagSetpoint) < tagTolerance;
 
-   }
-    
+        boolean isHorizontallyAlignedRight = this.mode == Mode.right &&
+                LimelightHelpers.getTV("limelight-left") &&
+                Math.abs(LimelightHelpers.getTX("limelight-left") - rightModeTagSetpoint) < tagTolerance;
 
- 
+        return isRotated && isVerticallyAligned && (isHorizontallyAlignedLeft || isHorizontallyAlignedRight);
+    }
 }
