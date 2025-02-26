@@ -94,8 +94,8 @@ public class RobotContainer {
      NamedCommands.registerCommand("L4 right",
         new SequentialCommandGroup(new ParallelCommandGroup(
           new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
-          new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true),
-          new WaitCommand(2)),
+          new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true)
+          ),
         new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
         new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
 

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ScoreTop L4"
+            "pathName": "ScoreBottom L4"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SourceTop L4"
+            "pathName": "SourceBottom L4"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Score2Top L4"
+            "pathName": "Score2Bottom L4"
           }
         },
         {
