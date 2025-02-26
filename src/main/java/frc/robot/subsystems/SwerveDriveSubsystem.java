@@ -102,12 +102,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
         swerveDrive.drive(chassisSpeeds);
     }
- 
-    public void resetGyro(){
+
+    public void resetGyro() {
         swerveDrive.zeroGyro();
     }
 
-    public double getMaximumChassisVelocity() { return this.swerveDrive.getMaximumChassisVelocity(); }
+    public double getMaximumChassisVelocity() {
+        return this.swerveDrive.getMaximumChassisVelocity();
+    }
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
             DoubleSupplier angularRotationX) {
@@ -121,36 +123,40 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         });
     }
 
+    private void addVisionMeasurementFromPose(LimelightHelpers.PoseEstimate pose) {
+        if (pose == null) {
+            return;
+        }
+        if (pose.tagCount < 2 || pose.avgTagDist > 5) {
+            return;
+        }
+
+        swerveDrive.addVisionMeasurement(pose.pose, pose.timestampSeconds);
+    }
+
     @Override
-    public void periodic(){
+    public void periodic() {
         LimelightHelpers.PoseEstimate limelightPoseRight = null;
-        // LimelightHelpers.PoseEstimate limelightPoseLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+        LimelightHelpers.PoseEstimate limelightPoseLeft = null;
 
         Optional<Alliance> ally = DriverStation.getAlliance();
-        if (ally.isPresent()){
-            if (ally.get() == Alliance.Red && !DriverStation.isAutonomous()){
+        if (ally.isPresent()) {
+            if (ally.get() == Alliance.Red && !DriverStation.isAutonomous()) {
                 limelightPoseRight = LimelightHelpers.getBotPoseEstimate_wpiRed("limelight-right");
+                limelightPoseLeft = LimelightHelpers.getBotPoseEstimate_wpiRed("limelight-left");
             }
-            if (ally.get() == Alliance.Blue || DriverStation.isAutonomous()){
+            if (ally.get() == Alliance.Blue || DriverStation.isAutonomous()) {
                 limelightPoseRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+                limelightPoseLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
             }
         }
-        
-        if (limelightPoseRight != null){
-            if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
-                swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
-            }
-        }
-       
-        
+
+        addVisionMeasurementFromPose(limelightPoseRight);
+        addVisionMeasurementFromPose(limelightPoseLeft);
+
         SmartDashboard.putNumber("right april tag position", LimelightHelpers.getTX("limelight-right"));
         SmartDashboard.putNumber("left april tag position", LimelightHelpers.getTX("limelight-left"));
         SmartDashboard.putBoolean("april tag TV", LimelightHelpers.getTV("limelight-right"));
-
-        // if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
-        //     swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
-        // }
-     
 
         SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
         SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());

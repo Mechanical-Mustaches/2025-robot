@@ -66,9 +66,10 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
-    private final XboxController driveController_HID = m_driverController.getHID();
+  private final XboxController driveController_HID = m_driverController.getHID();
 
-//   private final CommandXboxController m_pitController = new CommandXboxController(OperatorConstants.kPitControllerPort);
+  // private final CommandXboxController m_pitController = new
+  // CommandXboxController(OperatorConstants.kPitControllerPort);
 
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
 
@@ -80,33 +81,30 @@ public class RobotContainer {
     swerveDriveSubsystem = new SwerveDriveSubsystem();
 
     NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
-    NamedCommands.registerCommand("Source",  new ParallelDeadlineGroup(
+    NamedCommands.registerCommand("Source", new ParallelDeadlineGroup(
         new CoralIntakeCommand(endEffectorSubsystem),
         new KeepClosedCommand(superstructureSubsystem)));
-    NamedCommands.registerCommand("L4 left",
-        new SequentialCommandGroup(new ParallelCommandGroup(
-          new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
-          new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, true),
-          new WaitCommand(2)),
+    NamedCommands.registerCommand("L4 left", new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
+            new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, true)),
         new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
         new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
 
-     NamedCommands.registerCommand("L4 right",
-        new SequentialCommandGroup(new ParallelCommandGroup(
-          new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
-          new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true),
-          new WaitCommand(2)),
-        new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
+    NamedCommands.registerCommand("L4 right",
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
+                new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true)),
+            new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
+            new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
 
-      NamedCommands.registerCommand("L4", 
-        new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false)
-      );
-    
-        NamedCommands.registerCommand("L2",
+    NamedCommands.registerCommand("L4",
+        new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false));
+
+    NamedCommands.registerCommand("L2",
         new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L2, endEffectorSubsystem, false),
             new WaitCommand(0.2), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
-            
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
         () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
@@ -171,10 +169,9 @@ public class RobotContainer {
         .whileTrue(new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0.2));
 
     m_driverController.y().whileTrue(new RobotAlignCommand(
-      swerveDriveSubsystem,
-      () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
-      RobotAlignCommand.Mode.manual
-    ));
+        swerveDriveSubsystem,
+        () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
+        RobotAlignCommand.Mode.manual));
     m_driverController.x().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, false));
     m_driverController.b().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, false));
 
@@ -182,16 +179,8 @@ public class RobotContainer {
 
     m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
 
-    // m_gunnerController.button(5).onTrue(new VerticleClimberCommand(climberSubsystem));
-    // m_gunnerController.button(2).onTrue(new AngledClimberCommand(climberSubsystem));
-
     m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S1));
     m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2));
-
-    // m_gunnerController.button(2).onTrue(new InstantCommand(() ->
-    // climberSubsystem.dumbClimbComp()));
-    // m_gunnerController.button(2).onFalse(new InstantCommand(() ->
-    // climberSubsystem.climberStop()));
 
     m_gunnerController.button(1).onTrue(new SequentialCommandGroup(
         new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getLeftMotor(), -0.2),
@@ -223,14 +212,21 @@ public class RobotContainer {
     // m_driverController.leftTrigger().whileTrue(new
     // DumbElevatorCommand(elevatorSubsystem, false));
 
-    // m_pitController.a().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
-    // m_pitController.a().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    // m_pitController.b().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
-    // m_pitController.b().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    // m_pitController.x().onTrue(new InstantCommand(() -> climberSubsystem.resetEncoder()));
+    // m_pitController.a().onTrue(new InstantCommand(() ->
+    // climberSubsystem.dumbClimbComp()));
+    // m_pitController.a().onFalse(new InstantCommand(() ->
+    // climberSubsystem.climberStop()));
+    // m_pitController.b().onTrue(new InstantCommand(() ->
+    // climberSubsystem.dumbClimb()));
+    // m_pitController.b().onFalse(new InstantCommand(() ->
+    // climberSubsystem.climberStop()));
+    // m_pitController.x().onTrue(new InstantCommand(() ->
+    // climberSubsystem.resetEncoder()));
 
-    // m_pitController.povDown().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotDown()));
-    // m_pitController.povUp().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.pivotUp()));
+    // m_pitController.povDown().onTrue(new InstantCommand(() ->
+    // algaeHandlerSubsystem.pivotDown()));
+    // m_pitController.povUp().onTrue(new InstantCommand(() ->
+    // algaeHandlerSubsystem.pivotUp()));
   }
 
   public Command getAutonomousCommand() {
