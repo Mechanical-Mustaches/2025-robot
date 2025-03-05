@@ -26,11 +26,12 @@ public class RobotAlignCommand extends Command{
     
     private DoubleSupplier horizontalInput;
     private final double rotationTolerance = 15;
-    private final double distanceTolerance = 20;
+    private final double distanceTolerance = 10;
     private final double tagTolerance = 0.6;
     private final double defaultVelocity;
 
-    private final double wallDistanceSetpoint = 235;
+    private final double wallDistanceSetpoint = 233;
+    //previously 238
     private final double leftModeTagSetpoint = -17.1;
     private final double rightModeTagSetpoint = 18.1;
 
@@ -59,7 +60,7 @@ public class RobotAlignCommand extends Command{
 
     }
     private double getDistanceDifference(){
-        return swerve.leftDistanceSensor.getRange() - swerve.rightDistanceSensor.getRange() - 20;
+        return swerve.leftDistanceSensor.getRange() - swerve.rightDistanceSensor.getRange() - 15;
     }
     private double getDistanceToWall(){
         return (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
@@ -72,7 +73,11 @@ public class RobotAlignCommand extends Command{
         double rotation = 0;
         double vx = 0;
         double distanceToWall = getDistanceToWall();
-        boolean distanceValidity = swerve.leftDistanceSensor.getRange() > 0 && swerve.rightDistanceSensor.getRange() > 0;
+        boolean distanceValidity =
+            swerve.leftDistanceSensor.getRange() > 130
+            && swerve.rightDistanceSensor.getRange() > 130
+            && swerve.leftDistanceSensor.isRangeValid()
+            && swerve.rightDistanceSensor.isRangeValid();
         if (Math.abs(distanceDifference) > rotationTolerance && distanceValidity){
             rotation = pidController.calculate(distanceDifference, 0);
         }

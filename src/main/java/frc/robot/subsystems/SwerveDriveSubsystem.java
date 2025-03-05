@@ -10,14 +10,17 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
@@ -33,9 +36,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public TimeOfFlight rightDistanceSensor = new TimeOfFlight(30);
     // maximumSpeed in meters per second.
     public double maximumSpeed = 5.3;
+    private final Field2d m_field = new Field2d();
 
     public SwerveDriveSubsystem() {
-
+       
+       SmartDashboard.putData("Field", m_field);
+        leftDistanceSensor.setRangeOfInterest(0, 6, 15, 10);
+       rightDistanceSensor.setRangeOfInterest(0, 6, 15, 10);
         try {
             File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
@@ -142,7 +149,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
         }
        
-        
+
         SmartDashboard.putNumber("right april tag position", LimelightHelpers.getTX("limelight-right"));
         SmartDashboard.putNumber("left april tag position", LimelightHelpers.getTX("limelight-left"));
         SmartDashboard.putBoolean("april tag TV", LimelightHelpers.getTV("limelight-right"));
@@ -155,5 +162,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
         SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());
         SmartDashboard.putNumber("distanceSensorSampleRate", leftDistanceSensor.getSampleTime());
+        SmartDashboard.putBoolean("leftDistanceValid", leftDistanceSensor.isRangeValid());
+        SmartDashboard.putBoolean("rightDistanceValid", rightDistanceSensor.isRangeValid());
+
+        m_field.setRobotPose(getPose());
+
     }
 }
