@@ -20,6 +20,7 @@ import frc.robot.commands.ElevatorTelemetry;
 import frc.robot.commands.KeepClosedCommand;
 import frc.robot.commands.OpenDoorCommand;
 import frc.robot.commands.RobotAlignCommand;
+import frc.robot.commands.RobotAlignV2Command;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -172,11 +173,12 @@ public class RobotContainer {
     // m_driverController.rightBumper()
     //     .whileTrue(new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0.2));
 
-    m_driverController.y().whileTrue(new RobotAlignCommand(
-      swerveDriveSubsystem,
-      () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
-      RobotAlignCommand.Mode.manual
-    ));
+    // m_driverController.y().whileTrue(new RobotAlignCommand(
+    //   swerveDriveSubsystem,
+    //   () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
+    //   RobotAlignCommand.Mode.manual
+    // ));
+    m_driverController.y().whileTrue(new RobotAlignV2Command(swerveDriveSubsystem));
     m_driverController.x().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, false));
     m_driverController.b().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, false));
 
