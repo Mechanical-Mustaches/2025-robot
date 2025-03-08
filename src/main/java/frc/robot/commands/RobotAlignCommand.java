@@ -49,8 +49,9 @@ private final CommandXboxController m_driverController =
         if (Math.abs(distanceDifference) > 10 && distanceValidity){
             rotation = pidController.calculate(distanceDifference, 0);
         }
-        if (Math.abs(310 - distanceToWall) > 30 && distanceValidity){
-            vx = -wallPidController.calculate(distanceToWall,310);
+        if (Math.abs(380 - distanceToWall) > 15 && distanceValidity){
+            vx = -wallPidController.calculate(distanceToWall,360);
+            //previously 310
         }
        
         
