@@ -10,8 +10,6 @@ import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.DumbAlgaeIntakeCommand;
 import frc.robot.commands.DumbAlgaePivot;
-import frc.robot.commands.SuperstructureMotorMove;
-import frc.robot.commands.SwerveDriveTestCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;

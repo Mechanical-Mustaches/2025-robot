@@ -7,26 +7,19 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SuperstructureSubsystem extends SubsystemBase{
     private SparkMax leftPivot = new SparkMax(20,MotorType.kBrushless);
     private SparkMax rightPivot = new SparkMax(21,MotorType.kBrushless);
-    private boolean trapdoorReleased = false;
     private boolean isTeleOp = false;
-
-    SparkMaxConfig trapdoorConfig = new SparkMaxConfig();
 
     public SuperstructureSubsystem(){
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         SparkMaxConfig rightConfig = new SparkMaxConfig();
-       
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
-        pidConfig
-            .pid(5, 0.00005, 0.00003);
-            
+        pidConfig.pid(5, 0.00005, 0.00003);
 
         leftConfig
             .smartCurrentLimit(50)
@@ -36,16 +29,8 @@ public class SuperstructureSubsystem extends SubsystemBase{
         rightConfig
             .apply(leftConfig);
             
-            
-
-
-            leftPivot.configure(leftConfig,null,null);
-            rightPivot.configure(leftConfig,null,null);
-        
-    }
-
-    public void stop(SparkMax motor){
-        motor.set(0);
+        leftPivot.configure(leftConfig,null,null);
+        rightPivot.configure(leftConfig,null,null);
     }
 
     public void keepClosed(){
@@ -58,47 +43,21 @@ public class SuperstructureSubsystem extends SubsystemBase{
         rightPivot.set(0);
     }
 
-    public void resetEncoders(){
-        rightPivot.getEncoder().setPosition(0);
-        leftPivot.getEncoder().setPosition(0);
-    }
-    public double getLeftEncoderValue(){
-        return leftPivot.getEncoder().getPosition();
-    }
-    public double getRightEncoderValue(){
-        return rightPivot.getEncoder().getPosition();
-    }
-
     public SparkMax getLeftMotor(){
         return leftPivot;
     }
+    
     public SparkMax getRightMotor(){
         return rightPivot;
     }
-    public boolean getTrapdoorState(){
-        return trapdoorReleased;
-    }
-
-    
-
+   
     @Override
-    public void periodic(){
-        
+    public void periodic() {
         if (DriverStation.isAutonomous() || (DriverStation.getMatchTime()>40)){
             keepClosed();
         } else if (!isTeleOp) {
             isTeleOp = true;
             keepClosedStop();
         }
-        SmartDashboard.putNumber("SuperstructureLeftEncoderValue", getLeftEncoderValue());
-        SmartDashboard.putNumber("SuperstructureRightEncoderValue", getRightEncoderValue());
-        SmartDashboard.putNumber("timer", DriverStation.getMatchTime()); 
-        SmartDashboard.putBoolean("can doors open", DriverStation.isTeleop() && DriverStation.getMatchTime() < 130);
-        
     }
-
-
-
-
-
 }
