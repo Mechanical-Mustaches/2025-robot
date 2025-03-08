@@ -186,30 +186,22 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public ReefPosition getClosestReefPosition(){
-        ReefPosition[] positions = ReefPosition.values();
         ReefPosition closestPosition = null;
 
-        
-
-
-        // int closestReef = 0;
-       
-        // double closestDistance = 90000;
-        // double[] distances = {distanceFromReef1,distanceFromReef2,distanceFromReef3,distanceFromReef4,distanceFromReef5,distanceFromReef6};
-        
-
-        // for(int i=0;i<6;i++){
-        //     if(closestDistance > distances[i]){
-        //         closestDistance = distances[i];
-        //         closestReef = i + 1;
+        for (ReefPosition position:ReefPosition.values()) {
+            if (closestPosition == null) {
+                closestPosition = position;
+            } else {
+                double closestDistance = getPose().getTranslation().getDistance(closestPosition.translation);
+                double measuredDistance = getPose().getTranslation().getDistance(position.translation);
                 
-        //     }
-            
-        // }
-        // return closestReef;
-        
-        return ReefPosition.Blue1;
-        
+                if (closestDistance > measuredDistance) {
+                    closestPosition = position;
+                }
+            }   
+        }
+
+        return closestPosition;
     }
 
     @Override
