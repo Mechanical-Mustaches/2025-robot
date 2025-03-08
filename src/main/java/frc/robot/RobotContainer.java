@@ -156,28 +156,6 @@ public class RobotContainer {
             new CoralIntakeCommand(endEffectorSubsystem),
             new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
         
-
-    // m_driverController.povDown().whileTrue(new SwerveDriveTestCommand(swerveDriveSubsystem, 0, -4, 0));
-    // m_driverController.povUp().whileTrue(new SwerveDriveTestCommand(swerveDriveSubsystem, 0, 4, 0));
-    // m_driverController.povRight().whileTrue(new SwerveDriveTestCommand(swerveDriveSubsystem, 0, 0, 4));
-    // m_driverController.povLeft().whileTrue(new SwerveDriveTestCommand(swerveDriveSubsystem, 0, 0, -4));
-    
-    // m_driverController.povDown().onTrue(new
-    // SuperstructureEncoderResetCommand(superstructureSubsystem));
-    // m_driverController.leftTrigger().whileTrue(new
-    // SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),0.2));
-    // m_driverController.rightTrigger().whileTrue(new
-    // SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getRightMotor(),-0.2));
-    // m_driverController.leftBumper().whileTrue(new
-    // SuperstructureMotorMove(superstructureSubsystem,superstructureSubsystem.getLeftMotor(),-0.2));
-    // m_driverController.rightBumper()
-    //     .whileTrue(new SuperstructureMotorMove(superstructureSubsystem, superstructureSubsystem.getRightMotor(), 0.2));
-
-    // m_driverController.y().whileTrue(new RobotAlignCommand(
-    //   swerveDriveSubsystem,
-    //   () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
-    //   RobotAlignCommand.Mode.manual
-    // ));
     m_driverController.y().whileTrue(new RobotAlignV2Command(swerveDriveSubsystem));
     m_driverController.x().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, false));
     m_driverController.b().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, false));
@@ -185,7 +163,6 @@ public class RobotContainer {
     m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
 
     m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
-
 
     m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S1));
     m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2));
