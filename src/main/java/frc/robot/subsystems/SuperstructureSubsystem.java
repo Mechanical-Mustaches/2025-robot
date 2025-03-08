@@ -8,7 +8,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -17,6 +17,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
     private SparkMax rightPivot = new SparkMax(21,MotorType.kBrushless);
     private Stage currentStage = Stage.Closed;
     private boolean trapdoorReleased = false;
+    private boolean isTeleOp = false;
 
     SparkMaxConfig trapdoorConfig = new SparkMaxConfig();
 
@@ -122,6 +123,7 @@ public class SuperstructureSubsystem extends SubsystemBase{
 
     
     public void moveMotor(SparkMax motor,double power){
+
         // trapdoorReleased = true;
         // trapdoorConfig
         // .idleMode(IdleMode.kBrake)
@@ -183,15 +185,22 @@ public class SuperstructureSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         
+        if (DriverStation.isAutonomous() || (DriverStation.getMatchTime()>40)){
+            keepClosed();
+        } else if (!isTeleOp) {
+            isTeleOp = true;
+            keepClosedStop();
+        }
         SmartDashboard.putNumber("SuperstructureLeftEncoderValue", getLeftEncoderValue());
         SmartDashboard.putNumber("SuperstructureRightEncoderValue", getRightEncoderValue());
         SmartDashboard.putString("SuperstructureStage", Stage.fromValues(getLeftEncoderValue(), getRightEncoderValue()).toString());
 
         // if(!trapdoorReleased){
-        //     leftPivot.set(-0.1);
-        //     rightPivot.set(0.1);
+        //     
         // }
 
+        SmartDashboard.putNumber("timer", DriverStation.getMatchTime()); 
+        SmartDashboard.putBoolean("can doors open", DriverStation.isTeleop() && DriverStation.getMatchTime() < 130);
         
     }
 

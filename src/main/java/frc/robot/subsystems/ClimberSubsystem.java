@@ -18,8 +18,8 @@ public class ClimberSubsystem extends SubsystemBase {
     
     public enum Stage{
         S1(1650),
-        S2(4000);
-
+        S2(3950 );
+        //previously 4000
         public final double encoderValue;
 
         private Stage(double stage){
@@ -49,14 +49,6 @@ public class ClimberSubsystem extends SubsystemBase {
         return climber.getEncoder().getPosition();
     }
 
-    public void climber1(){
-        climber.getClosedLoopController().setReference(780, ControlType.kPosition);
-        //previously 780
-    }
-
-    public void climber2(){
-        climber.getClosedLoopController().setReference(2500, ControlType.kPosition);  
-    }
     public void climber0(){
         climber.getClosedLoopController().setReference(0, ControlType.kPosition);
     }

@@ -18,6 +18,11 @@ public class DumbAlgaePivot extends Command{
     }
 
     @Override
+    public void execute() {
+        algaeHandlerSubsystem.dumbPivot(motorSpeed);
+    }
+
+    @Override
     public void end(boolean interupt){
         algaeHandlerSubsystem.stopPivot();
     }
