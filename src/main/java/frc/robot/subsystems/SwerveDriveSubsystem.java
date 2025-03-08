@@ -59,6 +59,36 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private double distanceFromReef6;
 
     public double closestReef;
+
+    public enum ReefPosition {
+        Red1(0,0,"Red 1"),
+        Red2(0,0,"Red 2"),
+        Red3(0,0,"Red 3"),
+        Red4(0,0,"Red 4"),
+        Red5(0,0,"Red 5"),
+        Red6(0,0,"Red 6"),
+        Blue1(0,0,"Blue 1"),
+        Blue2(0,0,"Blue 2"),
+        Blue3(0,0,"Blue 3"),
+        Blue4(0,0,"Blue 4"),
+        Blue5(0,0,"Blue 5"),
+        Blue6(0,0,"Blue 6");
+
+        public final double x;
+        public final double y;
+        private final String label;
+
+        private ReefPosition(double x, double y, String label) {
+            this.x = x;
+            this.y = y;
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return this.label;
+        }
+    }
     
     
 
@@ -155,35 +185,23 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         });
     }
 
-    public int getClosestReef(){
-        int closestReef = 0;
+    public ReefPosition getClosestReefPosition(){
+        // int closestReef = 0;
        
-        double closestDistance = 90000;
-        double[] distances = {distanceFromReef1,distanceFromReef2,distanceFromReef3,distanceFromReef4,distanceFromReef5,distanceFromReef6};
-        // for(double distance: distances){
-        //     if(distance<closestDistance){
-        //         closestDistance=distance;
-
-        //     }
-        // }
+        // double closestDistance = 90000;
+        // double[] distances = {distanceFromReef1,distanceFromReef2,distanceFromReef3,distanceFromReef4,distanceFromReef5,distanceFromReef6};
+        
 
         // for(int i=0;i<6;i++){
-        //     if(closestDistance == distances[i]){
+        //     if(closestDistance > distances[i]){
+        //         closestDistance = distances[i];
         //         closestReef = i + 1;
                 
         //     }
             
         // }
-
-        for(int i=0;i<6;i++){
-            if(closestDistance > distances[i]){
-                closestDistance = distances[i];
-                closestReef = i + 1;
-                
-            }
-            
-        }
-        return closestReef;
+        // return closestReef;
+        return ReefPosition.Blue1;
         
     }
 
@@ -233,7 +251,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
        SmartDashboard.putNumber("Reef4", distanceFromReef4);
        SmartDashboard.putNumber("Reef5", distanceFromReef5);
        SmartDashboard.putNumber("Reef6", distanceFromReef6);
-       SmartDashboard.putNumber("ClosestReef", getClosestReef());
+       SmartDashboard.putString("ClosestReef", getClosestReefPosition().toString());
 
 
 
