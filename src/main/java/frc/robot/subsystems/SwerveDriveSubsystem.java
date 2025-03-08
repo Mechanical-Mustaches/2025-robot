@@ -65,18 +65,18 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * reef position.
      */
     public enum ReefPosition {
-        Red1(0,0,0,"Red 1"),
-        Red2(0,0,0,"Red 2"),
-        Red3(0,0,0,"Red 3"),
-        Red4(0,0,0,"Red 4"),
-        Red5(0,0,0,"Red 5"),
-        Red6(0,0,0,"Red 6"),
-        Blue1(0,0,0,"Blue 1"),
-        Blue2(0,0,0,"Blue 2"),
-        Blue3(0,0,0,"Blue 3"),
-        Blue4(0,0,0,"Blue 4"),
-        Blue5(0,0,0,"Blue 5"),
-        Blue6(0,0,0,"Blue 6");
+        Red1(14.373249,4.025900,0,"Red 1"),
+        Red2(13.716061,2.887662,0,"Red 2"),
+        Red3(12.401724,2.887685,0,"Red 3"),
+        Red4(11.744576,4.025946,0,"Red 4"),
+        Red5(12.401764,5.164184,0,"Red 5"),
+        Red6(13.716101,5.164161,0,"Red 6"),
+        Blue1(3.175000,4.025900,0,"Blue 1"),
+        Blue2(3.832148,5.164161,0,"Blue 2"),
+        Blue3(5.146485,5.164184,0,"Blue 3"),
+        Blue4(5.803674,4.025946,0,"Blue 4"),
+        Blue5(5.146525,2.887685,0,"Blue 5"),
+        Blue6(3.832188,2.887662,0,"Blue 6");
 
         /**
          * Represents the desired position of the robot in 2D space.
