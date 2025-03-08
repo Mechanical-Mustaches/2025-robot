@@ -81,8 +81,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     //CameraServer.startAutomaticCapture();
-    
-    m_robotContainer.setupTelemetry();
   }
 
   /** This function is called periodically during operator control. */

@@ -14,7 +14,6 @@ import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ElevatorCommand;
-import frc.robot.commands.ElevatorTelemetry;
 import frc.robot.commands.KeepClosedCommand;
 import frc.robot.commands.OpenDoorCommand;
 import frc.robot.commands.RobotAlignCommand;
@@ -123,13 +122,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
   }
-
-  public void setupTelemetry() {
-    ElevatorTelemetry elevatorTelemetry = new ElevatorTelemetry(elevatorSubsystem);
-
-    elevatorTelemetry.schedule();
-  }
-
+  
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the

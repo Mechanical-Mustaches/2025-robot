@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -20,7 +21,6 @@ public class ElevatorSubsystem extends SubsystemBase{
         L2(6),
         L3(20),
         L4(46),
-        //previously 46
         LIntake(1);
 
         public final double encoderValue;
@@ -49,19 +49,9 @@ public class ElevatorSubsystem extends SubsystemBase{
 
         pidConfig
             .pid(0.05,0.00001,0.00006,ClosedLoopSlot.kSlot0)
-            //.maxOutput(.6,ClosedLoopSlot.kSlot0)
-            //.minOutput(0,ClosedLoopSlot.kSlot0)
-            
             .pid(0.05,0.00001,0.00006,ClosedLoopSlot.kSlot1)
-           // .maxOutput(0,ClosedLoopSlot.kSlot1)
-            //.minOutput(-0.6,ClosedLoopSlot.kSlot1)
-
-            //.pid(0.01,0.0000001,0.00006,ClosedLoopSlot.kSlot2)
             .pid(0.0,0.000000,0.0000,ClosedLoopSlot.kSlot2)
-
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-
-       
 
         leftConfig
             .smartCurrentLimit(50)
@@ -81,29 +71,12 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public void setPosition(Level targetLevel, EndEffectorSubsystem endEffector){
         this.endEffector = endEffector;
-        // if (getEncoderValue() < 2.5){
-        //     if (endEffector.isCoralSeenFront()){
-        //         if(getEncoderValue() > targetLevel.encoderValue){
-        //             leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
-        //         } else {
-        //             leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
-        //         }
-        // }
-        
-        // }else{
-        //     if(getEncoderValue() > targetLevel.encoderValue){
-        //         leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
-        //     } else {
-        //         leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
-        //     }
-        // }
-        
 
         if(getEncoderValue() > targetLevel.encoderValue){
-                     leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
-                 } else {
-                     leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
-                 }
+           leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot1);
+         } else {
+           leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,ClosedLoopSlot.kSlot0);
+         }
     }
 
     public void adjust(boolean up){
@@ -121,13 +94,17 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     public void stopElevator(){
         leftEleMotor.set(0);
-    } public void clearPosition(){
-        //TODO: clear set position on enabling
     }
+
     public void algaeDescent(){
         leftEleMotor.getClosedLoopController().setReference(Level.L1.encoderValue, 
         ControlType.kPosition,ClosedLoopSlot.kSlot2);
                  
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("ElevatorEncoderValue", getEncoderValue());
     }
 
 }
