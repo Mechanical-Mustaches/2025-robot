@@ -46,6 +46,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private double rotation;
     public double closestReef;
 
+    /**
+     * Represents the desired position and rotation of the robot for a given
+     * reef position.
+     */
     public enum ReefPosition {
         Red1(14.326,4.6,180,"Red 1"),
         Red2(13.73,5.55,240,"Red 2"),
@@ -60,8 +64,16 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         Blue5(0,0,0,"Blue 5"),
         Blue6(0,0,0,"Blue 6");
 
+        /**
+         * Represents the desired position of the robot in 2D space.
+         */
         public final Translation2d translation;
+
+        /**
+         * Represents the desired rotation of the robot at a reef position.
+         */
         public final Rotation2d rotation;
+
         private final String label;
 
         private ReefPosition(double x, double y, double angle, String label) {
@@ -171,10 +183,15 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         });
     }
 
+    /**
+     * Calculates the closest ReefPosition to the current pose.
+     * 
+     * @return The closest ReefPosition
+     */
     public ReefPosition getClosestReefPosition(){
         ReefPosition closestPosition = null;
 
-        for (ReefPosition position:ReefPosition.values()) {
+        for (ReefPosition position: ReefPosition.values()) {
             if (closestPosition == null) {
                 closestPosition = position;
             } else {
