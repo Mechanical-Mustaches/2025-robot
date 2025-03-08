@@ -11,6 +11,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -35,7 +36,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     // maximumSpeed in meters per second.
     public double maximumSpeed = 5.3;
     private final Field2d m_field = new Field2d();
-    
+
     private double xPose;
     private double yPose;
     public double closestReef;
@@ -60,15 +61,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             new ReefPosition(new Translation2d(3.832188,2.887662), Rotation2d.fromDegrees(0), "Blue 6"),
         };
     }
-    
-    
 
     public SwerveDriveSubsystem() {
-       
-        
-       SmartDashboard.putData("Field", m_field);
+
+        SmartDashboard.putData("Field", m_field);
         leftDistanceSensor.setRangeOfInterest(0, 6, 15, 10);
-       rightDistanceSensor.setRangeOfInterest(0, 6, 15, 10);
+        rightDistanceSensor.setRangeOfInterest(0, 6, 15, 10);
         try {
             File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
@@ -126,8 +124,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public void resetPose(Pose2d initialPose) {
         swerveDrive.resetOdometry(initialPose);
-    } 
-
+    }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return swerveDrive.getRobotVelocity();
@@ -136,13 +133,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
         swerveDrive.drive(chassisSpeeds);
     }
- 
-    public void resetGyro(){
+
+    public void resetGyro() {
         swerveDrive.zeroGyro();
     }
 
-
-    public double getMaximumChassisVelocity() { return this.swerveDrive.getMaximumChassisVelocity(); }
+    public double getMaximumChassisVelocity() {
+        return this.swerveDrive.getMaximumChassisVelocity();
+    }
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
             DoubleSupplier angularRotationX) {
@@ -161,7 +159,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * 
      * @return The closest ReefPosition
      */
-    public ReefPosition getClosestReefPosition(){
+    public ReefPosition getClosestReefPosition() {
         ReefPosition closestPosition = null;
 
         for (ReefPosition position: ReefPosition.positions) {
@@ -170,56 +168,57 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             } else {
                 double closestDistance = getPose().getTranslation().getDistance(closestPosition.translation);
                 double measuredDistance = getPose().getTranslation().getDistance(position.translation);
-                
+
                 if (closestDistance > measuredDistance) {
                     closestPosition = position;
                 }
-            }   
+            }
         }
 
         return closestPosition;
     }
 
     @Override
-    public void periodic(){
-        LimelightHelpers.PoseEstimate limelightPoseRight = null;
-        // LimelightHelpers.PoseEstimate limelightPoseLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+    public void periodic() {
+        LimelightHelpers.SetRobotOrientation("limelight-right", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation("limelight-left", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        xPose = swerveDrive.getPose().getX();
+        yPose = swerveDrive.getPose().getY();
 
-         xPose = swerveDrive.getPose().getX();
-         yPose = swerveDrive.getPose().getY();
+        LimelightHelpers.PoseEstimate limelightPoseRight = LimelightHelpers
+                .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+        LimelightHelpers.PoseEstimate limelightPoseLeft = LimelightHelpers
+                .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
-        Optional<Alliance> ally = DriverStation.getAlliance();
-        if (ally.isPresent()){
-            if (ally.get() == Alliance.Red && !DriverStation.isAutonomous()){
-                limelightPoseRight = LimelightHelpers.getBotPoseEstimate_wpiRed("limelight-right");
-            }
-            if (ally.get() == Alliance.Blue || DriverStation.isAutonomous()){
-                limelightPoseRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
-            }
-        }
-        
-        if (limelightPoseRight != null){
-            if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
+        if (limelightPoseRight != null) {
+            if (limelightPoseRight.avgTagDist <= 5) {
                 swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
             }
         }
+        if (limelightPoseLeft != null) {
+            if (limelightPoseLeft.avgTagDist <= 5) {
+                swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
+            }
+        }
 
-        
+        Pose3d leftTargetPose = LimelightHelpers.getTargetPose3d_RobotSpace("limelight-left");
+
+        SmartDashboard.putNumber("LeftXPose", leftTargetPose.getX());
+        SmartDashboard.putNumber("LeftYPose", leftTargetPose.getY());
 
         SmartDashboard.putNumber("XPose", xPose);
         SmartDashboard.putNumber("YPose", yPose);
 
-       SmartDashboard.putString("ClosestReef", getClosestReefPosition().toString());
-
+        SmartDashboard.putString("ClosestReef", getClosestReefPosition().toString());
 
         SmartDashboard.putNumber("right april tag position", LimelightHelpers.getTX("limelight-right"));
         SmartDashboard.putNumber("left april tag position", LimelightHelpers.getTX("limelight-left"));
         SmartDashboard.putBoolean("april tag TV", LimelightHelpers.getTV("limelight-right"));
 
         // if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
-        //     swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
+        // swerveDrive.addVisionMeasurement(limelightPoseLeft.pose,
+        // limelightPoseLeft.timestampSeconds);
         // }
-     
 
         SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
         SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());
