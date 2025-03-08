@@ -4,16 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.playingwithfusion.TimeOfFlight;
-import com.playingwithfusion.TimeOfFlight.RangingMode;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,7 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import swervelib.SwerveDrive;
-
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -43,49 +38,27 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     
     private double xPose;
     private double yPose;
-    private double rotation;
     public double closestReef;
 
     /**
      * Represents the desired position and rotation of the robot for a given
      * reef position.
      */
-    public enum ReefPosition {
-        Red1(14.373249,4.025900,180,"Red 1"),
-        Red2(13.716061,2.887662,240,"Red 2"),
-        Red3(12.401724,2.887685,300,"Red 3"),
-        Red4(11.744576,4.025946,0,"Red 4"),
-        Red5(12.401764,5.164184,60,"Red 5"),
-        Red6(13.716101,5.164161,120,"Red 6"),
-        Blue1(3.175000,4.025900,0,"Blue 1"),
-        Blue2(3.832148,5.164161,0,"Blue 2"),
-        Blue3(5.146485,5.164184,0,"Blue 3"),
-        Blue4(5.803674,4.025946,0,"Blue 4"),
-        Blue5(5.146525,2.887685,0,"Blue 5"),
-        Blue6(3.832188,2.887662,0,"Blue 6");
-
-        /**
-         * Represents the desired position of the robot in 2D space.
-         */
-        public final Translation2d translation;
-
-        /**
-         * Represents the desired rotation of the robot at a reef position.
-         */
-        public final Rotation2d rotation;
-
-        private final String label;
-
-        private ReefPosition(double x, double y, double angle, String label) {
-            this.translation = new Translation2d(x,y);
-            this.rotation = Rotation2d.fromDegrees(angle);
-            this.label = label;
-        }
-
-        @Override
-        public String toString() {
-            return this.label;
-        }
+    public record ReefPosition(Translation2d translation, Rotation2d rotation, String label) {
+        static final ReefPosition[] positions = {
+            new ReefPosition(new Translation2d(14.373249,4.025900), Rotation2d.fromDegrees(180), "Red 1"),
+            new ReefPosition(new Translation2d(13.716061,2.887662), Rotation2d.fromDegrees(240), "Red 2"),
+            new ReefPosition(new Translation2d(12.401724,2.887685), Rotation2d.fromDegrees(300), "Red 3"),
+            new ReefPosition(new Translation2d(11.744576,4.025946), Rotation2d.fromDegrees(0), "Red 4"),
+            new ReefPosition(new Translation2d(12.401764,5.164184), Rotation2d.fromDegrees(60), "Red 5"),
+            new ReefPosition(new Translation2d(13.716101,5.164161), Rotation2d.fromDegrees(120), "Red 6"),
+            new ReefPosition(new Translation2d(3.175000,4.025900), Rotation2d.fromDegrees(0), "Blue 1"),
+            new ReefPosition(new Translation2d(3.832148,5.164161), Rotation2d.fromDegrees(0), "Blue 2"),
+            new ReefPosition(new Translation2d(5.146485,5.164184), Rotation2d.fromDegrees(0), "Blue 3"),
+            new ReefPosition(new Translation2d(5.803674,4.025946), Rotation2d.fromDegrees(0), "Blue 4"),
+            new ReefPosition(new Translation2d(5.146525,2.887685), Rotation2d.fromDegrees(0), "Blue 5"),
+            new ReefPosition(new Translation2d(3.832188,2.887662), Rotation2d.fromDegrees(0), "Blue 6"),
+        };
     }
     
     
@@ -191,7 +164,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public ReefPosition getClosestReefPosition(){
         ReefPosition closestPosition = null;
 
-        for (ReefPosition position: ReefPosition.values()) {
+        for (ReefPosition position: ReefPosition.positions) {
             if (closestPosition == null) {
                 closestPosition = position;
             } else {

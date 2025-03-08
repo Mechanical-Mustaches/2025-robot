@@ -3,7 +3,6 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -55,8 +54,8 @@ public class RobotAlignV2Command extends Command{
     public void execute(){
         double rotation;
         SwerveDriveSubsystem.ReefPosition closestReef = swerve.getClosestReefPosition();
-        double desiredPositiveAngle = closestReef.rotation.getDegrees();
-        double desiredNegativeAngle = closestReef.rotation.getDegrees() - 360;
+        double desiredPositiveAngle = closestReef.rotation().getDegrees();
+        double desiredNegativeAngle = closestReef.rotation().getDegrees() - 360;
         double currentAngle = swerve.getPose().getRotation().getDegrees();
         if (Math.abs(desiredPositiveAngle - currentAngle) > Math.abs(desiredNegativeAngle - currentAngle)){
             rotation = pidRotation.calculate(currentAngle, desiredNegativeAngle);
