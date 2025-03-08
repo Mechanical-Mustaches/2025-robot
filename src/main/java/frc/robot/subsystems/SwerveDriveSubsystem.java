@@ -59,6 +59,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 new ReefPosition(new Translation2d(5.146525, 2.887685), Rotation2d.fromDegrees(0), "Blue 5"),
                 new ReefPosition(new Translation2d(3.832188, 2.887662), Rotation2d.fromDegrees(0), "Blue 6"),
         };
+
+        @Override
+        public final String toString() {
+            return this.label;
+        }
     }
 
     public SwerveDriveSubsystem() {
