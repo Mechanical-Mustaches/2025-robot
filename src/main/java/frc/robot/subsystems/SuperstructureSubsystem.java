@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -43,18 +42,6 @@ public class SuperstructureSubsystem extends SubsystemBase{
             leftPivot.configure(leftConfig,null,null);
             rightPivot.configure(leftConfig,null,null);
         
-    }
-
-    
-    public void moveMotor(SparkMax motor,double power){
-
-        // trapdoorReleased = true;
-        // trapdoorConfig
-        // .idleMode(IdleMode.kBrake)
-        // .smartCurrentLimit(50);
-        // leftPivot.configure(trapdoorConfig,null,null);
-        // rightPivot.configure(trapdoorConfig,null,null);
-        motor.set(power);
     }
 
     public void stop(SparkMax motor){
