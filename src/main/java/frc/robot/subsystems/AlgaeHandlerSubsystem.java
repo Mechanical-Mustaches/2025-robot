@@ -86,10 +86,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         intakingAlgae = true;
     }
 
-   /*  public void reverseIntake(){
-        intakeActivator.set(1);
-    }
-        */
     public void stopIntake(){
         intakeActivator.set(0);
         intakingAlgae = false;
@@ -131,6 +127,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("algaeDetectionValue", isAlgaeDetected());
         SmartDashboard.putNumber("pivotEncoderValue", pivot.getEncoder().getPosition());
         SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
+        
     }
    
     
