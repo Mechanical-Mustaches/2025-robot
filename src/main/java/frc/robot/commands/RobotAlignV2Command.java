@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
@@ -19,6 +20,7 @@ public class RobotAlignV2Command extends Command{
 
     SwerveDriveSubsystem swerve;
     private boolean autoFinish;
+    
 
     private PIDController pidController = new PIDController(0.015, 0.0005, 0);
     private PIDController wallPidController = new PIDController(0.005, 0, 0);
@@ -59,86 +61,35 @@ public class RobotAlignV2Command extends Command{
         wallPidController.reset();
 
     }
-    private double getDistanceDifference(){
-        return swerve.leftDistanceSensor.getRange() - swerve.rightDistanceSensor.getRange() - 15;
-    }
-    private double getDistanceToWall(){
-        return (swerve.leftDistanceSensor.getRange() + swerve.rightDistanceSensor.getRange())/2;
-    }
    
     @Override
     public void execute(){
-        double distanceDifference = getDistanceDifference();
-        // double rotation =
-        double rotation = 0;
-        double vx = 0;
-        double distanceToWall = getDistanceToWall();
-        boolean distanceValidity =
-            swerve.leftDistanceSensor.getRange() > 130
-            && swerve.rightDistanceSensor.getRange() > 130
-            && swerve.leftDistanceSensor.isRangeValid()
-            && swerve.rightDistanceSensor.isRangeValid();
-        if (Math.abs(distanceDifference) > rotationTolerance && distanceValidity){
-            rotation = pidController.calculate(distanceDifference, 0);
-        }
-        if (Math.abs(wallDistanceSetpoint - distanceToWall) > distanceTolerance && distanceValidity){
-            vx = -wallPidController.calculate(distanceToWall, wallDistanceSetpoint);
-            //previously 310
-        }
-       
-         double vy = 0;
-        if (mode == Mode.manual){
-            vy = (horizontalInput.getAsDouble() * swerve.getMaximumChassisVelocity())/2;
-        } else if(mode == Mode.left){
-            if (LimelightHelpers.getTV("limelight-right")){
-                double tagPosition = LimelightHelpers.getTX("limelight-right");
-                if (tagPosition > 0){
-                    vy = defaultVelocity;
-                }
-                else if (Math.abs(tagPosition - leftModeTagSetpoint) > tagTolerance){
-                    vy = tagPidController.calculate(tagPosition, leftModeTagSetpoint);
-                }
-            } else{
-                vy = defaultVelocity;
-            }
-        } else if(mode == Mode.right){
-            if (LimelightHelpers.getTV("limelight-left")){
-                double tagPosition = LimelightHelpers.getTX("limelight-left");
-                if (tagPosition < 0){
-                    vy = -defaultVelocity;
-                }
-                else if (Math.abs(tagPosition - rightModeTagSetpoint) > tagTolerance){
-                    vy = tagPidController.calculate(tagPosition, rightModeTagSetpoint);
-                }
-            } else{
-                vy = -defaultVelocity;
-            }
-        }
+        SwerveDriveSubsystem.ReefPosition closestReef = swerve.getClosestReefPosition();
+        Rotation2d desiredRotation = closestReef.rotation;
+        Rotation2d currentRotation = swerve.getPose().getRotation();
+        double rotation = pidController.calculate(currentRotation.getDegrees(), desiredRotation.getDegrees());
 
-   
-          swerve.driveRobotRelative(new ChassisSpeeds(0, 0, rotation));
-
-
+        swerve.driveRobotRelative(new ChassisSpeeds(0, 0, rotation));
     }
 
-   @Override
-   public boolean isFinished(){
-       if (!autoFinish){
-        return false;
-       }
-       boolean isRotated = (Math.abs(getDistanceDifference()) < rotationTolerance);
-       boolean isVerticallyAligned = Math.abs(wallDistanceSetpoint - getDistanceToWall()) < distanceTolerance;
-       boolean isHorizontallyAlignedLeft = this.mode == Mode.left && 
-       LimelightHelpers.getTV("limelight-right") &&
-       Math.abs(LimelightHelpers.getTX("limelight-right") - leftModeTagSetpoint) < tagTolerance;
+//    @Override
+//    public boolean isFinished(){
+//        if (!autoFinish){
+//         return false;
+//        }
+//        boolean isRotated = (Math.abs(getDistanceDifference()) < rotationTolerance);
+//        boolean isVerticallyAligned = Math.abs(wallDistanceSetpoint - getDistanceToWall()) < distanceTolerance;
+//        boolean isHorizontallyAlignedLeft = this.mode == Mode.left && 
+//        LimelightHelpers.getTV("limelight-right") &&
+//        Math.abs(LimelightHelpers.getTX("limelight-right") - leftModeTagSetpoint) < tagTolerance;
        
-       boolean isHorizontallyAlignedRight = this.mode == Mode.right && 
-       LimelightHelpers.getTV("limelight-left") &&
-       Math.abs(LimelightHelpers.getTX("limelight-left") - rightModeTagSetpoint) < tagTolerance;
+//        boolean isHorizontallyAlignedRight = this.mode == Mode.right && 
+//        LimelightHelpers.getTV("limelight-left") &&
+//        Math.abs(LimelightHelpers.getTX("limelight-left") - rightModeTagSetpoint) < tagTolerance;
 
-       return isRotated && isVerticallyAligned && (isHorizontallyAlignedLeft || isHorizontallyAlignedRight);
+//        return isRotated && isVerticallyAligned && (isHorizontallyAlignedLeft || isHorizontallyAlignedRight);
 
-   }
+//    }
     
 
  
