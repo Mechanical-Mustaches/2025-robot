@@ -35,7 +35,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     // maximumSpeed in meters per second.
     public double maximumSpeed = 5.3;
     private final Field2d m_field = new Field2d();
-    
+
     private double xPose;
     private double yPose;
     public double closestReef;
@@ -46,29 +46,25 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public record ReefPosition(Translation2d translation, Rotation2d rotation, String label) {
         static final ReefPosition[] positions = {
-            new ReefPosition(new Translation2d(14.373249,4.025900), Rotation2d.fromDegrees(180), "Red 1"),
-            new ReefPosition(new Translation2d(13.716061,2.887662), Rotation2d.fromDegrees(240), "Red 2"),
-            new ReefPosition(new Translation2d(12.401724,2.887685), Rotation2d.fromDegrees(300), "Red 3"),
-            new ReefPosition(new Translation2d(11.744576,4.025946), Rotation2d.fromDegrees(0), "Red 4"),
-            new ReefPosition(new Translation2d(12.401764,5.164184), Rotation2d.fromDegrees(60), "Red 5"),
-            new ReefPosition(new Translation2d(13.716101,5.164161), Rotation2d.fromDegrees(120), "Red 6"),
-            new ReefPosition(new Translation2d(3.175000,4.025900), Rotation2d.fromDegrees(0), "Blue 1"),
-            new ReefPosition(new Translation2d(3.832148,5.164161), Rotation2d.fromDegrees(0), "Blue 2"),
-            new ReefPosition(new Translation2d(5.146485,5.164184), Rotation2d.fromDegrees(0), "Blue 3"),
-            new ReefPosition(new Translation2d(5.803674,4.025946), Rotation2d.fromDegrees(0), "Blue 4"),
-            new ReefPosition(new Translation2d(5.146525,2.887685), Rotation2d.fromDegrees(0), "Blue 5"),
-            new ReefPosition(new Translation2d(3.832188,2.887662), Rotation2d.fromDegrees(0), "Blue 6"),
+                new ReefPosition(new Translation2d(14.373249, 4.025900), Rotation2d.fromDegrees(180), "Red 1"),
+                new ReefPosition(new Translation2d(13.716061, 2.887662), Rotation2d.fromDegrees(240), "Red 2"),
+                new ReefPosition(new Translation2d(12.401724, 2.887685), Rotation2d.fromDegrees(300), "Red 3"),
+                new ReefPosition(new Translation2d(11.744576, 4.025946), Rotation2d.fromDegrees(0), "Red 4"),
+                new ReefPosition(new Translation2d(12.401764, 5.164184), Rotation2d.fromDegrees(60), "Red 5"),
+                new ReefPosition(new Translation2d(13.716101, 5.164161), Rotation2d.fromDegrees(120), "Red 6"),
+                new ReefPosition(new Translation2d(3.175000, 4.025900), Rotation2d.fromDegrees(0), "Blue 1"),
+                new ReefPosition(new Translation2d(3.832148, 5.164161), Rotation2d.fromDegrees(0), "Blue 2"),
+                new ReefPosition(new Translation2d(5.146485, 5.164184), Rotation2d.fromDegrees(0), "Blue 3"),
+                new ReefPosition(new Translation2d(5.803674, 4.025946), Rotation2d.fromDegrees(0), "Blue 4"),
+                new ReefPosition(new Translation2d(5.146525, 2.887685), Rotation2d.fromDegrees(0), "Blue 5"),
+                new ReefPosition(new Translation2d(3.832188, 2.887662), Rotation2d.fromDegrees(0), "Blue 6"),
         };
     }
-    
-    
 
     public SwerveDriveSubsystem() {
-       
-        
-       SmartDashboard.putData("Field", m_field);
+        SmartDashboard.putData("Field", m_field);
         leftDistanceSensor.setRangeOfInterest(0, 6, 15, 10);
-       rightDistanceSensor.setRangeOfInterest(0, 6, 15, 10);
+        rightDistanceSensor.setRangeOfInterest(0, 6, 15, 10);
         try {
             File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
@@ -126,8 +122,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public void resetPose(Pose2d initialPose) {
         swerveDrive.resetOdometry(initialPose);
-    } 
-
+    }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return swerveDrive.getRobotVelocity();
@@ -136,23 +131,43 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
         swerveDrive.drive(chassisSpeeds);
     }
- 
-    public void resetGyro(){
+
+    public void resetGyro() {
         swerveDrive.zeroGyro();
     }
 
+    public double getMaximumChassisVelocity() {
+        return this.swerveDrive.getMaximumChassisVelocity();
+    }
 
-    public double getMaximumChassisVelocity() { return this.swerveDrive.getMaximumChassisVelocity(); }
+    /**
+     * Returns the inversion multiplier for the robot controls based on the
+     * current alliance.
+     * 
+     * @return 1 for the Blue alliance, or -1 for the Red alliance
+     */
+    private int getInversion() {
+        var alliance = DriverStation.getAlliance();
 
-    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
+        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+            return -1;
+        }
+
+        return 1;
+    }
+
+    public Command driveCommand(
+            DoubleSupplier translationX,
+            DoubleSupplier translationY,
             DoubleSupplier angularRotationX) {
         return run(() -> {
-            // Make the robot move
-            swerveDrive.drive(new Translation2d(translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
-                    translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
-                    angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity(),
-                    true,
-                    false);
+            var maximumVelocity = swerveDrive.getMaximumChassisVelocity() * getInversion();
+            var x = translationX.getAsDouble() * maximumVelocity;
+            var y = translationY.getAsDouble() * maximumVelocity;
+            var translation = new Translation2d(x, y);
+            var rotation = angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity();
+
+            swerveDrive.drive(translation, rotation, true, false);
         });
     }
 
@@ -161,65 +176,63 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * 
      * @return The closest ReefPosition
      */
-    public ReefPosition getClosestReefPosition(){
+    public ReefPosition getClosestReefPosition() {
         ReefPosition closestPosition = null;
 
-        for (ReefPosition position: ReefPosition.positions) {
+        for (ReefPosition position : ReefPosition.positions) {
             if (closestPosition == null) {
                 closestPosition = position;
             } else {
                 double closestDistance = getPose().getTranslation().getDistance(closestPosition.translation);
                 double measuredDistance = getPose().getTranslation().getDistance(position.translation);
-                
+
                 if (closestDistance > measuredDistance) {
                     closestPosition = position;
                 }
-            }   
+            }
         }
 
         return closestPosition;
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         LimelightHelpers.PoseEstimate limelightPoseRight = null;
-        // LimelightHelpers.PoseEstimate limelightPoseLeft = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+        // LimelightHelpers.PoseEstimate limelightPoseLeft =
+        // LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
 
-         xPose = swerveDrive.getPose().getX();
-         yPose = swerveDrive.getPose().getY();
+        xPose = swerveDrive.getPose().getX();
+        yPose = swerveDrive.getPose().getY();
 
         Optional<Alliance> ally = DriverStation.getAlliance();
-        if (ally.isPresent()){
-            if (ally.get() == Alliance.Red && !DriverStation.isAutonomous()){
+        if (ally.isPresent()) {
+            if (ally.get() == Alliance.Red && !DriverStation.isAutonomous()) {
                 limelightPoseRight = LimelightHelpers.getBotPoseEstimate_wpiRed("limelight-right");
             }
-            if (ally.get() == Alliance.Blue || DriverStation.isAutonomous()){
+            if (ally.get() == Alliance.Blue || DriverStation.isAutonomous()) {
                 limelightPoseRight = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
             }
         }
-        
-        if (limelightPoseRight != null){
-            if(limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5){
+
+        if (limelightPoseRight != null) {
+            if (limelightPoseRight.tagCount >= 2 && limelightPoseRight.avgTagDist <= 5) {
                 swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
             }
         }
 
-        
-
         SmartDashboard.putNumber("XPose", xPose);
         SmartDashboard.putNumber("YPose", yPose);
 
-       SmartDashboard.putString("ClosestReef", getClosestReefPosition().toString());
-
+        SmartDashboard.putString("ClosestReef", getClosestReefPosition().toString());
 
         SmartDashboard.putNumber("right april tag position", LimelightHelpers.getTX("limelight-right"));
         SmartDashboard.putNumber("left april tag position", LimelightHelpers.getTX("limelight-left"));
         SmartDashboard.putBoolean("april tag TV", LimelightHelpers.getTV("limelight-right"));
 
         // if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
-        //     swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
+        // swerveDrive.addVisionMeasurement(limelightPoseLeft.pose,
+        // limelightPoseLeft.timestampSeconds);
         // }
-     
 
         SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
         SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());

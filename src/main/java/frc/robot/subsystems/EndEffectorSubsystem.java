@@ -63,10 +63,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         SmartDashboard.putBoolean("coral detection front", frontLineBreakSensor.isPressed());
         SmartDashboard.putBoolean("coral detection back", backLineBreakSensor.isPressed());
     }
+
     public boolean isCoralSeenFront(){
         return frontLineBreakSensor.isPressed();
     }
