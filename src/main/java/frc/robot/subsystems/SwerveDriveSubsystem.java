@@ -61,26 +61,26 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public double closestReef;
 
     public enum ReefPosition {
-        Red1(0,0,"Red 1"),
-        Red2(0,0,"Red 2"),
-        Red3(0,0,"Red 3"),
-        Red4(0,0,"Red 4"),
-        Red5(0,0,"Red 5"),
-        Red6(0,0,"Red 6"),
-        Blue1(0,0,"Blue 1"),
-        Blue2(0,0,"Blue 2"),
-        Blue3(0,0,"Blue 3"),
-        Blue4(0,0,"Blue 4"),
-        Blue5(0,0,"Blue 5"),
-        Blue6(0,0,"Blue 6");
+        Red1(0,0,0,"Red 1"),
+        Red2(0,0,0,"Red 2"),
+        Red3(0,0,0,"Red 3"),
+        Red4(0,0,0,"Red 4"),
+        Red5(0,0,0,"Red 5"),
+        Red6(0,0,0,"Red 6"),
+        Blue1(0,0,0,"Blue 1"),
+        Blue2(0,0,0,"Blue 2"),
+        Blue3(0,0,0,"Blue 3"),
+        Blue4(0,0,0,"Blue 4"),
+        Blue5(0,0,0,"Blue 5"),
+        Blue6(0,0,0,"Blue 6");
 
-        public final double x;
-        public final double y;
+        public final Translation2d translation;
+        public final Rotation2d rotation;
         private final String label;
 
-        private ReefPosition(double x, double y, String label) {
-            this.x = x;
-            this.y = y;
+        private ReefPosition(double x, double y, double angle, String label) {
+            this.translation = new Translation2d(x,y);
+            this.rotation = new Rotation2d(angle);
             this.label = label;
         }
 
@@ -186,6 +186,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public ReefPosition getClosestReefPosition(){
+        ReefPosition[] positions = ReefPosition.values();
+        ReefPosition closestPosition = null;
+
+        
+
+
         // int closestReef = 0;
        
         // double closestDistance = 90000;
@@ -201,6 +207,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             
         // }
         // return closestReef;
+        
         return ReefPosition.Blue1;
         
     }
