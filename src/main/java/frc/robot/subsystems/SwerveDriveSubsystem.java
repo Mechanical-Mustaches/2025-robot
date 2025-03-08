@@ -44,29 +44,15 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private double xPose;
     private double yPose;
     private double rotation;
-
-    //right 180
-    private double distanceFromReef1;
-    //up right 240
-    private double distanceFromReef2;
-    //up left 300
-    private double distanceFromReef3;
-    //left 0
-    private double distanceFromReef4;
-    //down left 60
-    private double distanceFromReef5;
-    //down right 120
-    private double distanceFromReef6;
-
     public double closestReef;
 
     public enum ReefPosition {
-        Red1(0,0,0,"Red 1"),
-        Red2(0,0,0,"Red 2"),
-        Red3(0,0,0,"Red 3"),
-        Red4(0,0,0,"Red 4"),
-        Red5(0,0,0,"Red 5"),
-        Red6(0,0,0,"Red 6"),
+        Red1(14.326,4.6,180,"Red 1"),
+        Red2(13.73,5.55,240,"Red 2"),
+        Red3(12.55,5.37,300,"Red 3"),
+        Red4(11.837,3.98,0,"Red 4"),
+        Red5(12.5,3.33,60,"Red 5"),
+        Red6(13.7,3.35,120,"Red 6"),
         Blue1(0,0,0,"Blue 1"),
         Blue2(0,0,0,"Blue 2"),
         Blue3(0,0,0,"Blue 3"),
@@ -80,7 +66,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         private ReefPosition(double x, double y, double angle, String label) {
             this.translation = new Translation2d(x,y);
-            this.rotation = new Rotation2d(angle);
+            this.rotation = Rotation2d.fromDegrees(angle);
             this.label = label;
         }
 
@@ -212,17 +198,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
          xPose = swerveDrive.getPose().getX();
          yPose = swerveDrive.getPose().getY();
 
-
-         distanceFromReef1 = Math.sqrt(Math.pow(xPose - 14.326, 2) + Math.pow(yPose - 4.6, 2));
-         distanceFromReef2 = Math.sqrt(Math.pow(xPose - 13.73, 2) + Math.pow(yPose - 5.55, 2));
-         distanceFromReef3 = Math.sqrt(Math.pow(xPose - 12.55, 2) + Math.pow(yPose - 5.37, 2));
-         distanceFromReef4 = Math.sqrt(Math.pow(xPose - 11.837, 2) + Math.pow(yPose - 3.98, 2));
-         distanceFromReef5 = Math.sqrt(Math.pow(xPose - 12.5, 2) + Math.pow(yPose - 3.33, 2));
-         distanceFromReef6 = Math.sqrt(Math.pow(xPose - 13.7, 2) + Math.pow(yPose - 3.35, 2));
-
-         
-    
-
         Optional<Alliance> ally = DriverStation.getAlliance();
         if (ally.isPresent()){
             if (ally.get() == Alliance.Red && !DriverStation.isAutonomous()){
@@ -244,19 +219,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("XPose", xPose);
         SmartDashboard.putNumber("YPose", yPose);
 
-       SmartDashboard.putNumber("Reef1", distanceFromReef1);
-       SmartDashboard.putNumber("Reef2", distanceFromReef2);
-       SmartDashboard.putNumber("Reef3", distanceFromReef3);
-       SmartDashboard.putNumber("Reef4", distanceFromReef4);
-       SmartDashboard.putNumber("Reef5", distanceFromReef5);
-       SmartDashboard.putNumber("Reef6", distanceFromReef6);
        SmartDashboard.putString("ClosestReef", getClosestReefPosition().toString());
 
-
-
-
-
-       
 
         SmartDashboard.putNumber("right april tag position", LimelightHelpers.getTX("limelight-right"));
         SmartDashboard.putNumber("left april tag position", LimelightHelpers.getTX("limelight-left"));

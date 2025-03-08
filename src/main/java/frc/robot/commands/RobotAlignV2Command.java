@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.SwerveDriveSubsystem;
@@ -22,7 +23,7 @@ public class RobotAlignV2Command extends Command{
     private boolean autoFinish;
     
 
-    private PIDController pidController = new PIDController(0.015, 0.0005, 0);
+    private PIDController pidRotation = new PIDController(0.03, 0.0005, 0);
     private PIDController wallPidController = new PIDController(0.005, 0, 0);
     private PIDController tagPidController = new PIDController(0.05, 0, 0);
     
@@ -37,38 +38,37 @@ public class RobotAlignV2Command extends Command{
     private final double leftModeTagSetpoint = -17.1;
     private final double rightModeTagSetpoint = 18.1;
 
-    public RobotAlignV2Command(SwerveDriveSubsystem swerve, DoubleSupplier horizontalInput, Mode mode){
+    public RobotAlignV2Command(SwerveDriveSubsystem swerve){
         this.swerve = swerve;
-        this.horizontalInput = horizontalInput;
-        this.mode = mode;
         this.autoFinish = false;
         defaultVelocity = swerve.getMaximumChassisVelocity()/10;
     }
 
-    public RobotAlignV2Command(SwerveDriveSubsystem swerve, Mode mode, boolean autoFinish){
-        if (mode == Mode.manual){
-            throw new IllegalArgumentException("must supply hotizontalInput in manual mode");
-        }
-        this.swerve = swerve;
-        this.mode = mode;
-        this.autoFinish = autoFinish;
-        defaultVelocity = swerve.getMaximumChassisVelocity()/10;
-    }   
-
     @Override
     public void initialize(){
-        pidController.reset();
+        pidRotation.reset();
         wallPidController.reset();
 
     }
    
     @Override
     public void execute(){
+        double rotation;
         SwerveDriveSubsystem.ReefPosition closestReef = swerve.getClosestReefPosition();
-        Rotation2d desiredRotation = closestReef.rotation;
-        Rotation2d currentRotation = swerve.getPose().getRotation();
-        double rotation = pidController.calculate(currentRotation.getDegrees(), desiredRotation.getDegrees());
+        double desiredPositiveAngle = closestReef.rotation.getDegrees();
+        double desiredNegativeAngle = closestReef.rotation.getDegrees() - 360;
+        double currentAngle = swerve.getPose().getRotation().getDegrees();
+        if (Math.abs(desiredPositiveAngle - currentAngle) > Math.abs(desiredNegativeAngle - currentAngle)){
+            rotation = pidRotation.calculate(currentAngle, desiredNegativeAngle);
+        } else {
+            rotation = pidRotation.calculate(currentAngle, desiredPositiveAngle);
+        }
+        
 
+        
+        SmartDashboard.putNumber("rav/currentRotation", currentAngle);
+        SmartDashboard.putNumber("rav/desiredNegativeRotation",  desiredNegativeAngle);
+        SmartDashboard.putNumber("rav/desiredPositiveRotation",  desiredPositiveAngle);
         swerve.driveRobotRelative(new ChassisSpeeds(0, 0, rotation));
     }
 
