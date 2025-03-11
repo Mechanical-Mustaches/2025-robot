@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,23 +23,26 @@ public class RobotAlignV2Command extends Command{
     private boolean autoFinish;
     
 
-    private PIDController pidRotation = new PIDController(0.03, 0.0005, 0);
+    private PIDController pidRotation = new PIDController(0.1, 0.005, 0);
     private PIDController wallPidController = new PIDController(0.005, 0, 0);
-    private PIDController tagPidController = new PIDController(0.05, 0, 0);
+    private PIDController tagPidController = new PIDController(5, 0.01, 0);
     
+    private static final double reefPoleCenterOffset = 0.1558544;
+
     private DoubleSupplier horizontalInput;
     private final double rotationTolerance = 15;
     private final double distanceTolerance = 10;
     private final double tagTolerance = 0.6;
     private final double defaultVelocity;
 
-    private final double wallDistanceSetpoint = 233;
-    //previously 238
+    private final double wallDistanceSetpoint = 400;
+
     private final double leftModeTagSetpoint = -17.1;
     private final double rightModeTagSetpoint = 18.1;
 
     public RobotAlignV2Command(SwerveDriveSubsystem swerve){
         this.swerve = swerve;
+      //  this.mode = mode;
         this.autoFinish = false;
         defaultVelocity = swerve.getMaximumChassisVelocity()/10;
     }
@@ -47,12 +51,19 @@ public class RobotAlignV2Command extends Command{
     public void initialize(){
         pidRotation.reset();
         wallPidController.reset();
+        tagPidController.reset();
 
+    }
+
+    private double getDistanceToWall(){
+        return Math.min(swerve.leftDistanceSensor.getRange(), swerve.rightDistanceSensor.getRange());
     }
    
     @Override
     public void execute(){
         double rotation;
+        double vy = 0;
+        double vx= 0;
         SwerveDriveSubsystem.ReefPosition closestReef = swerve.getClosestReefPosition();
         double desiredPositiveAngle = closestReef.rotation().getDegrees();
         double desiredNegativeAngle = closestReef.rotation().getDegrees() - 360;
@@ -63,12 +74,28 @@ public class RobotAlignV2Command extends Command{
             rotation = pidRotation.calculate(currentAngle, desiredPositiveAngle);
         }
         
+        if (LimelightHelpers.getTV("limelight-right")){
+            Pose3d leftTargetPose = LimelightHelpers.getTargetPose3d_RobotSpace("limelight-right");
+            vy = tagPidController.calculate(leftTargetPose.getX(), reefPoleCenterOffset);
+            SmartDashboard.putNumber("rav/TargetX", leftTargetPose.getX());
+        }
+
+        double distanceToWall = getDistanceToWall();
+        boolean distanceValidity =
+            swerve.leftDistanceSensor.getRange() > 130
+            && swerve.rightDistanceSensor.getRange() > 130
+            && swerve.leftDistanceSensor.isRangeValid()
+            && swerve.rightDistanceSensor.isRangeValid();
+         if (Math.abs(wallDistanceSetpoint - distanceToWall) > distanceTolerance && distanceValidity){
+                vx = -wallPidController.calculate(distanceToWall, wallDistanceSetpoint);
+         }
 
         
         SmartDashboard.putNumber("rav/currentRotation", currentAngle);
         SmartDashboard.putNumber("rav/desiredNegativeRotation",  desiredNegativeAngle);
         SmartDashboard.putNumber("rav/desiredPositiveRotation",  desiredPositiveAngle);
-        swerve.driveRobotRelative(new ChassisSpeeds(0, 0, rotation));
+        SmartDashboard.putNumber("rav/velocityY", vy);
+        swerve.driveRobotRelative(new ChassisSpeeds(0, vy, rotation));
     }
 
 //    @Override

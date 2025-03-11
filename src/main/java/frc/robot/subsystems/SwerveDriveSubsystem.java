@@ -191,34 +191,29 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
         if (limelightPoseRight != null) {
-            if (limelightPoseRight.avgTagDist <= 5) {
-                swerveDrive.addVisionMeasurement(limelightPoseRight.pose, limelightPoseRight.timestampSeconds);
+            Pose2d pose = limelightPoseRight.pose;
+            if (limelightPoseRight.avgTagDist <= 5 && pose.getX() > 0 && pose.getY() > 0) {
+                swerveDrive.addVisionMeasurement(pose, limelightPoseRight.timestampSeconds);
             }
         }
         if (limelightPoseLeft != null) {
-            if (limelightPoseLeft.avgTagDist <= 5) {
-                swerveDrive.addVisionMeasurement(limelightPoseLeft.pose, limelightPoseLeft.timestampSeconds);
+            Pose2d pose = limelightPoseLeft.pose;
+            if (limelightPoseLeft.avgTagDist <= 5 && pose.getX() > 0 && pose.getY() > 0) {
+                swerveDrive.addVisionMeasurement(pose, limelightPoseLeft.timestampSeconds);
             }
         }
+        m_field.setRobotPose(getPose());
 
         Pose3d leftTargetPose = LimelightHelpers.getTargetPose3d_RobotSpace("limelight-left");
 
-        SmartDashboard.putNumber("LeftXPose", leftTargetPose.getX());
-        SmartDashboard.putNumber("LeftYPose", leftTargetPose.getY());
+        SmartDashboard.putNumber("ll-left/x", leftTargetPose.getX());
+        SmartDashboard.putNumber("ll-left/y", leftTargetPose.getY());
+        SmartDashboard.putNumber("ll-left/z", leftTargetPose.getZ());
 
         SmartDashboard.putNumber("XPose", xPose);
         SmartDashboard.putNumber("YPose", yPose);
 
         SmartDashboard.putString("ClosestReef", getClosestReefPosition().toString());
-
-        SmartDashboard.putNumber("right april tag position", LimelightHelpers.getTX("limelight-right"));
-        SmartDashboard.putNumber("left april tag position", LimelightHelpers.getTX("limelight-left"));
-        SmartDashboard.putBoolean("april tag TV", LimelightHelpers.getTV("limelight-right"));
-
-        // if(limelightPoseLeft.tagCount >= 2 && limelightPoseLeft.avgTagDist <= 5){
-        // swerveDrive.addVisionMeasurement(limelightPoseLeft.pose,
-        // limelightPoseLeft.timestampSeconds);
-        // }
 
         SmartDashboard.putNumber("leftDistanceFromReef", leftDistanceSensor.getRange());
         SmartDashboard.putNumber("rightDistanceFromReef", rightDistanceSensor.getRange());
@@ -226,7 +221,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("leftDistanceValid", leftDistanceSensor.isRangeValid());
         SmartDashboard.putBoolean("rightDistanceValid", rightDistanceSensor.isRangeValid());
 
-        m_field.setRobotPose(getPose());
 
     }
 }
