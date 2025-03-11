@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -20,12 +19,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
     public AlgaeHandlerSubsystem(){
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
-        ClosedLoopConfig pidConfig = new ClosedLoopConfig();
-
-        pidConfig
-        .pid(0.1, 0.00001, 0)
-        .maxOutput(.2)
-        .minOutput(-.2);
 
         intakeConfig
         .smartCurrentLimit(20)
@@ -42,13 +35,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase{
         return pivot.getEncoder().getPosition();
     }
 
-    public void horizontalPivot(){
-        pivot.getClosedLoopController().setReference(0, ControlType.kPosition);
-    }
-
-    public void verticalPivot(){
-        pivot.getClosedLoopController().setReference(7, ControlType.kPosition);  
-    }
 
     public void pivot(){
         if(isAlgaeDetected()>5){
