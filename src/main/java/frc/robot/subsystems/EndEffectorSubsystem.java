@@ -34,23 +34,23 @@ public class EndEffectorSubsystem extends SubsystemBase {
         effectorRight.configure(rightConfig, null, null);
     }
     public void effectorSpin(){
-        effectorLeft.set(-0.2);
-        effectorRight.set(0.2);
+        effectorLeft.set(0.2);
+        effectorRight.set(-0.2);
     }
 
     public void effectorScore(){
-        effectorLeft.set(-0.4);
-        effectorRight.set(0.4);
+        effectorLeft.set(0.4);
+        effectorRight.set(-0.4);
     }
 
     public void L1Score(){
-        effectorLeft.set(-0.2);
-        effectorRight.set(0.6);
+        effectorLeft.set(0.2);
+        effectorRight.set(-0.6);
     }
 
     public void L4Score(){
-        effectorLeft.set(-0.18);
-        effectorRight.set(0.18);
+        effectorLeft.set(0.18);
+        effectorRight.set(-0.18);
     }
 
     public void effectorInverse(){

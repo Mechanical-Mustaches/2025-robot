@@ -17,11 +17,11 @@ public class ElevatorSubsystem extends SubsystemBase{
     EndEffectorSubsystem endEffector; 
 
     public enum Level{
-        L1(0),
-        L2(6),
-        L3(20),
-        L4(46),
-        LIntake(1);
+        LIntake(0),
+        L1(11.5),
+        L2(19),
+        L3(33),
+        L4(57.5);
 
         public final double encoderValue;
 

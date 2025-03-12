@@ -37,8 +37,6 @@ public class RobotAlignV2Command extends Command{
 
     private final double wallDistanceSetpoint = 400;
 
-    private final double leftModeTagSetpoint = -17.1;
-    private final double rightModeTagSetpoint = 18.1;
 
     public RobotAlignV2Command(SwerveDriveSubsystem swerve){
         this.swerve = swerve;
