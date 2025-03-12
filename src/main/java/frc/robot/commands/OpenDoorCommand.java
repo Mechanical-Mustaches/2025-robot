@@ -12,20 +12,21 @@ public class OpenDoorCommand extends Command {
 
     public OpenDoorCommand(SuperstructureSubsystem superstructureSubsystem) {
         this.commandGroup = new SequentialCommandGroup(
-            new InstantCommand(() -> superstructureSubsystem.getLeftMotor().set(-0.2)),
-            new InstantCommand(() -> superstructureSubsystem.getRightMotor().set(-0.2)),
-            new WaitCommand(0.5),
-            new InstantCommand(() -> superstructureSubsystem.getLeftMotor().set(0.2)),
-            new WaitCommand(1.5),
-            new InstantCommand(() -> superstructureSubsystem.getLeftMotor().set(0)),
-            new InstantCommand(() -> superstructureSubsystem.getRightMotor().set(0))
-        );
+                new InstantCommand(() -> superstructureSubsystem.getLeftMotor().set(-0.2)),
+                new InstantCommand(() -> superstructureSubsystem.getRightMotor().set(-0.2)),
+                new WaitCommand(0.5),
+                new InstantCommand(() -> superstructureSubsystem.getLeftMotor().set(0.2)),
+                new WaitCommand(1.5),
+                new InstantCommand(() -> superstructureSubsystem.getLeftMotor().set(0)),
+                new InstantCommand(() -> superstructureSubsystem.getRightMotor().set(0)),
+                new InstantCommand(() -> superstructureSubsystem.open()));
     }
 
-    @Override 
+    @Override
     public void initialize() {
         if (DriverStation.isTeleop() && DriverStation.getMatchTime() < 35) {
             this.commandGroup.schedule();
         }
     }
+
 }

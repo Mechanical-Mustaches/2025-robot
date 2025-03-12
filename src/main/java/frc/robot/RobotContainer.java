@@ -64,8 +64,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
-    OperatorConstants.kDriverControllerPort
-  );
+      OperatorConstants.kDriverControllerPort);
 
   private final XboxController driveController_HID = m_driverController.getHID();
   private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
@@ -78,33 +77,29 @@ public class RobotContainer {
     swerveDriveSubsystem = new SwerveDriveSubsystem();
 
     NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
-    NamedCommands.registerCommand("Source",  new ParallelDeadlineGroup(
+    NamedCommands.registerCommand("Source", new ParallelDeadlineGroup(
         new CoralIntakeCommand(endEffectorSubsystem),
         new KeepClosedCommand(superstructureSubsystem)));
     NamedCommands.registerCommand("L4 left",
         new SequentialCommandGroup(new ParallelCommandGroup(
-          new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
-          new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, true)
-        ),
-        new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
+            new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
+            new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, true)),
+            new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
+            new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
 
-     NamedCommands.registerCommand("L4 right",
+    NamedCommands.registerCommand("L4 right",
         new SequentialCommandGroup(new ParallelCommandGroup(
-          new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
-          new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true)
-          ),
-        new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
+            new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
+            new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true)),
+            new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
+            new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
 
-      NamedCommands.registerCommand("L4", 
-        new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false)
-      );
-    
-        NamedCommands.registerCommand("L2",
+    NamedCommands.registerCommand("L4",
+        new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false));
+
+    NamedCommands.registerCommand("L2",
         new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L2, endEffectorSubsystem, false),
             new WaitCommand(0.2), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
-            
 
     swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
         () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
@@ -139,10 +134,9 @@ public class RobotContainer {
   private void configureBindings() {
     var scoreCommand = new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem);
     var intakeCommand = new SequentialCommandGroup(
-      new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem, false),
-      new CoralIntakeCommand(endEffectorSubsystem),
-      new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)
-    );
+        new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem, false),
+        new CoralIntakeCommand(endEffectorSubsystem),
+        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false));
 
     m_driverController.rightTrigger().whileTrue(scoreCommand);
     m_driverController.y().whileTrue(new RobotAlignV2Command(swerveDriveSubsystem));
@@ -152,11 +146,13 @@ public class RobotContainer {
     m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
     m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
     m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-    
+
     m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
     m_gunnerController.button(11).whileTrue(intakeCommand);
-    m_gunnerController.button(2).whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S1));
-    m_gunnerController.button(5).whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2));
+    m_gunnerController.button(2)
+        .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S1, superstructureSubsystem));
+    m_gunnerController.button(5)
+        .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2, superstructureSubsystem));
     m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
     m_gunnerController.button(4).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, 0.4));
     m_gunnerController.button(7).whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem));

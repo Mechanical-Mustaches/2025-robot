@@ -6,8 +6,8 @@ import frc.robot.subsystems.EndEffectorSubsystem;
 
 public class ElevatorCommand extends Command {
     private final ElevatorSubsystem elevator;
-    private ElevatorSubsystem.Level targetLevel;
-    EndEffectorSubsystem endEffector;
+    private final ElevatorSubsystem.Level targetLevel;
+    private final EndEffectorSubsystem endEffector;
 
     public ElevatorCommand(ElevatorSubsystem subsystem, ElevatorSubsystem.Level level, EndEffectorSubsystem endEffector,
             boolean isIntakingAlgae) {
