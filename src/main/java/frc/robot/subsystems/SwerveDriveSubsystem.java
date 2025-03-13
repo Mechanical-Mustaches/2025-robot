@@ -48,17 +48,17 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public record ReefPosition(Translation2d translation, Rotation2d rotation, String label) {
         static final ReefPosition[] positions = {
                 new ReefPosition(new Translation2d(14.373249, 4.025900), Rotation2d.fromDegrees(180), "Red 1"),
-                new ReefPosition(new Translation2d(13.716061, 2.887662), Rotation2d.fromDegrees(240), "Red 2"),
-                new ReefPosition(new Translation2d(12.401724, 2.887685), Rotation2d.fromDegrees(300), "Red 3"),
+                new ReefPosition(new Translation2d(13.716101, 5.164161), Rotation2d.fromDegrees(240), "Red 2"),
+                new ReefPosition(new Translation2d(12.401764, 5.164184), Rotation2d.fromDegrees(300), "Red 3"),
                 new ReefPosition(new Translation2d(11.744576, 4.025946), Rotation2d.fromDegrees(0), "Red 4"),
-                new ReefPosition(new Translation2d(12.401764, 5.164184), Rotation2d.fromDegrees(60), "Red 5"),
-                new ReefPosition(new Translation2d(13.716101, 5.164161), Rotation2d.fromDegrees(120), "Red 6"),
+                new ReefPosition(new Translation2d(12.401724, 2.887685), Rotation2d.fromDegrees(60), "Red 5"),
+                new ReefPosition(new Translation2d(13.716061, 2.887662), Rotation2d.fromDegrees(120), "Red 6"),
                 new ReefPosition(new Translation2d(3.175000, 4.025900), Rotation2d.fromDegrees(0), "Blue 1"),
-                new ReefPosition(new Translation2d(3.832148, 5.164161), Rotation2d.fromDegrees(0), "Blue 2"),
-                new ReefPosition(new Translation2d(5.146485, 5.164184), Rotation2d.fromDegrees(0), "Blue 3"),
-                new ReefPosition(new Translation2d(5.803674, 4.025946), Rotation2d.fromDegrees(0), "Blue 4"),
-                new ReefPosition(new Translation2d(5.146525, 2.887685), Rotation2d.fromDegrees(0), "Blue 5"),
-                new ReefPosition(new Translation2d(3.832188, 2.887662), Rotation2d.fromDegrees(0), "Blue 6"),
+                new ReefPosition(new Translation2d(3.832148, 5.164161), Rotation2d.fromDegrees(300), "Blue 2"),
+                new ReefPosition(new Translation2d(5.146485, 5.164184), Rotation2d.fromDegrees(240), "Blue 3"),
+                new ReefPosition(new Translation2d(5.803674, 4.025946), Rotation2d.fromDegrees(180), "Blue 4"),
+                new ReefPosition(new Translation2d(5.146525, 2.887685), Rotation2d.fromDegrees(120), "Blue 5"),
+                new ReefPosition(new Translation2d(3.832188, 2.887662), Rotation2d.fromDegrees(60), "Blue 6"),
         };
 
         @Override
@@ -136,6 +136,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
         swerveDrive.drive(chassisSpeeds);
+    }
+
+    public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
+        swerveDrive.driveFieldOriented(chassisSpeeds);
     }
 
     public void resetGyro() {
