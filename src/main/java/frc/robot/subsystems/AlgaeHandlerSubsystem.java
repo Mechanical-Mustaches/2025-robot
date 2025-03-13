@@ -9,113 +9,105 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AlgaeHandlerSubsystem extends SubsystemBase{
+public class AlgaeHandlerSubsystem extends SubsystemBase {
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
     private boolean intakingAlgae = false;
 
-    
-
-    public AlgaeHandlerSubsystem(){
+    public AlgaeHandlerSubsystem() {
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
 
         intakeConfig
-        .smartCurrentLimit(20)
-        .idleMode(IdleMode.kBrake);
+                .smartCurrentLimit(20)
+                .idleMode(IdleMode.kBrake);
 
         pivotConfig
-        .smartCurrentLimit(10)
-        .idleMode(IdleMode.kBrake);
-
+                .smartCurrentLimit(10)
+                .idleMode(IdleMode.kBrake);
 
     }
 
-    public double getEncoderValue(){
+    public double getEncoderValue() {
         return pivot.getEncoder().getPosition();
     }
 
-
-    public void pivot(){
-        if(isAlgaeDetected()>5){
+    public void pivot() {
+        if (isAlgaeDetected() > 5) {
             pivot.getClosedLoopController().setReference(0, ControlType.kPosition);
         }
     }
 
-    public void stopPivot(){
+    public void stopPivot() {
         pivot.set(0);
     }
 
-    public void pivotUp(){
-        if(getEncoderValue()>=0.45){
-           pivot.set(.2);
-           } else{
-               stopPivot();
-           }
+    public void pivotUp() {
+        if (getEncoderValue() >= 0.45) {
+            pivot.set(.2);
+        } else {
+            stopPivot();
+        }
     }
 
-    public void pivotDown(){
-        if(getEncoderValue()<=0){
-        pivot.set(-.2);
-        } else{
+    public void pivotDown() {
+        if (getEncoderValue() <= 0) {
+            pivot.set(-.2);
+        } else {
             stopPivot();
         }
 
     }
 
-    public void resetEncoder(){
+    public void resetEncoder() {
         pivot.getEncoder().setPosition(0);
     }
 
-    public void intake(){
+    public void intake() {
         intakeActivator.set(1);
         intakingAlgae = true;
     }
 
-    public void stopIntake(){
+    public void stopIntake() {
         intakeActivator.set(0);
         intakingAlgae = false;
     }
-    public double isAlgaeDetected(){
-        if (intakeActivator.getOutputCurrent() > 15){
-            return intakeActivator.getOutputCurrent() -6;
-        }else{
+
+    public double isAlgaeDetected() {
+        if (intakeActivator.getOutputCurrent() > 15) {
+            return intakeActivator.getOutputCurrent() - 6;
+        } else {
             return 0;
         }
     }
 
-    public boolean isIntakingAlgae(){
+    public boolean isIntakingAlgae() {
         return intakingAlgae;
     }
 
-
-
-
-    public void dumbPivot(double speed){
-        if(speed>0){
-            if(getEncoderValue() >= 0.45){
+    public void dumbPivot(double speed) {
+        if (speed > 0) {
+            if (getEncoderValue() >= 1) {
                 stopPivot();
-            } else{
+            } else {
                 pivot.set(speed);
             }
-        } else{
-            if(getEncoderValue() <= 0){
+        } else {
+            if (getEncoderValue() <= 0) {
                 stopPivot();
-            } else{
+            } else {
                 pivot.set(speed);
             }
         }
-        
+
     }
 
-     @Override
-    public void periodic(){
+    @Override
+    public void periodic() {
         SmartDashboard.putNumber("algaeDetectionValue", isAlgaeDetected());
         SmartDashboard.putNumber("pivotEncoderValue", pivot.getEncoder().getPosition());
         SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
-        
+
     }
-   
-    
 
 }
