@@ -52,122 +52,127 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private SwerveDriveSubsystem swerveDriveSubsystem;
-  private EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
-  private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  private AlgaeHandlerSubsystem algaeHandlerSubsystem = new AlgaeHandlerSubsystem();
-  private SuperstructureSubsystem superstructureSubsystem = new SuperstructureSubsystem();
+    // The robot's subsystems and commands are defined here...
+    private SwerveDriveSubsystem swerveDriveSubsystem;
+    private EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
+    private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+    private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+    private AlgaeHandlerSubsystem algaeHandlerSubsystem = new AlgaeHandlerSubsystem();
+    private SuperstructureSubsystem superstructureSubsystem = new SuperstructureSubsystem();
 
-  private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<Command> autoChooser;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
+    // Replace with CommandPS4Controller or CommandJoystick if needed
+    private final CommandXboxController m_driverController = new CommandXboxController(
+            OperatorConstants.kDriverControllerPort);
 
-  private final XboxController driveController_HID = m_driverController.getHID();
-  private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
+    private final XboxController driveController_HID = m_driverController.getHID();
+    private final CommandGenericHID m_gunnerController = new CommandGenericHID(OperatorConstants.kGunnerControllerPort);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
 
-    swerveDriveSubsystem = new SwerveDriveSubsystem();
+        swerveDriveSubsystem = new SwerveDriveSubsystem();
 
-    NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
-    NamedCommands.registerCommand("Source", new ParallelDeadlineGroup(
-        new CoralIntakeCommand(endEffectorSubsystem),
-        new KeepClosedCommand(superstructureSubsystem)));
-    NamedCommands.registerCommand("L4 left",
-        new SequentialCommandGroup(new ParallelCommandGroup(
-            new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
-            new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, true)),
-            new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-            new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
+        NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
+        NamedCommands.registerCommand("Source", new ParallelDeadlineGroup(
+                new CoralIntakeCommand(endEffectorSubsystem),
+                new KeepClosedCommand(superstructureSubsystem)));
+        NamedCommands.registerCommand("L4 left",
+                new SequentialCommandGroup(new ParallelCommandGroup(
+                        new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
+                        new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, true)),
+                        new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
+                        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
 
-    NamedCommands.registerCommand("L4 right",
-        new SequentialCommandGroup(new ParallelCommandGroup(
-            new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
-            new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true)),
-            new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-            new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
+        NamedCommands.registerCommand("L4 right",
+                new SequentialCommandGroup(new ParallelCommandGroup(
+                        new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false),
+                        new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, true)),
+                        new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
+                        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false)));
 
-    NamedCommands.registerCommand("L4",
-        new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false));
+        NamedCommands.registerCommand("L4",
+                new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false));
 
-    NamedCommands.registerCommand("L2",
-        new SequentialCommandGroup(new ElevatorCommand(elevatorSubsystem, Level.L2, endEffectorSubsystem, false),
-            new WaitCommand(0.2), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
+        NamedCommands.registerCommand("L2",
+                new SequentialCommandGroup(
+                        new ElevatorCommand(elevatorSubsystem, Level.L2, endEffectorSubsystem, false),
+                        new WaitCommand(0.2), new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
 
-    swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
-        () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
-        () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
-        () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(4), 0.1)
+        swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
+                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
+                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
+                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(4), 0.1)
 
-    ));
+        ));
 
-    // Configure the trigger bindings
-    configureBindings();
+        // Configure the trigger bindings
+        configureBindings();
 
-    // Setup autoChooser
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+        // Setup autoChooser
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
-  }
+    }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
-   * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    var scoreCommand = new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem);
-    var intakeCommand = new SequentialCommandGroup(
-        new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem, false),
-        new CoralIntakeCommand(endEffectorSubsystem),
-        new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem, false));
+    /**
+     * Use this method to define your trigger->command mappings. Triggers can be
+     * created via the
+     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+     * an arbitrary
+     * predicate, or via the named factories in {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+     * {@link
+     * CommandXboxController
+     * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+     * PS4} controllers or
+     * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * joysticks}.
+     */
+    private void configureBindings() {
+        var scoreCommand = new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem);
+        var intakeCommand = new SequentialCommandGroup(
+                new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem, false),
+                new CoralIntakeCommand(endEffectorSubsystem));
 
-    m_driverController.rightTrigger().whileTrue(scoreCommand);
-    m_driverController.y().whileTrue(new RobotAlignV2Command(swerveDriveSubsystem));
-    m_driverController.x().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, false));
-    m_driverController.b().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, false));
-    m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
-    m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
-    m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
-    m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+        m_driverController.rightTrigger().whileTrue(scoreCommand);
+        m_driverController.y().whileTrue(new RobotAlignV2Command(swerveDriveSubsystem));
+        m_driverController.x()
+                .whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, false));
+        m_driverController.b()
+                .whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, false));
+        m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
+        m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
+        m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
+        m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
 
-    m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
-    m_gunnerController.button(11).whileTrue(intakeCommand);
-    m_gunnerController.button(2)
-        .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S1, superstructureSubsystem));
-    m_gunnerController.button(5)
-        .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2, superstructureSubsystem));
-    m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
-    m_gunnerController.button(4).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, 0.4));
-    m_gunnerController.button(7).whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem));
-    m_gunnerController.button(10).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, -0.4));
-    m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
-        endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
-    m_gunnerController.button(9)
-        .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L2, endEffectorSubsystem, false));
-    m_gunnerController.button(6)
-        .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L3, endEffectorSubsystem, false));
-    m_gunnerController.button(3)
-        .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L4, endEffectorSubsystem, false));
-  }
+        m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
+        m_gunnerController.button(11).whileTrue(intakeCommand);
+        m_gunnerController.button(2)
+                .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S1, superstructureSubsystem));
+        m_gunnerController.button(5)
+                .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2, superstructureSubsystem));
+        m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
+        m_gunnerController.button(4).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, 0.4));
+        m_gunnerController.button(7).whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem));
+        m_gunnerController.button(10).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, -0.4));
+        m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
+                endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
+        m_gunnerController.button(9)
+                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L2, endEffectorSubsystem,
+                        false));
+        m_gunnerController.button(6)
+                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L3, endEffectorSubsystem,
+                        false));
+        m_gunnerController.button(3)
+                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L4, endEffectorSubsystem,
+                        false));
+    }
 
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
-  }
+    public Command getAutonomousCommand() {
+        return autoChooser.getSelected();
+    }
 }
