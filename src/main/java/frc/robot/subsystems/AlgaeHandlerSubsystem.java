@@ -23,6 +23,10 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         .idleMode(IdleMode.kBrake);
 
         pivotConfig
+        .smartCurrentLimit(10)
+        .idleMode(IdleMode.kBrake);
+
+        pivotConfig
                 .smartCurrentLimit(10)
                 .idleMode(IdleMode.kBrake);
 
@@ -94,7 +98,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     public void dumbPivot(double speed){
         if(speed>0){
             if(getEncoderValue() >= 0.4){
-
                 stopPivot();
             } else {
                 pivot.set(speed);
@@ -102,7 +105,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
         } else{
             if(getEncoderValue() <= 0.05){
-
                 stopPivot();
             } else {
                 pivot.set(speed);
