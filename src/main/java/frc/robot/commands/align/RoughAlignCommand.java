@@ -1,9 +1,6 @@
 package frc.robot.commands.align;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
@@ -11,14 +8,12 @@ public class RoughAlignCommand extends Command {
     // Distance from center point of reef to end command and switch to precise
     // alignment
     public static final double FINISH_DISTANCE = 0.5;
-
-    private AlignmentHelpers alignmentHelpers = new AlignmentHelpers();
-    private PIDController roughPidController = new PIDController(1, 0, 0);
+    private final double ROUGH_ALIGN_OFFSET = 0.45;
 
     private SwerveDriveSubsystem swerve;
     private SwerveDriveSubsystem.ReefPosition closestReef;
 
-    private final double roughAlignOffset = 0.4;
+    private Command driveCommand;
 
     public RoughAlignCommand(SwerveDriveSubsystem swerve) {
         this.swerve = swerve;
@@ -26,35 +21,34 @@ public class RoughAlignCommand extends Command {
 
     @Override
     public void initialize() {
-        alignmentHelpers.initialize();
         closestReef = swerve.getClosestReefPosition();
-    }
-
-    @Override
-    public void execute() {
-        double vy = 0;
-        double vx = 0;
         double reefAngle = closestReef.rotation().getRadians() - Math.PI;
-        double currentPositionX = swerve.getPose().getX();
-        double currentPositionY = swerve.getPose().getY();
-        double desiredPositionX = closestReef.translation().getX() + roughAlignOffset * Math.cos(reefAngle);
-        double desiredPositionY = closestReef.translation().getY() + roughAlignOffset * Math.sin(reefAngle);
-        vx = roughPidController.calculate(currentPositionX, desiredPositionX);
-        vy = roughPidController.calculate(currentPositionY, desiredPositionY);
-        double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose());
+        double desiredPositionX = closestReef.translation().getX() + ROUGH_ALIGN_OFFSET * Math.cos(reefAngle);
+        double desiredPositionY = closestReef.translation().getY() + ROUGH_ALIGN_OFFSET * Math.sin(reefAngle);
 
-        SmartDashboard.putNumber("align/rough/currentPositionX", currentPositionX);
-        SmartDashboard.putNumber("align/rough/currentPositionY", currentPositionY);
-        SmartDashboard.putNumber("align/rough/desiredPositionX", desiredPositionX);
-        SmartDashboard.putNumber("align/rough/desiredPositionY", desiredPositionY);
-
-        swerve.driveFieldRelative(new ChassisSpeeds(vx, vy, rotation));
+        Pose2d desiredPose = new Pose2d(desiredPositionX, desiredPositionY, closestReef.rotation());
+        driveCommand = swerve.goToWaypoint(desiredPose);
+        driveCommand.schedule();
     }
 
     @Override
     public boolean isFinished() {
-        Translation2d robotTranslation = swerve.getPose().getTranslation();
-        Translation2d reefTranslation = closestReef.translation();
-        return robotTranslation.getDistance(reefTranslation) < FINISH_DISTANCE;
+        if (driveCommand == null) {
+            return true;
+        }
+
+        double distanceFromCenterOfReef = swerve.getPose().getTranslation().getDistance(closestReef.translation());
+        boolean inRange = distanceFromCenterOfReef < 0.55 && distanceFromCenterOfReef > 0.4;
+        return inRange || driveCommand.isFinished();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        if (driveCommand == null) {
+            return;
+        }
+
+        driveCommand.cancel();
+        driveCommand = null;
     }
 }
