@@ -149,6 +149,9 @@ public class RobotContainer {
         m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
         m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
 
+        m_driverController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+        m_driverController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+
         m_gunnerController.button(8).whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
         m_gunnerController.button(11).whileTrue(intakeCommand);
         m_gunnerController.button(2)
@@ -156,9 +159,9 @@ public class RobotContainer {
         m_gunnerController.button(5)
                 .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2, superstructureSubsystem));
         m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
-        m_gunnerController.button(4).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, 0.4));
+        m_gunnerController.button(4).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, -0.2));
         m_gunnerController.button(7).whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem));
-        m_gunnerController.button(10).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, -0.4));
+        m_gunnerController.button(10).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, 0.2));
         m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
                 endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
         m_gunnerController.button(9)

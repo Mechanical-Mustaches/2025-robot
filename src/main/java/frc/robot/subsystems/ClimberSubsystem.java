@@ -17,9 +17,9 @@ public class ClimberSubsystem extends SubsystemBase {
     private SparkMax climber = new SparkMax(19, MotorType.kBrushless);
     
     public enum Stage{
-        S1(1650),
-        S2(3950 );
-        //previously 4000
+        S1(2000),
+        S2(3800);
+  
         public final double encoderValue;
 
         private Stage(double stage){

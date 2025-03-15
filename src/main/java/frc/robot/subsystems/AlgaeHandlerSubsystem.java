@@ -19,8 +19,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
 
         intakeConfig
-                .smartCurrentLimit(20)
-                .idleMode(IdleMode.kBrake);
+        .smartCurrentLimit(10)
+        .idleMode(IdleMode.kBrake);
 
         pivotConfig
                 .smartCurrentLimit(10)
@@ -42,18 +42,20 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         pivot.set(0);
     }
 
-    public void pivotUp() {
-        if (getEncoderValue() >= 0.45) {
-            pivot.set(.2);
-        } else {
-            stopPivot();
-        }
+
+    public void pivotUp(){
+        if(getEncoderValue()>=0.4){
+           pivot.set(-0.05);
+           } else{
+               stopPivot();
+           }
     }
 
-    public void pivotDown() {
-        if (getEncoderValue() <= 0) {
-            pivot.set(-.2);
-        } else {
+    public void pivotDown(){
+        if(getEncoderValue()<=0.05){
+        pivot.set(0.05);
+        } else{
+
             stopPivot();
         }
 
@@ -85,15 +87,22 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         return intakingAlgae;
     }
 
-    public void dumbPivot(double speed) {
-        if (speed > 0) {
-            if (getEncoderValue() >= 1) {
+
+
+
+
+    public void dumbPivot(double speed){
+        if(speed>0){
+            if(getEncoderValue() >= 0.4){
+
                 stopPivot();
             } else {
                 pivot.set(speed);
             }
-        } else {
-            if (getEncoderValue() <= 0) {
+
+        } else{
+            if(getEncoderValue() <= 0.05){
+
                 stopPivot();
             } else {
                 pivot.set(speed);
