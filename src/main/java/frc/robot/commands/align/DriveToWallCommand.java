@@ -13,18 +13,20 @@ public class DriveToWallCommand extends Command {
 
     public DriveToWallCommand(SwerveDriveSubsystem swerve) {
         this.swerve = swerve;
+        addRequirements(swerve);
     }
 
     @Override
     public void initialize() {
         SmartDashboard.putString("align/state", "DRIVE_TO_WALL");
+        alignmentHelpers.initialize();
         closestReef = swerve.getClosestReefPosition();
     }
 
     @Override
     public void execute() {
         double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose());
-        swerve.driveRobotRelative(new ChassisSpeeds(.8, 0, rotation));
+        swerve.driveRobotRelative(new ChassisSpeeds(.5, 0, rotation));
     }
 
     @Override
