@@ -64,8 +64,12 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     }
 
     public void intake() {
-        intakeActivator.set(1);
         intakingAlgae = true;
+        if (intakeActivator.getOutputCurrent() < 5) {
+            intakeActivator.set(1);
+        } else {
+            intakeActivator.set(0.2);
+        }
     }
 
     public void stopIntake() {
