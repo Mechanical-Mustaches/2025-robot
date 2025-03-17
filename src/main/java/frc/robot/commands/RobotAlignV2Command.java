@@ -47,6 +47,8 @@ public class RobotAlignV2Command extends Command {
     SwerveDriveSubsystem.ReefPosition closestReef;
 
     private final double roughAlignOffset = 0.4;
+    private final double roughAlignOffsetX = 0.165;
+    private final double roughAlignOffsetY = 0;
     private boolean testRoughAlign = false;
     private boolean roughValidity;
 
@@ -121,22 +123,26 @@ public class RobotAlignV2Command extends Command {
     }
 
     private void roughAlign() {
-        double vy = 0;
-        double vx = 0;
-        double reefAngle = closestReef.rotation().getRadians() - Math.PI;
-        double currentPositionX = swerve.getPose().getX();
-        double currentPositionY = swerve.getPose().getY();
-        double desiredPositionX = closestReef.translation().getX() + roughAlignOffset * Math.cos(reefAngle);
-        double desiredPositionY = closestReef.translation().getY() + roughAlignOffset * Math.sin(reefAngle);
-        vx = roughPidController.calculate(currentPositionX, desiredPositionX);
-        vy = roughPidController.calculate(currentPositionY, desiredPositionY);
+        // double vy = 0;
+        // double vx = 0;
+        // double reefAngle = closestReef.rotation().getRadians() - Math.PI;
+        // double currentPositionX = swerve.getPose().getX();
+        // double currentPositionY = swerve.getPose().getY();
+        // double leftDesiredPositionX = closestReef.translation().getX() + roughAlignOffset * Math.cos(reefAngle)
+        // + roughAlignOffset * Math.sin(reefAngle - 90);
+        // double desiredPositionY = closestReef.translation().getY() + roughAlignOffset * Math.sin(reefAngle)
+        // double deltaX = desiredPositionX - currentPositionX;
+        // double deltaY = desiredPositionY - currentPositionY;
+        // double m = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+        // vx = deltaX/m;
+        // vy = deltaY/m;
 
-        SmartDashboard.putNumber("align/rough/currentPositionX", currentPositionX);
-        SmartDashboard.putNumber("align/rough/currentPositionY", currentPositionY);
-        SmartDashboard.putNumber("align/rough/desiredPositionX", desiredPositionX);
-        SmartDashboard.putNumber("align/rough/desiredPositionY", desiredPositionY);
+        // SmartDashboard.putNumber("align/rough/currentPositionX", currentPositionX);
+        // SmartDashboard.putNumber("align/rough/currentPositionY", currentPositionY);
+        // SmartDashboard.putNumber("align/rough/desiredPositionX", desiredPositionX);
+        // SmartDashboard.putNumber("align/rough/desiredPositionY", desiredPositionY);
 
-        swerve.driveFieldRelative(new ChassisSpeeds(vx, vy, getRotation()));
+        // swerve.driveFieldRelative(new ChassisSpeeds(vx, vy, getRotation()));
     }
 
     // @Override

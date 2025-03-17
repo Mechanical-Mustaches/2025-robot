@@ -21,7 +21,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         LAlgaeTop(0),
         LAlgaeBottom(0),
         L1(11.5),
+        L2Algae(13),
+        //temporary
         L2(19),
+        L3Algae(25),
+        //temporary
         L3(33),
         L4(57.5);
 
