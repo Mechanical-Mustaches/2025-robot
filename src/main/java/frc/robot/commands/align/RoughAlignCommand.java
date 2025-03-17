@@ -1,57 +1,36 @@
 package frc.robot.commands.align;
 
+import java.util.Set;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
-public class RoughAlignCommand extends Command {
-    // Distance from center point of reef to end command and switch to precise
-    // alignment
-    public static final double FINISH_DISTANCE = 0.5;
-    private final double ROUGH_ALIGN_OFFSET = 0.6;
-
-    private SwerveDriveSubsystem swerve;
-    private SwerveDriveSubsystem.ReefPosition closestReef;
-
-    private Command driveCommand;
-
+public class RoughAlignCommand extends DeferredCommand {
     public RoughAlignCommand(SwerveDriveSubsystem swerve) {
-        this.swerve = swerve;
+        super(() -> getDriveCommand(swerve), Set.of(swerve));
+    }
+
+    private static Command getDriveCommand(SwerveDriveSubsystem swerve) {
+        SwerveDriveSubsystem.ReefPosition closestReef = swerve.getClosestReefPosition();
+        double reefAngle = closestReef.rotation().getRadians() - Math.PI;
+
+        // Normal offset from center of reef
+        double desiredPositionX = closestReef.translation().getX()
+                + Constants.ROUGH_ALIGN_TARGET_REEF_DISTANCE * Math.cos(reefAngle);
+        double desiredPositionY = closestReef.translation().getY()
+                + Constants.ROUGH_ALIGN_TARGET_REEF_DISTANCE * Math.sin(reefAngle);
+        
+        // TODO: Adjust based on desired left/right reef pole
+
+        Pose2d desiredPose = new Pose2d(desiredPositionX, desiredPositionY, closestReef.rotation());
+        return swerve.goToWaypoint(desiredPose);
     }
 
     @Override
     public void initialize() {
         SmartDashboard.putString("align/state", "ROUGH");
-        closestReef = swerve.getClosestReefPosition();
-        double reefAngle = closestReef.rotation().getRadians() - Math.PI;
-        double desiredPositionX = closestReef.translation().getX() + ROUGH_ALIGN_OFFSET * Math.cos(reefAngle);
-        double desiredPositionY = closestReef.translation().getY() + ROUGH_ALIGN_OFFSET * Math.sin(reefAngle);
-
-        Pose2d desiredPose = new Pose2d(desiredPositionX, desiredPositionY, closestReef.rotation());
-        driveCommand = swerve.goToWaypoint(desiredPose);
-        driveCommand.schedule();
-    }
-
-    @Override
-    public boolean isFinished() {
-        if (driveCommand == null) {
-            return true;
-        }
-
-        // double distanceFromCenterOfReef = swerve.getPose().getTranslation().getDistance(closestReef.translation());
-        // boolean inRange = Math.abs(distanceFromCenterOfReef - ROUGH_ALIGN_OFFSET) < 0.1;
-        // return inRange || driveCommand.isFinished();
-        return driveCommand.isFinished();
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        if (driveCommand == null) {
-            return;
-        }
-
-        driveCommand.cancel();
-        driveCommand = null;
     }
 }

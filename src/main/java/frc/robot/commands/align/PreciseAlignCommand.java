@@ -23,6 +23,7 @@ public class PreciseAlignCommand extends Command {
 
     public PreciseAlignCommand(SwerveDriveSubsystem swerve) {
         this.swerve = swerve;
+        addRequirements(swerve);
     }
 
     @Override
@@ -35,8 +36,8 @@ public class PreciseAlignCommand extends Command {
 
     }
 
-    private Optional<Pose3d> getTagPose(boolean rightCamera) {
-        String llName = rightCamera ? "limelight-right" : "limelight-left";
+    private Optional<Pose3d> getTagPose(boolean useRightCamera) {
+        String llName = useRightCamera ? "limelight-right" : "limelight-left";
 
         if (LimelightHelpers.getTV(llName)){
             Pose3d targetPose = LimelightHelpers.getTargetPose3d_RobotSpace(llName);
@@ -46,6 +47,10 @@ public class PreciseAlignCommand extends Command {
         return Optional.empty();
     }
 
+    private boolean isRotated() {
+        return alignmentHelpers.isRotated(closestReef, swerve.getPose());
+    }
+
     @Override
     public void execute() {
         double vy = 0;
@@ -53,14 +58,13 @@ public class PreciseAlignCommand extends Command {
         double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose());
 
         Optional<Pose3d> targetPose = getTagPose(true);
-        if (targetPose.isPresent()) {
+        if (targetPose.isPresent() && isRotated()) {
             Pose3d pose = targetPose.get();
-            vy = tagPidController.calculate(pose.getX(), reefPoleCenterOffset);
+            vy = tagPidController.calculate(pose.getX(), Constants.REEF_POLE_CENTER_OFFSET);
             SmartDashboard.putNumber("pac/TargetX", pose.getX());
             // vx = -tagPidController.calculate(pose.getZ(), 0.8);
         }
     
-
         SmartDashboard.putNumber("pac/velocityY", vy);
 
         swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
@@ -68,7 +72,7 @@ public class PreciseAlignCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        if (!alignmentHelpers.isRotated(closestReef, swerve.getPose())) {
+        if (!isRotated()) {
             return false;
         }
 
@@ -77,7 +81,7 @@ public class PreciseAlignCommand extends Command {
             return true;
         }
         Pose3d pose = targetPose.get();
-        return Math.abs(pose.getX() - reefPoleCenterOffset) < 0.03;
+        return Math.abs(pose.getX() - Constants.REEF_POLE_CENTER_OFFSET) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
 
     }
 }

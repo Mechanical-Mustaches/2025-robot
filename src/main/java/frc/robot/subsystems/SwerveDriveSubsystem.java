@@ -1,20 +1,13 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 import com.playingwithfusion.TimeOfFlight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -214,26 +207,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public Command goToWaypoint(Pose2d desiredPose) {
-        // ChassisSpeeds chassisSpeeds = swerveDrive.getFieldVelocity();
-
-        // Rotation2d startAngle = desiredPose.getRotation();
-        // if (chassisSpeeds.vxMetersPerSecond != 0 || chassisSpeeds.vyMetersPerSecond
-        // != 0) {
-        // startAngle = Rotation2d.fromRadians(
-        // Math.atan2(chassisSpeeds.vyMetersPerSecond, chassisSpeeds.vxMetersPerSecond)
-        // );
-        // }
-
-        // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        // new Pose2d(swerveDrive.getPose().getX(), swerveDrive.getPose().getY(),
-        // startAngle),
-        // desiredPose
-        // );
-        // return AutoBuilder.followPath(new PathPlannerPath(
-        // waypoints,
-        // new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
-        // null,
-        // new GoalEndState(0.3, desiredPose.getRotation())));
         return AutoBuilder.pathfindToPose(desiredPose,
                 new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
                 0.3);
