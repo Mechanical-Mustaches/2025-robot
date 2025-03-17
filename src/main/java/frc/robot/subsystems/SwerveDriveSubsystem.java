@@ -214,24 +214,29 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     }
 
     public Command goToWaypoint(Pose2d desiredPose) {
-        ChassisSpeeds chassisSpeeds = swerveDrive.getFieldVelocity();
+        // ChassisSpeeds chassisSpeeds = swerveDrive.getFieldVelocity();
 
-        Rotation2d startAngle = desiredPose.getRotation();
-        if (chassisSpeeds.vxMetersPerSecond != 0 || chassisSpeeds.vyMetersPerSecond != 0) {
-            startAngle = Rotation2d.fromRadians(
-                Math.atan2(chassisSpeeds.vyMetersPerSecond, chassisSpeeds.vxMetersPerSecond)
-            );
-        }
+        // Rotation2d startAngle = desiredPose.getRotation();
+        // if (chassisSpeeds.vxMetersPerSecond != 0 || chassisSpeeds.vyMetersPerSecond
+        // != 0) {
+        // startAngle = Rotation2d.fromRadians(
+        // Math.atan2(chassisSpeeds.vyMetersPerSecond, chassisSpeeds.vxMetersPerSecond)
+        // );
+        // }
 
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(swerveDrive.getPose().getX(), swerveDrive.getPose().getY(), startAngle),
-            desiredPose
-        );
-        return AutoBuilder.followPath(new PathPlannerPath(
-                waypoints,
+        // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        // new Pose2d(swerveDrive.getPose().getX(), swerveDrive.getPose().getY(),
+        // startAngle),
+        // desiredPose
+        // );
+        // return AutoBuilder.followPath(new PathPlannerPath(
+        // waypoints,
+        // new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
+        // null,
+        // new GoalEndState(0.3, desiredPose.getRotation())));
+        return AutoBuilder.pathfindToPose(desiredPose,
                 new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
-                null,
-                new GoalEndState(1.0, desiredPose.getRotation())));
+                0.3);
     }
 
     @Override
@@ -240,6 +245,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         LimelightHelpers.SetRobotOrientation("limelight-left", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         xPose = swerveDrive.getPose().getX();
         yPose = swerveDrive.getPose().getY();
+
+        Pose3d targetPose = LimelightHelpers.getTargetPose3d_RobotSpace("limelight-right");
+        SmartDashboard.putNumber("LLY", targetPose.getY());
+        SmartDashboard.putNumber("LLZ", targetPose.getZ());
 
         LimelightHelpers.PoseEstimate limelightPoseRight = LimelightHelpers
                 .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");

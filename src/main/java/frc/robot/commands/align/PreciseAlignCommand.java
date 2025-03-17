@@ -12,15 +12,12 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class PreciseAlignCommand extends Command {
     private SwerveDriveSubsystem swerve;
-    private AlignmentHelpers alignmentHelpers;
+    private AlignmentHelpers alignmentHelpers = new AlignmentHelpers();
 
     private PIDController wallPidController = new PIDController(0.005, 0, 0);
-    private PIDController tagPidController = new PIDController(5, 0.01, 0);
+    private PIDController tagPidController = new PIDController(10, 0.03, 0);
 
     private static final double reefPoleCenterOffset = 0.1558544;
-
-    private final double distanceTolerance = 10;
-    private final double wallDistanceSetpoint = 115;
 
     SwerveDriveSubsystem.ReefPosition closestReef;
 
@@ -30,15 +27,12 @@ public class PreciseAlignCommand extends Command {
 
     @Override
     public void initialize() {
+        SmartDashboard.putString("align/state", "PRECISE");
         alignmentHelpers.initialize();
         wallPidController.reset();
         tagPidController.reset();
         closestReef = swerve.getClosestReefPosition();
 
-    }
-
-    private double getDistanceToWall() {
-        return swerve.rightDistanceSensor.getRange();
     }
 
     private Optional<Pose3d> getTagPose(boolean rightCamera) {
@@ -63,13 +57,9 @@ public class PreciseAlignCommand extends Command {
             Pose3d pose = targetPose.get();
             vy = tagPidController.calculate(pose.getX(), reefPoleCenterOffset);
             SmartDashboard.putNumber("pac/TargetX", pose.getX());
+            // vx = -tagPidController.calculate(pose.getZ(), 0.8);
         }
-
-        // TODO: Use limelight distance instead
-        double distanceToWall = getDistanceToWall();
-        if (Math.abs(wallDistanceSetpoint - distanceToWall) > distanceTolerance) {
-            vx = -wallPidController.calculate(distanceToWall, wallDistanceSetpoint);
-        }
+    
 
         SmartDashboard.putNumber("pac/velocityY", vy);
 
@@ -78,6 +68,16 @@ public class PreciseAlignCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return getTagPose(true).isEmpty();
+        if (!alignmentHelpers.isRotated(closestReef, swerve.getPose())) {
+            return false;
+        }
+
+        Optional<Pose3d> targetPose = getTagPose(true);
+        if (targetPose.isEmpty()) {
+            return true;
+        }
+        Pose3d pose = targetPose.get();
+        return Math.abs(pose.getX() - reefPoleCenterOffset) < 0.03;
+
     }
 }

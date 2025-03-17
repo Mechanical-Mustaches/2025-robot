@@ -1,6 +1,7 @@
 package frc.robot.commands.align;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
@@ -8,7 +9,7 @@ public class RoughAlignCommand extends Command {
     // Distance from center point of reef to end command and switch to precise
     // alignment
     public static final double FINISH_DISTANCE = 0.5;
-    private final double ROUGH_ALIGN_OFFSET = 0.45;
+    private final double ROUGH_ALIGN_OFFSET = 0.6;
 
     private SwerveDriveSubsystem swerve;
     private SwerveDriveSubsystem.ReefPosition closestReef;
@@ -21,6 +22,7 @@ public class RoughAlignCommand extends Command {
 
     @Override
     public void initialize() {
+        SmartDashboard.putString("align/state", "ROUGH");
         closestReef = swerve.getClosestReefPosition();
         double reefAngle = closestReef.rotation().getRadians() - Math.PI;
         double desiredPositionX = closestReef.translation().getX() + ROUGH_ALIGN_OFFSET * Math.cos(reefAngle);
@@ -37,9 +39,10 @@ public class RoughAlignCommand extends Command {
             return true;
         }
 
-        double distanceFromCenterOfReef = swerve.getPose().getTranslation().getDistance(closestReef.translation());
-        boolean inRange = distanceFromCenterOfReef < 0.55 && distanceFromCenterOfReef > 0.4;
-        return inRange || driveCommand.isFinished();
+        // double distanceFromCenterOfReef = swerve.getPose().getTranslation().getDistance(closestReef.translation());
+        // boolean inRange = Math.abs(distanceFromCenterOfReef - ROUGH_ALIGN_OFFSET) < 0.1;
+        // return inRange || driveCommand.isFinished();
+        return driveCommand.isFinished();
     }
 
     @Override

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlgaeIntakeCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.CoralScoringCommand;
@@ -18,6 +19,7 @@ import frc.robot.commands.KeepClosedCommand;
 import frc.robot.commands.OpenDoorCommand;
 import frc.robot.commands.RobotAlignCommand;
 import frc.robot.commands.RobotAlignV2Command;
+import frc.robot.commands.align.RoughAlignCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -134,14 +136,19 @@ public class RobotContainer {
      */
     private void configureBindings() {
         var scoreCommand = new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem);
-        var intakeCommand = new SequentialCommandGroup(
-                new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem, false),
-                new CoralIntakeCommand(endEffectorSubsystem));
+        var intakeCommand = new ParallelCommandGroup(
+                new SequentialCommandGroup(
+                        new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem, false),
+                        new CoralIntakeCommand(endEffectorSubsystem)),
+                new KeepClosedCommand(superstructureSubsystem)
+        );
+                
 
         m_driverController.rightTrigger().whileTrue(scoreCommand);
-        m_driverController.y().whileTrue(new RobotAlignV2Command(swerveDriveSubsystem));
-        m_driverController.x()
-                .whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, false));
+        m_driverController.y().whileTrue(new RoughAlignCommand(swerveDriveSubsystem));
+        m_driverController.x().whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
+        // m_driverController.x()
+        //         .whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left, false));
         m_driverController.b()
                 .whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right, false));
         m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
@@ -160,7 +167,7 @@ public class RobotContainer {
                 .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2, superstructureSubsystem));
         m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
         m_gunnerController.button(4).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, -0.2));
-        m_gunnerController.button(7).whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem));
+        m_gunnerController.button(7).whileTrue(new AlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem, AlgaeIntakeCommand.algaeLevel));
         m_gunnerController.button(10).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, 0.2));
         m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
                 endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));

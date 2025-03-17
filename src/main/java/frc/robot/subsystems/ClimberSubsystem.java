@@ -18,7 +18,7 @@ public class ClimberSubsystem extends SubsystemBase {
     
     public enum Stage{
         S1(2000),
-        S2(3800);
+        S2(4000);
   
         public final double encoderValue;
 

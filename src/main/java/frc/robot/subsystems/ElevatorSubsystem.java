@@ -19,7 +19,11 @@ public class ElevatorSubsystem extends SubsystemBase{
     public enum Level{
         LIntake(0),
         L1(11.5),
+        L2Algae(13),
+        //temporary
         L2(19),
+        L3Algae(25),
+        //temporary
         L3(33),
         L4(57.5);
 

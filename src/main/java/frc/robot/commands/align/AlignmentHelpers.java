@@ -6,10 +6,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDriveSubsystem.ReefPosition;
 
 public class AlignmentHelpers {
-    private PIDController pidRotation = new PIDController(0.1, 0.005, 0);
+    private PIDController pidRotation = new PIDController(0.15, 0.005, 0);
 
     public void initialize() {
         pidRotation.reset();
+    }
+
+    public boolean isRotated(ReefPosition reefPosition, Pose2d robotPose) {
+        double desiredPositiveAngle = reefPosition.rotation().getDegrees();
+        double desiredNegativeAngle = reefPosition.rotation().getDegrees() - 360;
+        double currentAngle = robotPose.getRotation().getDegrees();
+
+        return Math.abs(desiredNegativeAngle - currentAngle) < 3 || Math.abs(desiredPositiveAngle - currentAngle) < 3;
     }
 
     public double getRotation(ReefPosition reefPosition, Pose2d robotPose) {
