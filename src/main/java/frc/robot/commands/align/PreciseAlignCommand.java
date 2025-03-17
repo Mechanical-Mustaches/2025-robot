@@ -81,7 +81,7 @@ public class PreciseAlignCommand extends Command {
             return true;
         }
         Pose3d pose = targetPose.get();
-        return Math.abs(pose.getX() - reefPoleCenterOffset) < 0.03;
+        return Math.abs(pose.getX() - Constants.REEF_POLE_CENTER_OFFSET) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
 
     }
 }

@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDriveSubsystem.ReefPosition;
 
 public class AlignmentHelpers {
-    private static double ROTATION_ALIGNMENT_THRESHOLD = 3;
     private PIDController pidRotation = new PIDController(0.15, 0.005, 0);
 
     public void initialize() {
@@ -18,8 +17,8 @@ public class AlignmentHelpers {
         double desiredNegativeAngle = reefPosition.rotation().getDegrees() - 360;
         double currentAngle = robotPose.getRotation().getDegrees();
 
-        return Math.abs(desiredNegativeAngle - currentAngle) < ROTATION_ALIGNMENT_THRESHOLD
-                || Math.abs(desiredPositiveAngle - currentAngle) < ROTATION_ALIGNMENT_THRESHOLD;
+        return Math.abs(desiredNegativeAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE 
+                || Math.abs(desiredPositiveAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE;
     }
 
     public double getRotation(ReefPosition reefPosition, Pose2d robotPose) {
