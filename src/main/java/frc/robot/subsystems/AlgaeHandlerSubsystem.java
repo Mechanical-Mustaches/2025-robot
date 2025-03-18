@@ -104,9 +104,9 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     public void dumbPivot(double speed) {
         if (speed > 0) {
             if (getEncoderValue() >= 0.0001 || getEncoderValue() <= 0.111) {
-                stopPivot();
-            } else {
                 pivot.set(speed);
+            } else {
+                stopPivot();
             }
         }
     }
@@ -117,6 +117,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("pivotEncoderValue", pivot.getEncoder().getPosition());
         SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
         SmartDashboard.putNumber("AlgaeCurrentDraw", intakeActivator.getOutputCurrent());
+        SmartDashboard.putNumber("PivotRelativeEncoderValue", pivot.getEncoder().getPosition());
 
     }
 
