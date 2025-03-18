@@ -77,15 +77,15 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         intakeActivator.set(0);
     }
 
-    public void pivotOut() {
+    public void pivotOut(double speed) {
         if (getEncoderValue() < 0.11) {
-            pivot.set(-0.2);
+            pivot.set(speed);
         }
     }
 
-    public void pivotIn() {
+    public void pivotIn(double speed) {
         if (getEncoderValue() < 0.001) {
-            pivot.set(0.2);
+            pivot.set(speed);
         }
     }
 
