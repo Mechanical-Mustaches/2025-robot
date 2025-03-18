@@ -73,9 +73,9 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     public void intake() {
         intakingAlgae = true;
         // if (intakeActivator.getOutputCurrent() < 6) {
-        //     intakeActivator.set(1);
+        // intakeActivator.set(1);
         // } else {
-        //     intakeActivator.set(0.1);
+        // intakeActivator.set(0.1);
         // }
 
         if (isAlgaeDetected() > 5) {
@@ -83,10 +83,10 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         } else {
             intakeActivator.set(1);
         }
-    
+
     }
 
-    public void launch(){
+    public void launch() {
         intakeActivator.set(-1);
     }
 
@@ -109,14 +109,14 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
     public void dumbPivot(double speed) {
         if (speed > 0) {
-            if (getEncoderValue() >= 0.0001) {
+            if (getEncoderValue() <= 0.0001) {
                 stopPivot();
             } else {
                 pivot.set(speed);
             }
 
         } else {
-            if (getEncoderValue() <= 0.111) {
+            if (getEncoderValue() >= 0.111) {
                 stopPivot();
             } else {
                 pivot.set(speed);
