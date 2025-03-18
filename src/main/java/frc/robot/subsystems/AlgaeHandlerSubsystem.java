@@ -73,8 +73,20 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     }
 
     public void stopIntake() {
-        intakeActivator.set(0);
         intakingAlgae = false;
+        intakeActivator.set(0);
+    }
+
+    public void pivotOut() {
+        if (getEncoderValue() < 0.11) {
+            pivot.set(-0.2);
+        }
+    }
+
+    public void pivotIn() {
+        if (getEncoderValue() < 0.001) {
+            pivot.set(0.2);
+        }
     }
 
     public double isAlgaeDetected() {
@@ -91,7 +103,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
     public void dumbPivot(double speed) {
         if (speed > 0) {
-            if (getEncoderValue() <= 0.0001 || getEncoderValue() >= 0.111) {
+            if (getEncoderValue() >= 0.0001 || getEncoderValue() <= 0.111) {
                 stopPivot();
             } else {
                 pivot.set(speed);
