@@ -72,11 +72,22 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
     public void intake() {
         intakingAlgae = true;
-        if (intakeActivator.getOutputCurrent() < 5) {
-            intakeActivator.set(1);
+        // if (intakeActivator.getOutputCurrent() < 6) {
+        //     intakeActivator.set(1);
+        // } else {
+        //     intakeActivator.set(0.1);
+        // }
+
+        if (isAlgaeDetected() > 5) {
+            intakeActivator.set(0.1);
         } else {
-            intakeActivator.set(0.2);
+            intakeActivator.set(1);
         }
+    
+    }
+
+    public void launch(){
+        intakeActivator.set(-1);
     }
 
     public void stopIntake() {
@@ -119,6 +130,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("algaeDetectionValue", isAlgaeDetected());
         SmartDashboard.putNumber("pivotEncoderValue", pivot.getEncoder().getPosition());
         SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
+        SmartDashboard.putNumber("AlgaeCurrentDraw", intakeActivator.getOutputCurrent());
 
     }
 
