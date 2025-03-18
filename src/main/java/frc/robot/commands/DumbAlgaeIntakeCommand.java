@@ -29,7 +29,12 @@ public class DumbAlgaeIntakeCommand extends Command {
     }
 
     @Override
+    public void execute() {
+        algaeHandlerSubsystem.intake();
+    }
+
+    @Override
     public void end(boolean interupt) {
-        algaeHandlerSubsystem.stopIntake();
+        algaeHandlerSubsystem.launch();
     }
 }
