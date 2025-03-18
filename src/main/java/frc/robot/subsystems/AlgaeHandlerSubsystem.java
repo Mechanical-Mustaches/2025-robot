@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -13,18 +14,19 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
     private boolean intakingAlgae = false;
+    // private Encoder pivotEncoder = new Encoder(null, null)
 
     public AlgaeHandlerSubsystem() {
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
 
         intakeConfig
-        .smartCurrentLimit(10)
-        .idleMode(IdleMode.kBrake);
+                .smartCurrentLimit(10)
+                .idleMode(IdleMode.kBrake);
 
         pivotConfig
-        .smartCurrentLimit(10)
-        .idleMode(IdleMode.kBrake);
+                .smartCurrentLimit(10)
+                .idleMode(IdleMode.kBrake);
 
         pivotConfig
                 .smartCurrentLimit(10)
@@ -33,7 +35,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     }
 
     public double getEncoderValue() {
-        return pivot.getEncoder().getPosition();
+        return pivot.getAbsoluteEncoder().getPosition();
     }
 
     public void pivot() {
@@ -46,19 +48,18 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         pivot.set(0);
     }
 
-
-    public void pivotUp(){
-        if(getEncoderValue()>=0.4){
-           pivot.set(-0.05);
-           } else{
-               stopPivot();
-           }
+    public void pivotUp() {
+        if (getEncoderValue() >= 0.4) {
+            pivot.set(-0.05);
+        } else {
+            stopPivot();
+        }
     }
 
-    public void pivotDown(){
-        if(getEncoderValue()<=0.05){
-        pivot.set(0.05);
-        } else{
+    public void pivotDown() {
+        if (getEncoderValue() <= 0.05) {
+            pivot.set(0.05);
+        } else {
 
             stopPivot();
         }
@@ -106,20 +107,16 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         return intakingAlgae;
     }
 
-
-
-
-
-    public void dumbPivot(double speed){
-        if(speed>0){
-            if(getEncoderValue() >= 0.4){
+    public void dumbPivot(double speed) {
+        if (speed > 0) {
+            if (getEncoderValue() >= 0.4) {
                 stopPivot();
             } else {
                 pivot.set(speed);
             }
 
-        } else{
-            if(getEncoderValue() <= 0.05){
+        } else {
+            if (getEncoderValue() <= 0.05) {
                 stopPivot();
             } else {
                 pivot.set(speed);
