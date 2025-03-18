@@ -86,18 +86,16 @@ public class RobotContainer {
                                 new SequentialCommandGroup(new ParallelCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem,
                                                                 false),
-                                                new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.left,
-                                                                true)),
+                                                new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem)),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
                                                 new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem,
                                                                 false)));
-
+                
                 NamedCommands.registerCommand("L4 right",
                                 new SequentialCommandGroup(new ParallelCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem,
                                                                 false),
-                                                new RobotAlignCommand(swerveDriveSubsystem,
-                                                                RobotAlignCommand.Mode.right, true)),
+                                                new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem)),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
                                                 new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem,
                                                                 false)));
@@ -164,6 +162,7 @@ public class RobotContainer {
                 m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
                 m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
                 m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+
 
                 m_driverController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
                 m_driverController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
