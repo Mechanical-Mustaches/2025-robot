@@ -48,24 +48,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         pivot.set(0);
     }
 
-    public void pivotUp() {
-        if (getEncoderValue() >= 0.4) {
-            pivot.set(-0.05);
-        } else {
-            stopPivot();
-        }
-    }
-
-    public void pivotDown() {
-        if (getEncoderValue() <= 0.05) {
-            pivot.set(0.05);
-        } else {
-
-            stopPivot();
-        }
-
-    }
-
     public void resetEncoder() {
         pivot.getEncoder().setPosition(0);
     }
@@ -109,20 +91,12 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
     public void dumbPivot(double speed) {
         if (speed > 0) {
-            if (getEncoderValue() <= 0.0001) {
-                stopPivot();
-            } else {
-                pivot.set(speed);
-            }
-
-        } else {
-            if (getEncoderValue() >= 0.111) {
+            if (getEncoderValue() <= 0.0001 || getEncoderValue() >= 0.111) {
                 stopPivot();
             } else {
                 pivot.set(speed);
             }
         }
-
     }
 
     @Override
