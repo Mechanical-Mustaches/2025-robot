@@ -84,7 +84,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     }
 
     public void pivotIn(double speed) {
-        if (getEncoderValue() < 0.001) {
+        if (getEncoderValue() > 0.001) {
             pivot.set(speed);
         }
     }
