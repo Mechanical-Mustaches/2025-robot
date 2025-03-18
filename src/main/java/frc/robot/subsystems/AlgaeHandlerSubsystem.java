@@ -98,14 +98,14 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
     public void dumbPivot(double speed) {
         if (speed > 0) {
-            if (getEncoderValue() >= 0.4) {
+            if (getEncoderValue() >= 0.0001) {
                 stopPivot();
             } else {
                 pivot.set(speed);
             }
 
         } else {
-            if (getEncoderValue() <= 0.05) {
+            if (getEncoderValue() <= 0.111) {
                 stopPivot();
             } else {
                 pivot.set(speed);
