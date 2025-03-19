@@ -90,7 +90,7 @@ public class RobotContainer {
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
                                                 new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem,
                                                                 false)));
-                
+
                 NamedCommands.registerCommand("L4 right",
                                 new SequentialCommandGroup(new ParallelCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem,
@@ -112,11 +112,11 @@ public class RobotContainer {
 
                 swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
                                 () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
-                                //xBox is 1
+                                // xBox is 1
                                 () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(3), 0.1),
-                                //xBox is 0
+                                // xBox is 0
                                 () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1)
-                                //xBox is 4
+                // xBox is 4
 
                 ));
 
@@ -153,24 +153,31 @@ public class RobotContainer {
                                 new KeepClosedCommand(superstructureSubsystem));
 
                 // m_driverController.rightTrigger().whileTrue(scoreCommand);
-                // m_driverController.y().whileTrue(new RoughAlignCommand(swerveDriveSubsystem));
-                // m_driverController.x().whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
+                // m_driverController.y().whileTrue(new
+                // RoughAlignCommand(swerveDriveSubsystem));
+                // m_driverController.x().whileTrue(new
+                // frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
 
-                // m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
-                // m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
-                // m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
-                // m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+                // m_driverController.leftBumper().onTrue(new InstantCommand(() ->
+                // swerveDriveSubsystem.resetGyro()));
+                // m_driverController.a().onTrue(new InstantCommand(() ->
+                // algaeHandlerSubsystem.resetEncoder()));
+                // m_driverController.povUp().onTrue(new InstantCommand(() ->
+                // climberSubsystem.dumbClimbComp()));
+                // m_driverController.povUp().onFalse(new InstantCommand(() ->
+                // climberSubsystem.climberStop()));
 
-                // m_driverController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
-                // m_driverController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+                // m_driverController.povDown().onTrue(new InstantCommand(() ->
+                // climberSubsystem.dumbClimb()));
+                // m_driverController.povDown().onFalse(new InstantCommand(() ->
+                // climberSubsystem.climberStop()));
 
-
-                m_driverController.button(1).whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
+                m_driverController.button(1)
+                                .whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
                 m_driverController.button(2).whileTrue(scoreCommand);
                 m_driverController.button(3).onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
                 m_driverController.button(4).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
                 m_driverController.button(4).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-
 
                 m_gunnerController.button(8)
                                 .whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
@@ -182,10 +189,14 @@ public class RobotContainer {
                                 .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2,
                                                 superstructureSubsystem));
                 m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
-                m_gunnerController.button(4).whileTrue(new DumbAlgaePivotCommand(algaeHandlerSubsystem,true));
-                m_gunnerController.button(7).whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem));
-                m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2), new InstantCommand(()->algaeHandlerSubsystem.stopIntake())));
-                m_gunnerController.button(10).whileTrue(new DumbAlgaePivotCommand(algaeHandlerSubsystem, false));
+                m_gunnerController.button(4).onTrue(
+                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.out));
+                m_gunnerController.button(7)
+                                .whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem));
+                m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2),
+                                new InstantCommand(() -> algaeHandlerSubsystem.stopIntake())));
+                m_gunnerController.button(10).onTrue(
+                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.in));
                 m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
                                 endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
                 m_gunnerController.button(9)

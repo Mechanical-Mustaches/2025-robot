@@ -88,19 +88,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         intakeActivator.set(0);
     }
 
-        if (pivot.getAbsoluteEncoder().getPosition() < 0.25) {
-            pivot.set(0.3);
-         } else{
-            stopPivot();
-         }
-    }
-
-    public void pivotIn() {
-        if (pivot.getAbsoluteEncoder().getPosition() > 0) {
-            pivot.set(-0.3);
-         } else{
-            stopPivot();
-         }
     public void pivot(Position targetPosition) {
         pivot.getClosedLoopController().setReference(targetPosition.getValue(), ControlType.kPosition);
     }
