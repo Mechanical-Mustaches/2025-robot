@@ -71,6 +71,11 @@ public class RobotContainer {
         private final CommandGenericHID m_gunnerController = new CommandGenericHID(
                         OperatorConstants.kGunnerControllerPort);
 
+        private final CommandXboxController m_XboxController = new CommandXboxController(
+                        OperatorConstants.kXBoxControllerPort);
+
+        private final XboxController xboxController_HID = m_XboxController.getHID();
+
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
@@ -110,15 +115,23 @@ public class RobotContainer {
                                                 new WaitCommand(0.2),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
 
-                swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
-                                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
-                                //xBox is 1
+                if (!OperatorConstants.usingXBox){
+                        swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
                                 () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(3), 0.1),
-                                //xBox is 0
+                                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
                                 () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1)
-                                //xBox is 4
+                           ));
+                } else {
+                        swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
+                                () -> -MathUtil.applyDeadband(xboxController_HID.getRawAxis(1), 0.1),
+                                () -> -MathUtil.applyDeadband(xboxController_HID.getRawAxis(0), 0.1),
+                                () -> -MathUtil.applyDeadband(xboxController_HID.getRawAxis(4), 0.1)
+                           ));
+                }
+                
 
-                ));
+
+                
 
                 // Configure the trigger bindings
                 configureBindings();
@@ -152,24 +165,24 @@ public class RobotContainer {
                                                 new CoralIntakeCommand(endEffectorSubsystem)),
                                 new KeepClosedCommand(superstructureSubsystem));
 
-                // m_driverController.rightTrigger().whileTrue(scoreCommand);
-                // m_driverController.y().whileTrue(new RoughAlignCommand(swerveDriveSubsystem));
-                // m_driverController.x().whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
+                m_XboxController.rightTrigger().whileTrue(scoreCommand);
+                m_XboxController.y().whileTrue(new RoughAlignCommand(swerveDriveSubsystem));
+                m_XboxController.x().whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
 
-                // m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
-                // m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
-                // m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
-                // m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+                m_XboxController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
+                m_XboxController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
+                m_XboxController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
+                m_XboxController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
 
-                // m_driverController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
-                // m_driverController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+                m_XboxController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+                m_XboxController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
 
 
-                m_driverController.button(1).whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
-                m_driverController.button(2).whileTrue(scoreCommand);
-                m_driverController.button(3).onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
-                m_driverController.button(4).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
-                m_driverController.button(4).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+                m_XboxController.button(1).whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
+                m_XboxController.button(2).whileTrue(scoreCommand);
+                m_XboxController.button(3).onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
+                m_XboxController.button(4).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
+                m_XboxController.button(4).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
 
 
                 m_gunnerController.button(8)
