@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -100,6 +101,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
          } else{
             stopPivot();
          }
+    public void pivot(Position targetPosition) {
+        pivot.getClosedLoopController().setReference(targetPosition.getValue(), ControlType.kPosition);
     }
 
     public double isAlgaeDetected() {
