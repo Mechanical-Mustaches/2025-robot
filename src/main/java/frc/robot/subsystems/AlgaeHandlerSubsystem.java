@@ -1,12 +1,9 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,23 +22,13 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake);
 
         pivotConfig
-                .smartCurrentLimit(10)
-                .idleMode(IdleMode.kBrake);
-
-        pivotConfig
-                .smartCurrentLimit(10)
+                //.smartCurrentLimit(10)
                 .idleMode(IdleMode.kBrake);
 
     }
 
     public double getEncoderValue() {
         return pivot.getAbsoluteEncoder().getPosition();
-    }
-
-    public void pivot() {
-        if (isAlgaeDetected() > 5) {
-            pivot.getClosedLoopController().setReference(0, ControlType.kPosition);
-        }
     }
 
     public void stopPivot() {
@@ -77,16 +64,20 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         intakeActivator.set(0);
     }
 
-    public void pivotOut(double speed) {
-        if (getEncoderValue() < 0.11) {
-            pivot.set(speed);
-        }
+    public void pivotOut() {
+        if (pivot.getAbsoluteEncoder().getPosition() < 0.25) {
+            pivot.set(0.3);
+         } else{
+            stopPivot();
+         }
     }
 
-    public void pivotIn(double speed) {
-        if (getEncoderValue() < 0.001) {
-            pivot.set(speed);
-        }
+    public void pivotIn() {
+        if (pivot.getAbsoluteEncoder().getPosition() > 0) {
+            pivot.set(-0.3);
+         } else{
+            stopPivot();
+         }
     }
 
     public double isAlgaeDetected() {
@@ -99,16 +90,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
     public boolean isIntakingAlgae() {
         return intakingAlgae;
-    }
-
-    public void dumbPivot(double speed) {
-        if (speed > 0) {
-            if (getEncoderValue() >= 0.0001 || getEncoderValue() <= 0.111) {
-                pivot.set(speed);
-            } else {
-                stopPivot();
-            }
-        }
     }
 
     @Override

@@ -9,7 +9,7 @@ import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.DumbAlgaeIntakeCommand;
-import frc.robot.commands.DumbAlgaePivot;
+import frc.robot.commands.DumbAlgaePivotCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -112,8 +112,11 @@ public class RobotContainer {
 
                 swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
                                 () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(1), 0.1),
-                                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1),
-                                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(4), 0.1)
+                                //xBox is 1
+                                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(3), 0.1),
+                                //xBox is 0
+                                () -> -MathUtil.applyDeadband(driveController_HID.getRawAxis(0), 0.1)
+                                //xBox is 4
 
                 ));
 
@@ -149,23 +152,25 @@ public class RobotContainer {
                                                 new CoralIntakeCommand(endEffectorSubsystem)),
                                 new KeepClosedCommand(superstructureSubsystem));
 
-                m_driverController.rightTrigger().whileTrue(scoreCommand);
-                m_driverController.y().whileTrue(new RoughAlignCommand(swerveDriveSubsystem));
-                m_driverController.x().whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
-                // m_driverController.x()
-                // .whileTrue(new RobotAlignCommand(swerveDriveSubsystem,
-                // RobotAlignCommand.Mode.left, false));
-                m_driverController.b()
-                                .whileTrue(new RobotAlignCommand(swerveDriveSubsystem, RobotAlignCommand.Mode.right,
-                                                false));
-                m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
-                m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
-                m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
-                m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+                // m_driverController.rightTrigger().whileTrue(scoreCommand);
+                // m_driverController.y().whileTrue(new RoughAlignCommand(swerveDriveSubsystem));
+                // m_driverController.x().whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
+
+                // m_driverController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
+                // m_driverController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
+                // m_driverController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
+                // m_driverController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+
+                // m_driverController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
+                // m_driverController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
 
 
-                m_driverController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
-                m_driverController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+                m_driverController.button(1).whileTrue(new frc.robot.commands.align.RobotAlignCommand(swerveDriveSubsystem));
+                m_driverController.button(2).whileTrue(scoreCommand);
+                m_driverController.button(3).onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
+                m_driverController.button(4).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
+                m_driverController.button(4).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
+
 
                 m_gunnerController.button(8)
                                 .whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
@@ -177,10 +182,10 @@ public class RobotContainer {
                                 .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2,
                                                 superstructureSubsystem));
                 m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
-                m_gunnerController.button(4).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, -0.2));
+                m_gunnerController.button(4).whileTrue(new DumbAlgaePivotCommand(algaeHandlerSubsystem,true));
                 m_gunnerController.button(7).whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem));
                 m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2), new InstantCommand(()->algaeHandlerSubsystem.stopIntake())));
-                m_gunnerController.button(10).whileTrue(new DumbAlgaePivot(algaeHandlerSubsystem, 0.2));
+                m_gunnerController.button(10).whileTrue(new DumbAlgaePivotCommand(algaeHandlerSubsystem, false));
                 m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
                                 endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
                 m_gunnerController.button(9)
