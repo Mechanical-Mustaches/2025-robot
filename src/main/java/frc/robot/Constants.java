@@ -17,5 +17,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kPitControllerPort = 2;
     public static final int kGunnerControllerPort = 1;
+    public static final int kXBoxControllerPort = 3;
+    public static final boolean usingXBox = true;
   }
 }
