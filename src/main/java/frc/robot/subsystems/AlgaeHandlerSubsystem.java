@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,6 +14,9 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     private boolean intakingAlgae = false;
     // private Encoder pivotEncoder = new Encoder(null, null)
 
+    /**
+     * Holds two algae pivot positions: in and out.
+     */
     public enum Position {
         in(0),
         out(0.25);
@@ -31,13 +35,17 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     public AlgaeHandlerSubsystem() {
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
+        ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
 
         intakeConfig
                 .smartCurrentLimit(10)
                 .idleMode(IdleMode.kBrake);
 
+        closedLoopConfig
+                .pid(0.3, 0, 0);
+
         pivotConfig
-                //.smartCurrentLimit(10)
+                .apply(closedLoopConfig)
                 .idleMode(IdleMode.kBrake);
 
     }
@@ -79,7 +87,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         intakeActivator.set(0);
     }
 
-    public void pivotOut() {
         if (pivot.getAbsoluteEncoder().getPosition() < 0.25) {
             pivot.set(0.3);
          } else{
