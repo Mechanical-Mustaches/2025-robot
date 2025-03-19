@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import java.util.ArrayList;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -10,15 +13,19 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import swervelib.parser.json.modules.AngleConversionFactorsJson;
 
 public class AlgaeHandlerSubsystem extends SubsystemBase {
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
     private boolean intakingAlgae = false;
+    private final static double ALGAE_DETECTION_THRESHOLD = 15;
+    private static final long MEASUREMENT_WINDOW = 500;
+    private ArrayList<AmperageMeasurements> amperageMeasurements = new ArrayList<AmperageMeasurements>();
 
     private record AmperageMeasurements(long time, double amperage) {
-        public boolean isRecent(long window) {
-            return System.currentTimeMillis() - time <= window;
+        public boolean isRecent(long milliseconds) {
+            return System.currentTimeMillis() - time <= milliseconds;
         }
     }
 
@@ -82,7 +89,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         // intakeActivator.set(0.1);
         // }
 
-        if (isAlgaeDetected() > 5) {
+        if (isAlgaeDetected()) {
             intakeActivator.set(0.1);
         } else {
             intakeActivator.set(1);
@@ -103,21 +110,36 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         pivot.getClosedLoopController().setReference(targetPosition.getValue(), ControlType.kPosition);
     }
 
-    public double isAlgaeDetected() {
-        if (intakeActivator.getOutputCurrent() > 15) {
-            return intakeActivator.getOutputCurrent() - 6;
-        } else {
-            return 0;
-        }
+    public boolean isAlgaeDetected() {
+        return getAverageAmperage() > ALGAE_DETECTION_THRESHOLD;
     }
 
     public boolean isIntakingAlgae() {
         return intakingAlgae;
     }
 
+    private AmperageMeasurements getCurrentMeasurement() {
+        return new AmperageMeasurements(System.currentTimeMillis(), pivot.getOutputCurrent());
+    }
+
+    private double getAverageAmperage() {
+        if (amperageMeasurements.isEmpty()) {
+            return 0;
+        }
+        double sumOfElements = 0;
+
+        for (var measurement : amperageMeasurements) {
+            sumOfElements = sumOfElements + measurement.amperage;
+        }
+
+        return sumOfElements / amperageMeasurements.size();
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("algaeDetectionValue", isAlgaeDetected());
+        amperageMeasurements.add(getCurrentMeasurement());
+
+        SmartDashboard.putBoolean("algaeDetectionValue", isAlgaeDetected());
         SmartDashboard.putNumber("pivotEncoderValue", pivot.getAbsoluteEncoder().getPosition());
         SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
         SmartDashboard.putNumber("AlgaeCurrentDraw", intakeActivator.getOutputCurrent());
