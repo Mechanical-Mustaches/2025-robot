@@ -15,14 +15,21 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
     private boolean intakingAlgae = false;
+
+    private record AmperageMeasurements(long time, double amperage) {
+        public boolean isRecent(long window) {
+            return System.currentTimeMillis() - time <= window;
+        }
+    }
+
     // private Encoder pivotEncoder = new Encoder(null, null)
 
     /**
      * Holds two algae pivot positions: in and out.
      */
     public enum Position {
-        in(0),
-        out(0.25);
+        In(0),
+        Out(0.25);
 
         private final double encoderValue;
 

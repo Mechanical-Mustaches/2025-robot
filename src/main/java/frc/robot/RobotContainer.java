@@ -189,13 +189,13 @@ public class RobotContainer {
                                                 superstructureSubsystem));
                 m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
                 m_gunnerController.button(4).onTrue(
-                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.out));
+                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.Out));
                 m_gunnerController.button(7)
                                 .whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem));
                 m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2),
                                 new InstantCommand(() -> algaeHandlerSubsystem.stopIntake())));
                 m_gunnerController.button(10).onTrue(
-                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.in));
+                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.In));
                 m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
                                 endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
                 m_gunnerController.button(9)
