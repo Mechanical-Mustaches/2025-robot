@@ -11,6 +11,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.parser.json.modules.AngleConversionFactorsJson;
@@ -19,6 +20,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
     private boolean intakingAlgae = false;
+    private boolean isLocked = false;
     private final static double ALGAE_DETECTION_THRESHOLD = 15;
     private static final long MEASUREMENT_WINDOW = 500;
     private ArrayList<AmperageMeasurements> amperageMeasurements = new ArrayList<AmperageMeasurements>();
@@ -82,19 +84,11 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     }
 
     public void intake() {
-        intakingAlgae = true;
-        // if (intakeActivator.getOutputCurrent() < 6) {
-        // intakeActivator.set(1);
-        // } else {
-        // intakeActivator.set(0.1);
-        // }
+        intakeActivator.set(1);
+    }
 
-        if (isAlgaeDetected()) {
-            intakeActivator.set(0.1);
-        } else {
-            intakeActivator.set(1);
-        }
-
+    public void hold() {
+        intakeActivator.set(0.1);
     }
 
     public void launch() {
@@ -135,10 +129,33 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         return sumOfElements / amperageMeasurements.size();
     }
 
+    private void removeMeasurements() {
+        amperageMeasurements.removeIf(measurement -> !measurement.isRecent(MEASUREMENT_WINDOW));
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void lock() {
+        isLocked = true;
+    }
+
+    public void unlock() {
+        isLocked = false;
+    }
+
     @Override
     public void periodic() {
+
+        if (!isLocked) {
+            pivot.getClosedLoopController().setReference(Position.In.getValue(), ControlType.kPosition);
+        }
+
+        removeMeasurements();
         amperageMeasurements.add(getCurrentMeasurement());
 
+        SmartDashboard.putNumber("intakeMotorAmperage", getAverageAmperage());
         SmartDashboard.putBoolean("algaeDetectionValue", isAlgaeDetected());
         SmartDashboard.putNumber("pivotEncoderValue", pivot.getAbsoluteEncoder().getPosition());
         SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
