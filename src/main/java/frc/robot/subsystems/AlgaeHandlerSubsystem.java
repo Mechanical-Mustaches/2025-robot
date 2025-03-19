@@ -13,6 +13,21 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     private boolean intakingAlgae = false;
     // private Encoder pivotEncoder = new Encoder(null, null)
 
+    public enum Position {
+        in(0),
+        out(0.25);
+
+        private final double encoderValue;
+
+        private Position(double encoderValue) {
+            this.encoderValue = encoderValue;
+        }
+
+        public double getValue() {
+            return this.encoderValue;
+        }
+    }
+
     public AlgaeHandlerSubsystem() {
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
