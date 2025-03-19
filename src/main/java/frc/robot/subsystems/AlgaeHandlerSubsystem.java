@@ -6,6 +6,8 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -43,12 +45,14 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake);
 
         closedLoopConfig
-                .pid(0.3, 0, 0);
+                .pid(0.3, 0.000001, 0)
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig
                 .apply(closedLoopConfig)
                 .idleMode(IdleMode.kBrake);
 
+        pivot.configure(pivotConfig, null, null);
     }
 
     public double getEncoderValue() {
@@ -107,7 +111,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("algaeDetectionValue", isAlgaeDetected());
-        SmartDashboard.putNumber("pivotEncoderValue", pivot.getEncoder().getPosition());
+        SmartDashboard.putNumber("pivotEncoderValue", pivot.getAbsoluteEncoder().getPosition());
         SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
         SmartDashboard.putNumber("AlgaeCurrentDraw", intakeActivator.getOutputCurrent());
         SmartDashboard.putNumber("PivotRelativeEncoderValue", pivot.getEncoder().getPosition());

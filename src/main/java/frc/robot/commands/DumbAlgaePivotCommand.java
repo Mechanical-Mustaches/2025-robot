@@ -18,9 +18,7 @@ public class DumbAlgaePivotCommand extends Command {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        if (interrupted) {
-            algaeHandlerSubsystem.stopPivot();
-        }
+    public boolean isFinished() {
+        return true;
     }
 }
