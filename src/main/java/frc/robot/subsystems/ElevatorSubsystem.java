@@ -106,10 +106,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (limitSwitch.isPressed()) {
-            resetEncoders();
-        }
+        // if (limitSwitch.isPressed()) {
+        // resetEncoders();
+        // }
         SmartDashboard.putNumber("ElevatorEncoderValue", getEncoderValue());
+        SmartDashboard.putNumber("ElevatorAmperage", leftEleMotor.getOutputCurrent());
     }
 
 }

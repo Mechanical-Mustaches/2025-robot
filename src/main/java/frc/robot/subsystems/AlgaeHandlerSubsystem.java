@@ -63,7 +63,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
         closedLoopConfig
                 .pid(0.55, 0.000001, 0, ClosedLoopSlot.kSlot0)
-                .pid(0.2, 0.000001, 0, ClosedLoopSlot.kSlot1)
+                .pid(0.1, 0.000001, 0, ClosedLoopSlot.kSlot1)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig
