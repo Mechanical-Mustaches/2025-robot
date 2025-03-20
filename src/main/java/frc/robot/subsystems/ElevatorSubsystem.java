@@ -51,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         leftConfig
-                .smartCurrentLimit(25)
+                .smartCurrentLimit(40)
                 .idleMode(IdleMode.kBrake)
                 .apply(pidConfig)
                 .inverted(true);

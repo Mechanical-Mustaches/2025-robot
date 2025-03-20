@@ -13,8 +13,8 @@ public class AlgaeIntakeCommandGroup extends Command {
         this.algaeHandlerSubsystem = algaeHandlerSubsystem;
         this.commandGroup = new SequentialCommandGroup(
                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.Out),
-                new AlgaeIntakeCommand(algaeHandlerSubsystem),
-                new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In));
+                new AlgaeIntakeCommand(algaeHandlerSubsystem));
+        // new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In));
     }
 
     @Override
