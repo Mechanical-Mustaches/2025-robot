@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlgaeIntakeCommandGroup;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.CoralScoringCommand;
@@ -175,7 +176,6 @@ public class RobotContainer {
                 m_driverController.button(3).onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
                 m_driverController.button(4).onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
                 m_driverController.button(4).onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
-
                 m_gunnerController.button(8)
                                 .whileTrue(new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
                 m_gunnerController.button(11).whileTrue(intakeCommand);
@@ -186,12 +186,13 @@ public class RobotContainer {
                                 .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2,
                                                 superstructureSubsystem));
                 m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
-                m_gunnerController.button(4).whileTrue(new DumbAlgaePivotCommand(algaeHandlerSubsystem, true));
+                m_gunnerController.button(4).onTrue(new AlgaeIntakeCommandGroup(algaeHandlerSubsystem));
                 m_gunnerController.button(7)
                                 .whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem));
                 m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2),
                                 new InstantCommand(() -> algaeHandlerSubsystem.stopIntake())));
-                m_gunnerController.button(10).whileTrue(new DumbAlgaePivotCommand(algaeHandlerSubsystem, false));
+                m_gunnerController.button(10).onTrue(
+                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.In));
                 m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
                                 endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
                 m_gunnerController.button(9)

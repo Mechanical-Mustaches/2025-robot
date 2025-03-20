@@ -5,33 +5,20 @@ import frc.robot.subsystems.AlgaeHandlerSubsystem;
 
 public class DumbAlgaePivotCommand extends Command {
     AlgaeHandlerSubsystem algaeHandlerSubsystem;
-    boolean pivotOut;
+    AlgaeHandlerSubsystem.Position targetPosition;
 
-    public DumbAlgaePivotCommand(AlgaeHandlerSubsystem subsystem, boolean pivotOut) {
+    public DumbAlgaePivotCommand(AlgaeHandlerSubsystem subsystem, AlgaeHandlerSubsystem.Position targetPosition) {
         algaeHandlerSubsystem = subsystem;
-        this.pivotOut = pivotOut;
+        this.targetPosition = targetPosition;
     }
 
     @Override
     public void initialize() {
-        if (pivotOut) {
-            algaeHandlerSubsystem.pivotOut();
-        } else{
-            algaeHandlerSubsystem.pivotIn();
-        }
+        algaeHandlerSubsystem.pivot(targetPosition);
     }
 
     @Override
-    public void execute() {
-        if (pivotOut) {
-            algaeHandlerSubsystem.pivotOut();
-        } else {
-            algaeHandlerSubsystem.pivotIn();
-        }
-    }
-
-    @Override
-    public void end(boolean interupt) {
-        algaeHandlerSubsystem.stopPivot();
+    public boolean isFinished() {
+        return true;
     }
 }
