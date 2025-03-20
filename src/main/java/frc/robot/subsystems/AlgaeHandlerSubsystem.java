@@ -159,7 +159,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     public void periodic() {
 
         if (!isLocked) {
-            pivot.getClosedLoopController().setReference(Position.In.getValue(), ControlType.kPosition);
+            // pivot.getClosedLoopController().setReference(Position.In.getValue(),
+            // ControlType.kPosition);
         }
 
         removeMeasurements();
@@ -169,7 +170,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("algaeDetectionValue", isAlgaeDetected());
         SmartDashboard.putNumber("pivotEncoderValue", pivot.getAbsoluteEncoder().getPosition());
         SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
-        SmartDashboard.putNumber("AlgaeCurrentDraw", intakeActivator.getOutputCurrent());
+        SmartDashboard.putNumber("AlgaePivotCurrentDraw", pivot.getOutputCurrent());
         SmartDashboard.putNumber("PivotRelativeEncoderValue", pivot.getEncoder().getPosition());
 
     }

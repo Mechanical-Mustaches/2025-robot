@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ElevatorSubsystem extends SubsystemBase {
 
     EndEffectorSubsystem endEffector;
+    private static final double STAGE_ENCODER_OFFSET = 3;
 
     public enum Level {
         LIntake(0),
@@ -47,7 +48,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                 // .pid(0.02, 0.0000, 0.00003, ClosedLoopSlot.kSlot1)
                 .pid(0.03, 0.00001, 0.00006, ClosedLoopSlot.kSlot0)
                 .pid(0.02, 0.00001, 0.00006, ClosedLoopSlot.kSlot1)
-                .pid(0.0, 0.000000, 0.0000, ClosedLoopSlot.kSlot2)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         leftConfig
@@ -68,10 +68,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.endEffector = endEffector;
 
         if (getEncoderValue() > targetLevel.encoderValue) {
-            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,
+            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue - STAGE_ENCODER_OFFSET,
+                    ControlType.kPosition,
                     ClosedLoopSlot.kSlot1);
         } else {
-            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue, ControlType.kPosition,
+            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue - STAGE_ENCODER_OFFSET,
+                    ControlType.kPosition,
                     ClosedLoopSlot.kSlot0);
         }
     }
@@ -106,9 +108,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // if (limitSwitch.isPressed()) {
-        // resetEncoders();
-        // }
+        if (limitSwitch.isPressed()) {
+            resetEncoders();
+        }
         SmartDashboard.putNumber("ElevatorEncoderValue", getEncoderValue());
         SmartDashboard.putNumber("ElevatorAmperage", leftEleMotor.getOutputCurrent());
     }
