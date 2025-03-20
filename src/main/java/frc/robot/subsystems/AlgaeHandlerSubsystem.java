@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import java.util.ArrayList;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -61,11 +62,13 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake);
 
         closedLoopConfig
-                .pid(0.55, 0.000001, 0)
+                .pid(0.55, 0.000001, 0, ClosedLoopSlot.kSlot0)
+                .pid(0.2, 0.000001, 0, ClosedLoopSlot.kSlot1)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig
                 .apply(closedLoopConfig)
+                .smartCurrentLimit(15)
                 .idleMode(IdleMode.kBrake);
 
         pivot.configure(pivotConfig, null, null);
@@ -101,7 +104,14 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     }
 
     public void pivot(Position targetPosition) {
-        pivot.getClosedLoopController().setReference(targetPosition.getValue(), ControlType.kPosition);
+        if (targetPosition == Position.In) {
+            pivot.getClosedLoopController().setReference(targetPosition.getValue(), ControlType.kPosition,
+                    ClosedLoopSlot.kSlot1);
+        } else {
+            pivot.getClosedLoopController().setReference(targetPosition.getValue(), ControlType.kPosition,
+                    ClosedLoopSlot.kSlot0);
+        }
+
     }
 
     public boolean isAlgaeDetected() {
@@ -113,7 +123,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     }
 
     private AmperageMeasurements getCurrentMeasurement() {
-        return new AmperageMeasurements(System.currentTimeMillis(), pivot.getOutputCurrent());
+        return new AmperageMeasurements(System.currentTimeMillis(), intakeActivator.getOutputCurrent());
     }
 
     private double getAverageAmperage() {
