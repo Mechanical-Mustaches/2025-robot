@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "L4 Score"
+            "pathName": "L4 Right Score"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4 left"
+            "name": "L4 right"
           }
         }
       ]
