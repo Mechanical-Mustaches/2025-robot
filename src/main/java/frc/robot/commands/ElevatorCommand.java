@@ -18,9 +18,9 @@ public class ElevatorCommand extends Command {
 
     @Override
     public void initialize() {
-        if (endEffector.isCoralSeenBack()) {
-            return;
-        }
+        // if (endEffector.isCoralSeenBack()) {
+        // return;
+        // }
 
         elevator.setPosition(targetLevel, endEffector);
     }

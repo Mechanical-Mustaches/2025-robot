@@ -21,7 +21,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
     private boolean intakingAlgae = false;
     private boolean isLocked = false;
-    private final static double ALGAE_DETECTION_THRESHOLD = 15;
+    private final static double ALGAE_DETECTION_THRESHOLD = 10;
     private static final long MEASUREMENT_WINDOW = 500;
     private ArrayList<AmperageMeasurements> amperageMeasurements = new ArrayList<AmperageMeasurements>();
 
@@ -61,7 +61,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake);
 
         closedLoopConfig
-                .pid(0.3, 0.000001, 0)
+                .pid(0.55, 0.000001, 0)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig
