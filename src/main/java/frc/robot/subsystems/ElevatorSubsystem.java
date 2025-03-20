@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -34,6 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private SparkMax leftEleMotor = new SparkMax(16, MotorType.kBrushless);
     private SparkMax rightEleMotor = new SparkMax(17, MotorType.kBrushless);
+    private DigitalInput limitSwitch = new DigitalInput(1);
 
     public ElevatorSubsystem() {
 
@@ -42,8 +44,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
-                .pid(0.03, 0.00003, 0.00006, ClosedLoopSlot.kSlot0)
-                .pid(0.02, 0.0000, 0.00003, ClosedLoopSlot.kSlot1)
+                // .pid(0.03, 0.00003, 0.00006, ClosedLoopSlot.kSlot0)
+                // .pid(0.02, 0.0000, 0.00003, ClosedLoopSlot.kSlot1)
+                .pid(0.03, 0.00001, 0.00006, ClosedLoopSlot.kSlot0)
+                .pid(0.02, 0.00001, 0.00006, ClosedLoopSlot.kSlot1)
                 .pid(0.0, 0.000000, 0.0000, ClosedLoopSlot.kSlot2)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
@@ -96,8 +100,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
+    public void resetEncoders() {
+        leftEleMotor.getEncoder().setPosition(0);
+        rightEleMotor.getEncoder().setPosition(0);
+    }
+
     @Override
     public void periodic() {
+        if (limitSwitch.get()) {
+            resetEncoders();
+        }
         SmartDashboard.putNumber("ElevatorEncoderValue", getEncoderValue());
     }
 
