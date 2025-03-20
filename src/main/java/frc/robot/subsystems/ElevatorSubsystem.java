@@ -42,8 +42,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         ClosedLoopConfig pidConfig = new ClosedLoopConfig();
 
         pidConfig
-                .pid(0.05, 0.00001, 0.00006, ClosedLoopSlot.kSlot0)
-                .pid(0.05, 0.00001, 0.00006, ClosedLoopSlot.kSlot1)
+                .pid(0.03, 0.00003, 0.00006, ClosedLoopSlot.kSlot0)
+                .pid(0.02, 0.0000, 0.00003, ClosedLoopSlot.kSlot1)
                 .pid(0.0, 0.000000, 0.0000, ClosedLoopSlot.kSlot2)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 

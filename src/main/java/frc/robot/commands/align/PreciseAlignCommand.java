@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
+import frc.robot.commands.align.Constants.Mode;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class PreciseAlignCommand extends Command {
@@ -15,14 +16,14 @@ public class PreciseAlignCommand extends Command {
     private AlignmentHelpers alignmentHelpers = new AlignmentHelpers();
 
     private PIDController wallPidController = new PIDController(0.005, 0, 0);
-    private PIDController tagPidController = new PIDController(10, 0.03, 0);
-
-    private static final double reefPoleCenterOffset = 0.1558544;
+    private PIDController tagPidController = new PIDController(3, 0.03, 0);
 
     SwerveDriveSubsystem.ReefPosition closestReef;
+    Constants.Mode mode;
 
-    public PreciseAlignCommand(SwerveDriveSubsystem swerve) {
+    public PreciseAlignCommand(SwerveDriveSubsystem swerve, Constants.Mode mode) {
         this.swerve = swerve;
+        this.mode = mode;
         addRequirements(swerve);
     }
 
@@ -36,8 +37,8 @@ public class PreciseAlignCommand extends Command {
 
     }
 
-    private Optional<Pose3d> getTagPose(boolean useRightCamera) {
-        String llName = useRightCamera ? "limelight-right" : "limelight-left";
+    private Optional<Pose3d> getTagPose() {
+        String llName = this.mode == Constants.Mode.LEFT ? "limelight-right" : "limelight-left";
 
         if (LimelightHelpers.getTV(llName)){
             Pose3d targetPose = LimelightHelpers.getTargetPose3d_RobotSpace(llName);
@@ -57,12 +58,17 @@ public class PreciseAlignCommand extends Command {
         double vx = 0;
         double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose());
 
-        Optional<Pose3d> targetPose = getTagPose(true);
+        Optional<Pose3d> targetPose = getTagPose();
         if (targetPose.isPresent() && isRotated()) {
             Pose3d pose = targetPose.get();
-            vy = tagPidController.calculate(pose.getX(), Constants.REEF_POLE_CENTER_OFFSET);
+            if (mode == Mode.LEFT){
+                vy = tagPidController.calculate(pose.getX(), Constants.REEF_POLE_CENTER_OFFSET);
+            } else if (mode == Mode.RIGHT){
+                vy = tagPidController.calculate(pose.getX(), -Constants.REEF_POLE_CENTER_OFFSET);
+            }
+            
             SmartDashboard.putNumber("pac/TargetX", pose.getX());
-            // vx = -tagPidController.calculate(pose.getZ(), 0.8);
+            vx = -tagPidController.calculate(pose.getZ(), 0.45)/2;
         }
     
         SmartDashboard.putNumber("pac/velocityY", vy);
@@ -76,12 +82,17 @@ public class PreciseAlignCommand extends Command {
             return false;
         }
 
-        Optional<Pose3d> targetPose = getTagPose(true);
+        Optional<Pose3d> targetPose = getTagPose();
         if (targetPose.isEmpty()) {
             return true;
         }
-        Pose3d pose = targetPose.get();
-        return Math.abs(pose.getX() - Constants.REEF_POLE_CENTER_OFFSET) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
+        // Pose3d pose = targetPose.get();
+        // if (mode == Mode.LEFT){
+        //     return Math.abs(pose.getX() - Constants.REEF_POLE_CENTER_OFFSET) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
+        // } else if (mode == Mode.RIGHT){
+        //     return Math.abs(pose.getX() + Constants.REEF_POLE_CENTER_OFFSET) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
+        // }
+        return false;
 
     }
 }

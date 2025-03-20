@@ -1,11 +1,15 @@
 package frc.robot.commands.align;
 
 public class Constants {
+    public enum Mode{
+        LEFT,
+        RIGHT
+    }
     // TODO: Tune all of these values
 
     // Angle tolerance in degrees. This should be as small as possible while
     // still allowing the robot to finish rotating.
-    public static final double ROTATION_ALIGNMENT_TOLERANCE = 3.0;
+    public static final double ROTATION_ALIGNMENT_TOLERANCE = 1;
 
     // Left/right tolerance in meters. This should be as small as possible while
     // still allowing the robot to align positionally.
@@ -17,5 +21,5 @@ public class Constants {
     // Distance away from the wall to path to. This should be far enough to see
     // april tags with a good FOV, but as close as possible to reduce alignment
     // time.
-    public static final double ROUGH_ALIGN_TARGET_REEF_DISTANCE = 0.45;
+    public static final double ROUGH_ALIGN_TARGET_REEF_DISTANCE = 0.65;
 }

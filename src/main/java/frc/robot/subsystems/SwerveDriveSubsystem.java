@@ -208,8 +208,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public Command goToWaypoint(Pose2d desiredPose) {
         return AutoBuilder.pathfindToPose(desiredPose,
-                new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
-                0.3);
+                new PathConstraints(3.0, 3.0, 1 * Math.PI, 2 * Math.PI),
+                0.1);
     }
 
     @Override

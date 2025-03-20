@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDriveSubsystem.ReefPosition;
 
 public class AlignmentHelpers {
-    private PIDController pidRotation = new PIDController(0.15, 0.005, 0);
+    private PIDController pidRotation = new PIDController(0.15, 0.01, 0);
 
     public void initialize() {
         pidRotation.reset();
