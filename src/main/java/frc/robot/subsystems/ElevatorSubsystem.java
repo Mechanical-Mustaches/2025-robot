@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -8,8 +9,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -35,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private SparkMax leftEleMotor = new SparkMax(16, MotorType.kBrushless);
     private SparkMax rightEleMotor = new SparkMax(17, MotorType.kBrushless);
-    private DigitalInput limitSwitch = new DigitalInput(1);
+    private SparkLimitSwitch limitSwitch = leftEleMotor.getForwardLimitSwitch();
 
     public ElevatorSubsystem() {
 
@@ -107,7 +106,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (limitSwitch.get()) {
+        if (limitSwitch.isPressed()) {
             resetEncoders();
         }
         SmartDashboard.putNumber("ElevatorEncoderValue", getEncoderValue());
