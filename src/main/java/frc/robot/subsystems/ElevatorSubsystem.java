@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    EndEffectorSubsystem endEffector;
     private static final double STAGE_ENCODER_OFFSET = 2.5;
 
     public enum Level {
@@ -64,8 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         rightEleMotor.configure(rightConfig, null, null);
     }
 
-    public void setPosition(Level targetLevel, EndEffectorSubsystem endEffector) {
-        this.endEffector = endEffector;
+    public void setPosition(Level targetLevel) {
 
         if (getEncoderValue() > targetLevel.encoderValue) {
             leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue - STAGE_ENCODER_OFFSET,

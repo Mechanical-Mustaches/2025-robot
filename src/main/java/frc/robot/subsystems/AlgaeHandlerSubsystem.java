@@ -45,8 +45,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
      * Holds two algae pivot positions: in and out.
      */
     public enum Position {
-        In(0.15),
-        Out(0.09);
+        In(0.015),
+        Out(0.076);
 
         private final double encoderValue;
 
@@ -56,6 +56,19 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
         public double getValue() {
             return this.encoderValue;
+        }
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case In:
+                    return "In";
+
+                case Out:
+                    return "Out";
+                default:
+                    return "unknown";
+            }
         }
 
     }
@@ -72,8 +85,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake);
 
         closedLoopConfig
-                .pid(0.55, 0.000001, 0, closedLoopSlots.get(Position.In))
-                .pid(1, 0.000001, 0, closedLoopSlots.get(Position.Out))
+                .pid(2, 0.000001, 0, closedLoopSlots.get(Position.In))
+                .pid(2, 0.000001, 0, closedLoopSlots.get(Position.Out))
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig
@@ -116,6 +129,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     public void pivot(Position targetPosition) {
         var reference = targetPosition.getValue();
         var slot = closedLoopSlots.get(targetPosition);
+        SmartDashboard.putNumber("algae/target", reference);
 
         pivot.getClosedLoopController().setReference(reference, ControlType.kPosition, slot);
 

@@ -24,8 +24,6 @@ public class RobotAlignV2Command extends Command {
         manual
     }
 
-    private Mode mode;
-
     SwerveDriveSubsystem swerve;
     private boolean autoFinish;
 
@@ -82,7 +80,7 @@ public class RobotAlignV2Command extends Command {
         if (distanceFromCenterOfReef < 0.5 && distanceValidity && !testRoughAlign) {
             preciseAlign();
             roughValidity = false;
-        } else if (roughValidity){
+        } else if (roughValidity) {
             roughAlign();
         }
 
@@ -105,7 +103,7 @@ public class RobotAlignV2Command extends Command {
     private void preciseAlign() {
         double vy = 0;
         double vx = 0;
-        if (LimelightHelpers.getTV("limelight-right")){
+        if (LimelightHelpers.getTV("limelight-right")) {
             Pose3d leftTargetPose = LimelightHelpers.getTargetPose3d_RobotSpace("limelight-right");
             vy = tagPidController.calculate(leftTargetPose.getX(), reefPoleCenterOffset);
             SmartDashboard.putNumber("rav/TargetX", leftTargetPose.getX());
@@ -128,9 +126,11 @@ public class RobotAlignV2Command extends Command {
         // double reefAngle = closestReef.rotation().getRadians() - Math.PI;
         // double currentPositionX = swerve.getPose().getX();
         // double currentPositionY = swerve.getPose().getY();
-        // double leftDesiredPositionX = closestReef.translation().getX() + roughAlignOffset * Math.cos(reefAngle)
+        // double leftDesiredPositionX = closestReef.translation().getX() +
+        // roughAlignOffset * Math.cos(reefAngle)
         // + roughAlignOffset * Math.sin(reefAngle - 90);
-        // double desiredPositionY = closestReef.translation().getY() + roughAlignOffset * Math.sin(reefAngle)
+        // double desiredPositionY = closestReef.translation().getY() + roughAlignOffset
+        // * Math.sin(reefAngle)
         // double deltaX = desiredPositionX - currentPositionX;
         // double deltaY = desiredPositionY - currentPositionY;
         // double m = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
