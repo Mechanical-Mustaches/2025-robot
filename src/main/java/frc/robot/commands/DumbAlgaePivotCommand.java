@@ -10,6 +10,7 @@ public class DumbAlgaePivotCommand extends Command {
     public DumbAlgaePivotCommand(AlgaeHandlerSubsystem subsystem, AlgaeHandlerSubsystem.Position targetPosition) {
         algaeHandlerSubsystem = subsystem;
         this.targetPosition = targetPosition;
+        this.addRequirements(algaeHandlerSubsystem);
     }
 
     @Override

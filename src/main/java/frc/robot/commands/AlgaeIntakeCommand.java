@@ -8,6 +8,7 @@ public class AlgaeIntakeCommand extends Command {
 
     public AlgaeIntakeCommand(AlgaeHandlerSubsystem algaeHandlerSubsystem) {
         this.algaeHandlerSubsystem = algaeHandlerSubsystem;
+        this.addRequirements(algaeHandlerSubsystem);
     }
 
     @Override

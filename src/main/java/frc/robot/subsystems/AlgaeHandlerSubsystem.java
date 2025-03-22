@@ -12,10 +12,9 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import swervelib.parser.json.modules.AngleConversionFactorsJson;
+import frc.robot.commands.DumbAlgaePivotCommand;
 
 public class AlgaeHandlerSubsystem extends SubsystemBase {
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
@@ -38,7 +37,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
      * Holds two algae pivot positions: in and out.
      */
     public enum Position {
-        In(0),
+        In(0.02),
         Out(0.25);
 
         private final double encoderValue;
@@ -50,12 +49,15 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         public double getValue() {
             return this.encoderValue;
         }
+
     }
 
     public AlgaeHandlerSubsystem() {
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
         ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
+
+        this.setDefaultCommand(new DumbAlgaePivotCommand(this, Position.In));
 
         intakeConfig
                 .smartCurrentLimit(10)
