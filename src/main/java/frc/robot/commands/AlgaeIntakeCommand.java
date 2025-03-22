@@ -13,11 +13,7 @@ public class AlgaeIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (algaeHandlerSubsystem.isAlgaeDetected()) {
-            algaeHandlerSubsystem.hold();
-        } else {
-            algaeHandlerSubsystem.intake();
-        }
+        algaeHandlerSubsystem.intake();
     }
 
     @Override
