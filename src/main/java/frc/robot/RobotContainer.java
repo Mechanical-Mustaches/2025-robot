@@ -93,7 +93,8 @@ public class RobotContainer {
                                                                 false),
                                                 new RobotAlignCommand(swerveDriveSubsystem, Mode.LEFT, true)),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem,
+                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake,
+                                                                endEffectorSubsystem,
                                                                 false)));
 
                 NamedCommands.registerCommand("L4 right",
@@ -102,7 +103,8 @@ public class RobotContainer {
                                                                 false),
                                                 new RobotAlignCommand(swerveDriveSubsystem, Mode.RIGHT, true)),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem,
+                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake,
+                                                                endEffectorSubsystem,
                                                                 false)));
 
                 NamedCommands.registerCommand("L4",
@@ -134,6 +136,10 @@ public class RobotContainer {
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
+        }
+
+        public void reset() {
+                this.algaeHandlerSubsystem.reset();
         }
 
         /**
@@ -191,8 +197,8 @@ public class RobotContainer {
                                 .whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem));
                 m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2),
                                 new InstantCommand(() -> algaeHandlerSubsystem.stopIntake())));
-                m_gunnerController.button(10).onTrue(
-                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.In));
+                m_gunnerController.button(10).whileTrue(
+                                new InstantCommand(() -> algaeHandlerSubsystem.launch()));
                 m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
                                 endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
                 m_gunnerController.button(9)

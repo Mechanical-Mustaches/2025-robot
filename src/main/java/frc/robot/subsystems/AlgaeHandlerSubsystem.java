@@ -31,7 +31,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
     private boolean intakingAlgae = false;
-    private boolean isLocked = false;
     private ArrayList<AmperageMeasurements> amperageMeasurements = new ArrayList<AmperageMeasurements>();
 
     private record AmperageMeasurements(long time, double amperage) {
@@ -149,7 +148,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
             }
         }
 
-        if (recentMeasurementCount < 5) {
+        if (recentMeasurementCount < RECENT_MEASUREMENT_COUNT) {
             return 0;
         }
 
@@ -160,25 +159,13 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         amperageMeasurements.removeIf(measurement -> !measurement.isRecent(MEASUREMENT_WINDOW));
     }
 
-    public boolean isLocked() {
-        return isLocked;
-    }
-
-    public void lock() {
-        isLocked = true;
-    }
-
-    public void unlock() {
-        isLocked = false;
+    public void reset() {
+        amperageMeasurements.clear();
+        stopIntake();
     }
 
     @Override
     public void periodic() {
-
-        if (!isLocked) {
-            // pivot.getClosedLoopController().setReference(Position.In.getValue(),
-            // ControlType.kPosition);
-        }
 
         removeMeasurements();
         amperageMeasurements.add(getCurrentMeasurement());
