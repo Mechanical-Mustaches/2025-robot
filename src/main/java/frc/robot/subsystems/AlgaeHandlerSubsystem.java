@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
@@ -17,12 +18,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DumbAlgaePivotCommand;
 
 public class AlgaeHandlerSubsystem extends SubsystemBase {
+    private final static double ALGAE_DETECTION_THRESHOLD = 10;
+    private static final long MEASUREMENT_WINDOW = 500;
+    // this number represents the minimum number of recent measurements needed to
+    // calculate average amperage
+    private static final int RECENT_MEASUREMENT_COUNT = 5;
+
+    private static final Map<Position, ClosedLoopSlot> closedLoopSlots = Map.of(
+            Position.In, ClosedLoopSlot.kSlot0,
+            Position.Out, ClosedLoopSlot.kSlot1);
+
     private SparkMax intakeActivator = new SparkMax(23, MotorType.kBrushless);
     private SparkMax pivot = new SparkMax(22, MotorType.kBrushless);
     private boolean intakingAlgae = false;
     private boolean isLocked = false;
-    private final static double ALGAE_DETECTION_THRESHOLD = 10;
-    private static final long MEASUREMENT_WINDOW = 500;
     private ArrayList<AmperageMeasurements> amperageMeasurements = new ArrayList<AmperageMeasurements>();
 
     private record AmperageMeasurements(long time, double amperage) {
@@ -64,8 +73,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake);
 
         closedLoopConfig
-                .pid(0.55, 0.000001, 0, ClosedLoopSlot.kSlot0)
-                .pid(1, 0.000001, 0, ClosedLoopSlot.kSlot1)
+                .pid(0.55, 0.000001, 0, closedLoopSlots.get(Position.In))
+                .pid(1, 0.000001, 0, closedLoopSlots.get(Position.Out))
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig
@@ -106,13 +115,10 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
     }
 
     public void pivot(Position targetPosition) {
-        if (targetPosition == Position.In) {
-            pivot.getClosedLoopController().setReference(targetPosition.getValue(), ControlType.kPosition,
-                    ClosedLoopSlot.kSlot1);
-        } else {
-            pivot.getClosedLoopController().setReference(targetPosition.getValue(), ControlType.kPosition,
-                    ClosedLoopSlot.kSlot0);
-        }
+        var reference = targetPosition.getValue();
+        var slot = closedLoopSlots.get(targetPosition);
+
+        pivot.getClosedLoopController().setReference(reference, ControlType.kPosition, slot);
 
     }
 
