@@ -11,6 +11,9 @@ public class AlignmentHelpers {
     public AlignmentHelpers() {
         SmartDashboard.putBoolean("align/rotation/isRotated", false);
         SmartDashboard.putNumber("align/rotation/rotationalVelocity", 0);
+        SmartDashboard.putNumber("align/rotation/currentAngle", 0);
+        SmartDashboard.putNumber("align/rotation/desiredNegativeAngle", 0);
+        SmartDashboard.putNumber("align/rotation/desiredPositiveAngle", 0);
     }
 
     public void initialize() {

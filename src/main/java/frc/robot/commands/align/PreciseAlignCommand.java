@@ -12,8 +12,6 @@ import frc.robot.commands.align.Constants.Mode;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class PreciseAlignCommand extends Command {
-    private static double FORWARD_SETPOINT = 0.45;
-
     private SwerveDriveSubsystem swerve;
     private AlignmentHelpers alignmentHelpers = new AlignmentHelpers();
     private PIDController tagPidController = new PIDController(3, 0.03, 0);
@@ -39,7 +37,7 @@ public class PreciseAlignCommand extends Command {
     private Optional<Pose3d> getTagPose() {
         String llName = this.mode == Constants.Mode.LEFT ? "limelight-right" : "limelight-left";
 
-        if (LimelightHelpers.getTV(llName)){
+        if (LimelightHelpers.getTV(llName)) {
             Pose3d targetPose = LimelightHelpers.getTargetPose3d_RobotSpace(llName);
             return Optional.of(targetPose);
         }
@@ -52,9 +50,9 @@ public class PreciseAlignCommand extends Command {
     }
 
     private double getXSetpoint() {
-        if (mode == Mode.LEFT){
+        if (mode == Mode.LEFT) {
             return Constants.REEF_POLE_CENTER_OFFSET;
-        } else if (mode == Mode.RIGHT){
+        } else if (mode == Mode.RIGHT) {
             return -Constants.REEF_POLE_CENTER_OFFSET;
         }
 
@@ -71,14 +69,14 @@ public class PreciseAlignCommand extends Command {
         if (targetPose.isPresent() && isRotated()) {
             Pose3d pose = targetPose.get();
             vy = tagPidController.calculate(pose.getX(), getXSetpoint());
-            vx = -tagPidController.calculate(pose.getZ(), FORWARD_SETPOINT)/2;
+            vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
         }
 
         swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
     }
 
     private boolean inTolerance(double ref, double setPoint) {
-        return Math.abs(ref - setPoint) < Constants.REEF_POLE_CENTER_OFFSET;
+        return Math.abs(ref - setPoint) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
     }
 
     @Override
@@ -93,7 +91,8 @@ public class PreciseAlignCommand extends Command {
         }
 
         Pose3d pose = targetPose.get();
-        if (inTolerance(pose.getX(), getXSetpoint()) && inTolerance(pose.getZ(), FORWARD_SETPOINT)) {
+        if (inTolerance(pose.getX(), getXSetpoint())
+                && inTolerance(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT)) {
             return true;
         }
 
