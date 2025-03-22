@@ -15,11 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ElevatorSubsystem extends SubsystemBase {
 
     EndEffectorSubsystem endEffector;
-
-    /**
-     * Subtracts from the encoder value.
-     */
-    private static final double STAGE_ENCODER_OFFSET = 1.5;
+    private static final double STAGE_ENCODER_OFFSET = 2.5;
 
     public enum Level {
         LIntake(0),

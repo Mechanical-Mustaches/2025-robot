@@ -93,7 +93,7 @@ public class RobotContainer {
                                                                 false),
                                                 new RobotAlignCommand(swerveDriveSubsystem, Mode.LEFT, true)),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-                                                new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem,
+                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem,
                                                                 false)));
 
                 NamedCommands.registerCommand("L4 right",
@@ -102,7 +102,7 @@ public class RobotContainer {
                                                                 false),
                                                 new RobotAlignCommand(swerveDriveSubsystem, Mode.RIGHT, true)),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-                                                new ElevatorCommand(elevatorSubsystem, Level.L1, endEffectorSubsystem,
+                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem,
                                                                 false)));
 
                 NamedCommands.registerCommand("L4",
