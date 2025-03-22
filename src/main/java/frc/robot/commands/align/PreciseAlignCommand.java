@@ -14,12 +14,10 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 public class PreciseAlignCommand extends Command {
     private SwerveDriveSubsystem swerve;
     private AlignmentHelpers alignmentHelpers = new AlignmentHelpers();
-
-    private PIDController wallPidController = new PIDController(0.005, 0, 0);
     private PIDController tagPidController = new PIDController(3, 0.03, 0);
 
-    SwerveDriveSubsystem.ReefPosition closestReef;
-    Constants.Mode mode;
+    private SwerveDriveSubsystem.ReefPosition closestReef;
+    private Constants.Mode mode;
 
     public PreciseAlignCommand(SwerveDriveSubsystem swerve, Constants.Mode mode) {
         this.swerve = swerve;
@@ -31,7 +29,6 @@ public class PreciseAlignCommand extends Command {
     public void initialize() {
         SmartDashboard.putString("align/state", "PRECISE");
         alignmentHelpers.initialize();
-        wallPidController.reset();
         tagPidController.reset();
         closestReef = swerve.getClosestReefPosition();
 
@@ -40,7 +37,7 @@ public class PreciseAlignCommand extends Command {
     private Optional<Pose3d> getTagPose() {
         String llName = this.mode == Constants.Mode.LEFT ? "limelight-right" : "limelight-left";
 
-        if (LimelightHelpers.getTV(llName)){
+        if (LimelightHelpers.getTV(llName)) {
             Pose3d targetPose = LimelightHelpers.getTargetPose3d_RobotSpace(llName);
             return Optional.of(targetPose);
         }
@@ -52,6 +49,16 @@ public class PreciseAlignCommand extends Command {
         return alignmentHelpers.isRotated(closestReef, swerve.getPose());
     }
 
+    private double getXSetpoint() {
+        if (mode == Mode.LEFT) {
+            return Constants.REEF_POLE_CENTER_OFFSET;
+        } else if (mode == Mode.RIGHT) {
+            return -Constants.REEF_POLE_CENTER_OFFSET;
+        }
+
+        throw new Error(String.format("Unknown mode: %s", mode));
+    }
+
     @Override
     public void execute() {
         double vy = 0;
@@ -61,19 +68,15 @@ public class PreciseAlignCommand extends Command {
         Optional<Pose3d> targetPose = getTagPose();
         if (targetPose.isPresent() && isRotated()) {
             Pose3d pose = targetPose.get();
-            if (mode == Mode.LEFT){
-                vy = tagPidController.calculate(pose.getX(), Constants.REEF_POLE_CENTER_OFFSET);
-            } else if (mode == Mode.RIGHT){
-                vy = tagPidController.calculate(pose.getX(), -Constants.REEF_POLE_CENTER_OFFSET);
-            }
-            
-            SmartDashboard.putNumber("pac/TargetX", pose.getX());
-            vx = -tagPidController.calculate(pose.getZ(), 0.45)/2;
+            vy = tagPidController.calculate(pose.getX(), getXSetpoint());
+            vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
         }
-    
-        SmartDashboard.putNumber("pac/velocityY", vy);
 
         swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
+    }
+
+    private boolean inTolerance(double ref, double setPoint) {
+        return Math.abs(ref - setPoint) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
     }
 
     @Override
@@ -86,12 +89,13 @@ public class PreciseAlignCommand extends Command {
         if (targetPose.isEmpty()) {
             return true;
         }
-        // Pose3d pose = targetPose.get();
-        // if (mode == Mode.LEFT){
-        //     return Math.abs(pose.getX() - Constants.REEF_POLE_CENTER_OFFSET) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
-        // } else if (mode == Mode.RIGHT){
-        //     return Math.abs(pose.getX() + Constants.REEF_POLE_CENTER_OFFSET) < Constants.PRECISE_ALIGNMENT_POSITION_TOLERANCE;
-        // }
+
+        Pose3d pose = targetPose.get();
+        if (inTolerance(pose.getX(), getXSetpoint())
+                && inTolerance(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT)) {
+            return true;
+        }
+
         return false;
 
     }

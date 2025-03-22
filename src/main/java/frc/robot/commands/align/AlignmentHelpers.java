@@ -8,6 +8,14 @@ import frc.robot.subsystems.SwerveDriveSubsystem.ReefPosition;
 public class AlignmentHelpers {
     private PIDController pidRotation = new PIDController(0.15, 0.01, 0);
 
+    public AlignmentHelpers() {
+        SmartDashboard.putBoolean("align/rotation/isRotated", false);
+        SmartDashboard.putNumber("align/rotation/rotationalVelocity", 0);
+        SmartDashboard.putNumber("align/rotation/currentAngle", 0);
+        SmartDashboard.putNumber("align/rotation/desiredNegativeAngle", 0);
+        SmartDashboard.putNumber("align/rotation/desiredPositiveAngle", 0);
+    }
+
     public void initialize() {
         pidRotation.reset();
     }
@@ -17,8 +25,11 @@ public class AlignmentHelpers {
         double desiredNegativeAngle = reefPosition.rotation().getDegrees() - 360;
         double currentAngle = robotPose.getRotation().getDegrees();
 
-        return Math.abs(desiredNegativeAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE 
+        boolean result = Math.abs(desiredNegativeAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE 
                 || Math.abs(desiredPositiveAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE;
+
+        SmartDashboard.putBoolean("align/rotation/isRotated", result);
+        return result;
     }
 
     public double getRotation(ReefPosition reefPosition, Pose2d robotPose) {
@@ -26,14 +37,18 @@ public class AlignmentHelpers {
         double desiredNegativeAngle = reefPosition.rotation().getDegrees() - 360;
         double currentAngle = robotPose.getRotation().getDegrees();
 
-        SmartDashboard.putNumber("alignment/currentRotation", currentAngle);
-        SmartDashboard.putNumber("alignment/desiredNegativeRotation", desiredNegativeAngle);
-        SmartDashboard.putNumber("alignment/desiredPositiveRotation", desiredPositiveAngle);
+        SmartDashboard.putNumber("align/rotation/currentAngle", currentAngle);
+        SmartDashboard.putNumber("align/rotation/desiredNegativeAngle", desiredNegativeAngle);
+        SmartDashboard.putNumber("align/rotation/desiredPositiveAngle", desiredPositiveAngle);
 
+        double rotation;
         if (Math.abs(desiredPositiveAngle - currentAngle) > Math.abs(desiredNegativeAngle - currentAngle)) {
-            return pidRotation.calculate(currentAngle, desiredNegativeAngle);
+            rotation = pidRotation.calculate(currentAngle, desiredNegativeAngle);
         } else {
-            return pidRotation.calculate(currentAngle, desiredPositiveAngle);
+            rotation = pidRotation.calculate(currentAngle, desiredPositiveAngle);
         }
+
+        SmartDashboard.putNumber("align/rotation/rotationalVelocity", currentAngle);
+        return rotation;
     }
 }
