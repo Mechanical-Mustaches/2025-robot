@@ -171,6 +171,9 @@ public class RobotContainer {
                 m_XboxController.povDown().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimb()));
                 m_XboxController.povDown().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
 
+                // m_XboxController.povLeft().onTrue(new InstantCommand(() -> elevatorSubsystem.dumbElevatorDown()));
+                // m_XboxController.povRight().onTrue(new InstantCommand(() -> elevatorSubsystem.dumbElevatorUp()));
+
                 m_driverController.button(1).whileTrue(new RobotAlignCommand(swerveDriveSubsystem, Mode.LEFT));
                 m_driverController.button(2).whileTrue(scoreCommand);
                 m_driverController.button(3).onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));

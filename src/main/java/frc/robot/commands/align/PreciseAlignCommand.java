@@ -14,7 +14,7 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 public class PreciseAlignCommand extends Command {
     private SwerveDriveSubsystem swerve;
     private AlignmentHelpers alignmentHelpers = new AlignmentHelpers();
-    private PIDController tagPidController = new PIDController(3, 0.03, 0);
+    private PIDController tagPidController = new PIDController(4, 0.3, 0);
 
     private SwerveDriveSubsystem.ReefPosition closestReef;
     private Constants.Mode mode;
@@ -23,6 +23,9 @@ public class PreciseAlignCommand extends Command {
         this.swerve = swerve;
         this.mode = mode;
         addRequirements(swerve);
+
+        SmartDashboard.putNumber("align/zPose", 0);
+        SmartDashboard.putNumber("align/xPose", 0);
     }
 
     @Override
@@ -65,11 +68,16 @@ public class PreciseAlignCommand extends Command {
         double vx = 0;
         double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose());
 
+        
         Optional<Pose3d> targetPose = getTagPose();
         if (targetPose.isPresent() && isRotated()) {
             Pose3d pose = targetPose.get();
             vy = tagPidController.calculate(pose.getX(), getXSetpoint());
             vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
+
+            SmartDashboard.putNumber("align/zPose", pose.getZ ());
+            SmartDashboard.putNumber("align/xPose", pose.getX());
+
         }
 
         swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));

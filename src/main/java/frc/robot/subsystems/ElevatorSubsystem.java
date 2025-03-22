@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ElevatorSubsystem extends SubsystemBase {
 
     EndEffectorSubsystem endEffector;
-    private static final double STAGE_ENCODER_OFFSET = 2.5;
+    private static final double STAGE_ENCODER_OFFSET = 0;
 
     public enum Level {
         LIntake(0),
@@ -46,8 +46,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         pidConfig
                 // .pid(0.03, 0.00003, 0.00006, ClosedLoopSlot.kSlot0)
                 // .pid(0.02, 0.0000, 0.00003, ClosedLoopSlot.kSlot1)
-                .pid(0.03, 0.00001, 0.00006, ClosedLoopSlot.kSlot0)
-                .pid(0.02, 0.00001, 0.00006, ClosedLoopSlot.kSlot1)
+                .pidf(0.03, 0.00001, 0.00006, 0.001, ClosedLoopSlot.kSlot0)
+                .pidf(0.02, 0.00001, 0.00006, 0.001, ClosedLoopSlot.kSlot1)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         leftConfig
@@ -87,6 +87,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
+    public void dumbElevatorUp(){
+        leftEleMotor.set(0.2);
+    }
+
+    public void dumbElevatorDown(){
+        leftEleMotor.set(-0.2);
+    }
+
     public double getEncoderValue() {
         return leftEleMotor.getEncoder().getPosition();
     }
@@ -111,8 +119,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (limitSwitch.isPressed()) {
             resetEncoders();
         }
-        SmartDashboard.putNumber("ElevatorEncoderValue", getEncoderValue());
-        SmartDashboard.putNumber("ElevatorAmperage", leftEleMotor.getOutputCurrent());
+        SmartDashboard.putNumber("elevator/encoderValue", getEncoderValue());
+        SmartDashboard.putNumber("dlevator/amperage", leftEleMotor.getOutputCurrent());
     }
 
 }
