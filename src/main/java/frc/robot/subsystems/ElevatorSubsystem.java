@@ -77,6 +77,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
 
+    public Level getNearestAlgaeLevel() {
+        double offset = 5;
+        if (getEncoderValue() >= Level.L2.encoderValue + offset) {
+            return Level.LAlgaeTop;
+        }
+        if (getEncoderValue() >= Level.L1.encoderValue - offset) {
+            return Level.LAlgaeBottom;
+        }
+        return Level.LIntake;
+    }
+
     public void adjust(boolean up) {
         if (up) {
             leftEleMotor.set(0.2);

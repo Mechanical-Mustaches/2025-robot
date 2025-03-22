@@ -9,7 +9,7 @@ public class AlgaeIntakeCommandGroup extends SequentialCommandGroup {
 
     public AlgaeIntakeCommandGroup(AlgaeHandlerSubsystem algaeHandlerSubsystem, ElevatorSubsystem elevatorSubsystem) {
         super(
-                new ElevatorCommand(elevatorSubsystem),
+                new AlgaeElavatorCommand(elevatorSubsystem),
                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.Out),
                 new AlgaeIntakeCommand(algaeHandlerSubsystem),
                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In));
