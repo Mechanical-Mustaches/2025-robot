@@ -37,8 +37,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
      * Holds two algae pivot positions: in and out.
      */
     public enum Position {
-        In(0.02),
-        Out(0.25);
+        In(0.15),
+        Out(0.09);
 
         private final double encoderValue;
 
@@ -65,7 +65,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
         closedLoopConfig
                 .pid(0.55, 0.000001, 0, ClosedLoopSlot.kSlot0)
-                .pid(0.1, 0.000001, 0, ClosedLoopSlot.kSlot1)
+                .pid(1, 0.000001, 0, ClosedLoopSlot.kSlot1)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig
@@ -132,10 +132,19 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         if (amperageMeasurements.isEmpty()) {
             return 0;
         }
+
+        var recentMeasurementCount = 0;
         double sumOfElements = 0;
 
         for (var measurement : amperageMeasurements) {
             sumOfElements = sumOfElements + measurement.amperage;
+            if (measurement.isRecent(MEASUREMENT_WINDOW)) {
+                recentMeasurementCount = recentMeasurementCount + 1;
+            }
+        }
+
+        if (recentMeasurementCount < 5) {
+            return 0;
         }
 
         return sumOfElements / amperageMeasurements.size();
