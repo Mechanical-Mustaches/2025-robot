@@ -19,9 +19,9 @@ public class DumbAlgaeIntakeCommand extends Command {
     public void initialize() {
         if (ElevatorSubsystem.Level.L1.encoderValue + 5 < elevatorSubsystem.getEncoderValue()
                 && ElevatorSubsystem.Level.L2.encoderValue + 5 > elevatorSubsystem.getEncoderValue()) {
-            elevatorSubsystem.setPosition(Level.LAlgaeBottom, null);
+            elevatorSubsystem.setPosition(Level.LAlgaeBottom);
         } else if (ElevatorSubsystem.Level.L2.encoderValue + 5 <= elevatorSubsystem.getEncoderValue()) {
-            elevatorSubsystem.setPosition(Level.LAlgaeTop, null);
+            elevatorSubsystem.setPosition(Level.LAlgaeTop);
         } else {
             algaeHandlerSubsystem.intake();
         }

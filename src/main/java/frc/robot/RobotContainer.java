@@ -6,11 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlgaeIntakeCommandGroup;
+import frc.robot.commands.AlgaeLaunchCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.DumbAlgaeIntakeCommand;
-import frc.robot.commands.DumbAlgaePivotCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -89,29 +89,24 @@ public class RobotContainer {
                                 new KeepClosedCommand(superstructureSubsystem)));
                 NamedCommands.registerCommand("L4 left",
                                 new SequentialCommandGroup(new ParallelCommandGroup(
-                                                new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem,
-                                                                false),
+                                                new ElevatorCommand(elevatorSubsystem, Level.L4),
                                                 new RobotAlignCommand(swerveDriveSubsystem, Mode.LEFT, true)),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem,
-                                                                false)));
+                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake)));
 
                 NamedCommands.registerCommand("L4 right",
                                 new SequentialCommandGroup(new ParallelCommandGroup(
-                                                new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem,
-                                                                false),
+                                                new ElevatorCommand(elevatorSubsystem, Level.L4),
                                                 new RobotAlignCommand(swerveDriveSubsystem, Mode.RIGHT, true)),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem),
-                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake, endEffectorSubsystem,
-                                                                false)));
+                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake)));
 
                 NamedCommands.registerCommand("L4",
-                                new ElevatorCommand(elevatorSubsystem, Level.L4, endEffectorSubsystem, false));
+                                new ElevatorCommand(elevatorSubsystem, Level.L4));
 
                 NamedCommands.registerCommand("L2",
                                 new SequentialCommandGroup(
-                                                new ElevatorCommand(elevatorSubsystem, Level.L2, endEffectorSubsystem,
-                                                                false),
+                                                new ElevatorCommand(elevatorSubsystem, Level.L2),
                                                 new WaitCommand(0.2),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
 
@@ -136,6 +131,10 @@ public class RobotContainer {
 
         }
 
+        public void reset() {
+                this.algaeHandlerSubsystem.reset();
+        }
+
         /**
          * Use this method to define your trigger->command mappings. Triggers can be
          * created via the
@@ -154,8 +153,7 @@ public class RobotContainer {
                 var scoreCommand = new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem);
                 var intakeCommand = new ParallelCommandGroup(
                                 new SequentialCommandGroup(
-                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake,
-                                                                endEffectorSubsystem, false),
+                                                new ElevatorCommand(elevatorSubsystem, Level.LIntake),
                                                 new CoralIntakeCommand(endEffectorSubsystem)),
                                 new KeepClosedCommand(superstructureSubsystem));
 
@@ -164,7 +162,6 @@ public class RobotContainer {
                 m_XboxController.b().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, Mode.RIGHT));
 
                 m_XboxController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
-                m_XboxController.a().onTrue(new InstantCommand(() -> algaeHandlerSubsystem.resetEncoder()));
                 m_XboxController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
                 m_XboxController.povUp().onFalse(new InstantCommand(() -> climberSubsystem.climberStop()));
 
@@ -189,27 +186,22 @@ public class RobotContainer {
                                 .whileTrue(new ClimberCommand(climberSubsystem, ClimberSubsystem.Stage.S2,
                                                 superstructureSubsystem));
                 m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
-                m_gunnerController.button(4).onTrue(new AlgaeIntakeCommandGroup(algaeHandlerSubsystem));
+                m_gunnerController.button(4)
+                                .onTrue(new AlgaeIntakeCommandGroup(algaeHandlerSubsystem, elevatorSubsystem));
                 m_gunnerController.button(7)
                                 .whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem));
                 m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2),
                                 new InstantCommand(() -> algaeHandlerSubsystem.stopIntake())));
-                m_gunnerController.button(10).onTrue(
-                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, AlgaeHandlerSubsystem.Position.In));
-                m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
-                                endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
+                m_gunnerController.button(10).whileTrue(
+                                new AlgaeLaunchCommand(algaeHandlerSubsystem));
+                m_gunnerController.button(12)
+                                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1));
                 m_gunnerController.button(9)
-                                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L2,
-                                                endEffectorSubsystem,
-                                                false));
+                                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L2));
                 m_gunnerController.button(6)
-                                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L3,
-                                                endEffectorSubsystem,
-                                                false));
+                                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L3));
                 m_gunnerController.button(3)
-                                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L4,
-                                                endEffectorSubsystem,
-                                                false));
+                                .onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L4));
         }
 
         public Command getAutonomousCommand() {
