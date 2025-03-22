@@ -184,7 +184,7 @@ public class RobotContainer {
                                                 superstructureSubsystem));
                 m_gunnerController.button(1).whileTrue(new OpenDoorCommand(superstructureSubsystem));
                 m_gunnerController.button(4)
-                                .onTrue(new AlgaeIntakeCommandGroup(algaeHandlerSubsystem, elevatorSubsystem));
+                                .whileTrue(new AlgaeIntakeCommandGroup(algaeHandlerSubsystem, elevatorSubsystem));
                 m_gunnerController.button(7)
                                 .whileTrue(new DumbAlgaeIntakeCommand(algaeHandlerSubsystem, elevatorSubsystem));
                 m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2),
