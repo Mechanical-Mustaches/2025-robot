@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlgaeIntakeCommandGroup;
+import frc.robot.commands.AlgaeLaunchCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.CoralScoringCommand;
@@ -198,7 +199,7 @@ public class RobotContainer {
                 m_gunnerController.button(7).onFalse(new SequentialCommandGroup(new WaitCommand(0.2),
                                 new InstantCommand(() -> algaeHandlerSubsystem.stopIntake())));
                 m_gunnerController.button(10).whileTrue(
-                                new InstantCommand(() -> algaeHandlerSubsystem.launch()));
+                                new AlgaeLaunchCommand(algaeHandlerSubsystem));
                 m_gunnerController.button(12).onTrue(new ElevatorCommand(elevatorSubsystem, ElevatorSubsystem.Level.L1,
                                 endEffectorSubsystem, algaeHandlerSubsystem.isIntakingAlgae()));
                 m_gunnerController.button(9)
