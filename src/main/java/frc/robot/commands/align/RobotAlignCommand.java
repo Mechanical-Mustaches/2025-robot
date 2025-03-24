@@ -10,23 +10,19 @@ public class RobotAlignCommand extends SequentialCommandGroup {
     public RobotAlignCommand(SwerveDriveSubsystem swerveDriveSubsystem, Constants.Mode mode, boolean isInAuto) {
         SmartDashboard.putString("align/state", "INACTIVE");
 
-        if (isInAuto){
+        if (isInAuto) {
             addCommands(
-            new ParallelDeadlineGroup(
-                new WaitCommand(3),
-                new PreciseAlignCommand(swerveDriveSubsystem, mode)
-            ),
-            new ParallelDeadlineGroup(
-                new WaitCommand(.5),
-                new DriveToWallCommand(swerveDriveSubsystem)
-            )
-        );
+                    new ParallelDeadlineGroup(
+                            new WaitCommand(2),
+                            new PreciseAlignCommand(swerveDriveSubsystem, mode)),
+                    new ParallelDeadlineGroup(
+                            new WaitCommand(.5),
+                            new DriveToWallCommand(swerveDriveSubsystem)));
         } else {
             addCommands(
-            new RoughAlignCommand(swerveDriveSubsystem, mode),
-            new PreciseAlignCommand(swerveDriveSubsystem, mode),
-            new DriveToWallCommand(swerveDriveSubsystem)
-        );
+                    new RoughAlignCommand(swerveDriveSubsystem, mode),
+                    new PreciseAlignCommand(swerveDriveSubsystem, mode),
+                    new DriveToWallCommand(swerveDriveSubsystem));
         }
     }
 

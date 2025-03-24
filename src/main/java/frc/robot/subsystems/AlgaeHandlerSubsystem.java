@@ -40,8 +40,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         }
     }
 
-    // private Encoder pivotEncoder = new Encoder(null, null)
-
     /**
      * Holds two algae pivot positions: in and out.
      */
@@ -67,8 +65,9 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
                 case Out:
                     return "Out";
+
                 default:
-                    return "unknown";
+                    return "Unknown";
             }
         }
 

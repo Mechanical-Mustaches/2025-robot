@@ -9,6 +9,9 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -74,6 +77,12 @@ public class ElevatorSubsystem extends SubsystemBase {
             leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue - STAGE_ENCODER_OFFSET,
                     ControlType.kPosition,
                     ClosedLoopSlot.kSlot0);
+        }
+    }
+
+    public void reset() {
+        if (DriverStation.getMatchType() == MatchType.None) {
+            setPosition(Level.LIntake);
         }
     }
 
