@@ -1,7 +1,7 @@
 package frc.robot.commands.align;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveDriveSubsystem.ReefPosition;
 
@@ -20,10 +20,10 @@ public class AlignmentHelpers {
         pidRotation.reset();
     }
 
-    public boolean isRotated(ReefPosition reefPosition, Pose2d robotPose) {
+    public boolean isRotated(ReefPosition reefPosition, Rotation2d robotHeading) {
         double desiredPositiveAngle = reefPosition.rotation().getDegrees();
         double desiredNegativeAngle = reefPosition.rotation().getDegrees() - 360;
-        double currentAngle = robotPose.getRotation().getDegrees();
+        double currentAngle = robotHeading.getDegrees();
 
         boolean result = Math.abs(desiredNegativeAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE
                 || Math.abs(desiredPositiveAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE;
@@ -32,10 +32,10 @@ public class AlignmentHelpers {
         return result;
     }
 
-    public double getRotation(ReefPosition reefPosition, Pose2d robotPose) {
+    public double getRotation(ReefPosition reefPosition, Rotation2d robotHeading) {
         double desiredPositiveAngle = reefPosition.rotation().getDegrees();
         double desiredNegativeAngle = reefPosition.rotation().getDegrees() - 360;
-        double currentAngle = robotPose.getRotation().getDegrees();
+        double currentAngle = robotHeading.getDegrees();
 
         SmartDashboard.putNumber("align/rotation/currentAngle", currentAngle);
         SmartDashboard.putNumber("align/rotation/desiredNegativeAngle", desiredNegativeAngle);

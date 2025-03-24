@@ -9,7 +9,7 @@ public class Constants {
 
     // Angle tolerance in degrees. This should be as small as possible while
     // still allowing the robot to finish rotating.
-    public static final double ROTATION_ALIGNMENT_TOLERANCE = 2;
+    public static final double ROTATION_ALIGNMENT_TOLERANCE = 1.5;
 
     // Target distance from the reef to the center of the robot for precise
     // alignment. This command likely ends before this is reached because we

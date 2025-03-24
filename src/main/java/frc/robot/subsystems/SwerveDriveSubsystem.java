@@ -123,6 +123,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         }
     }
 
+    public Rotation2d getYaw() {
+        return swerveDrive.getYaw();
+    }
+
     public Pose2d getPose() {
         return swerveDrive.getPose();
     }
