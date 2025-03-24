@@ -9,6 +9,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -91,6 +92,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
 
         pivotConfig
                 .apply(closedLoopConfig)
+                .apply(new AbsoluteEncoderConfig().inverted(true))
                 .smartCurrentLimit(15)
                 .idleMode(IdleMode.kBrake);
 
@@ -132,7 +134,6 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("algae/target", reference);
 
         pivot.getClosedLoopController().setReference(reference, ControlType.kPosition, slot);
-
     }
 
     public boolean isAlgaeDetected() {
