@@ -19,7 +19,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public enum Level {
         LIntake(0),
-        LAlgaeTop(18.85),
+        LAlgaeTop(19.5),
         LAlgaeBottom(7.5),
         L1(11.5),
         L2(19),
@@ -82,10 +82,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (getEncoderValue() >= Level.L2.encoderValue + offset) {
             return Level.LAlgaeTop;
         }
-        if (getEncoderValue() >= Level.L1.encoderValue - offset) {
-            return Level.LAlgaeBottom;
-        }
-        return Level.LIntake;
+
+        return Level.LAlgaeBottom;
     }
 
     public void adjust(boolean up) {
@@ -97,11 +95,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
-    public void dumbElevatorUp(){
+    public void dumbElevatorUp() {
         leftEleMotor.set(0.2);
     }
 
-    public void dumbElevatorDown(){
+    public void dumbElevatorDown() {
         leftEleMotor.set(-0.2);
     }
 

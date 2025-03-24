@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DumbAlgaePivotCommand;
 
 public class AlgaeHandlerSubsystem extends SubsystemBase {
-    private final static double ALGAE_DETECTION_THRESHOLD = 10;
+    private final static double ALGAE_DETECTION_THRESHOLD = 15;
     private static final long MEASUREMENT_WINDOW = 500;
     // this number represents the minimum number of recent measurements needed to
     // calculate average amperage
@@ -46,8 +46,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
      * Holds two algae pivot positions: in and out.
      */
     public enum Position {
-        In(0.015),
-        Out(0.076);
+        In(0.85),
+        Out(0.91);
 
         private final double encoderValue;
 
@@ -185,13 +185,9 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
         removeMeasurements();
         amperageMeasurements.add(getCurrentMeasurement());
 
-        SmartDashboard.putNumber("intakeMotorAmperage", getAverageAmperage());
-        SmartDashboard.putBoolean("algaeDetectionValue", isAlgaeDetected());
-        SmartDashboard.putNumber("pivotEncoderValue", pivot.getAbsoluteEncoder().getPosition());
-        SmartDashboard.putBoolean("intakingAlgae", intakingAlgae);
-        SmartDashboard.putNumber("AlgaePivotCurrentDraw", pivot.getOutputCurrent());
-        SmartDashboard.putNumber("PivotRelativeEncoderValue", pivot.getEncoder().getPosition());
-
+        SmartDashboard.putNumber("algae/intake_amperage", getAverageAmperage());
+        SmartDashboard.putBoolean("algae/is_detected", isAlgaeDetected());
+        SmartDashboard.putNumber("algae/pivot_encoder", pivot.getAbsoluteEncoder().getPosition());
+        SmartDashboard.putNumber("algae/pivot_amperage", pivot.getOutputCurrent());
     }
-
 }
