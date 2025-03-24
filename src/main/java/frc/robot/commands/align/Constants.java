@@ -14,7 +14,7 @@ public class Constants {
     // Target distance from the reef to the center of the robot for precise
     // alignment. This command likely ends before this is reached because we
     // will lose april tag vision this close up.
-    public static final double PRECISE_ALIGNMENT_FORWARD_SETPOINT = 0.44;
+    public static final double PRECISE_ALIGNMENT_FORWARD_SETPOINT = 0.47;
     // Left/right tolerance in meters. This should be as small as possible while
     // still allowing the robot to align positionally.
     public static final double PRECISE_ALIGNMENT_POSITION_TOLERANCE = 0.03;
