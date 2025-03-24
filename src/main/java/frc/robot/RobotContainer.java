@@ -33,6 +33,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
@@ -42,7 +43,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -86,6 +89,20 @@ public class RobotContainer {
          */
         public RobotContainer() {
 
+                var collectAlgaeCommand = new ParallelDeadlineGroup(
+                                new AlgaeIntakeCommand(algaeHandlerSubsystem),
+                                new StartEndCommand(
+                                                () -> swerveDriveSubsystem
+                                                                .driveRobotRelative(
+                                                                                new ChassisSpeeds(
+                                                                                                1,
+                                                                                                0,
+                                                                                                0)),
+                                                () -> new ChassisSpeeds(0, 0, 0),
+                                                swerveDriveSubsystem)
+
+                );
+
                 swerveDriveSubsystem = new SwerveDriveSubsystem();
 
                 NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
@@ -112,7 +129,7 @@ public class RobotContainer {
                 NamedCommands.registerCommand("AlgaeL4",
                                 new SequentialCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.L4),
-                                                new RobotAlignCommand(swerveDriveSubsystem, Mode.RIGHT),
+                                                new RobotAlignCommand(swerveDriveSubsystem, Mode.RIGHT, true),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
 
                 NamedCommands.registerCommand("L2",
@@ -125,21 +142,22 @@ public class RobotContainer {
                                 new SequentialCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.LAlgaeTop),
                                                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.Out),
-                                                new AlgaeIntakeCommand(algaeHandlerSubsystem),
+                                                collectAlgaeCommand,
                                                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In)));
 
                 NamedCommands.registerCommand("GrabAlgaeBottom",
                                 new SequentialCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.LAlgaeBottom),
                                                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.Out),
-                                                new AlgaeIntakeCommand(algaeHandlerSubsystem),
+                                                collectAlgaeCommand,
                                                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In)));
 
                 NamedCommands.registerCommand("ScoreAlgae",
                                 new SequentialCommandGroup(
                                                 new WaitCommand(1),
-                                                new AlgaeLaunchCommand(algaeHandlerSubsystem),
-                                                new WaitCommand(0.5)));
+                                                new ParallelRaceGroup(
+                                                                new AlgaeLaunchCommand(algaeHandlerSubsystem),
+                                                                new WaitCommand(0.5))));
 
                 if (!OperatorConstants.usingXBox) {
                         swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(
