@@ -234,13 +234,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         if (limelightPoseRight != null) {
             Pose2d pose = limelightPoseRight.pose;
-            if (limelightPoseRight.avgTagDist <= 5 && pose.getX() > 0 && pose.getY() > 0) {
+            if (limelightPoseRight.avgTagDist <= 1.5 && pose.getX() > 0 && pose.getY() > 0) {
                 swerveDrive.addVisionMeasurement(pose, limelightPoseRight.timestampSeconds);
             }
         }
         if (limelightPoseLeft != null) {
             Pose2d pose = limelightPoseLeft.pose;
-            if (limelightPoseLeft.avgTagDist <= 5 && pose.getX() > 0 && pose.getY() > 0) {
+            if (limelightPoseLeft.avgTagDist <= 1.5 && pose.getX() > 0 && pose.getY() > 0) {
                 swerveDrive.addVisionMeasurement(pose, limelightPoseLeft.timestampSeconds);
             }
         }

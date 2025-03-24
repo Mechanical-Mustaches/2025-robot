@@ -25,7 +25,7 @@ public class DriveToWallCommand extends Command {
 
     @Override
     public void execute() {
-        double rotation = alignmentHelpers.getRotation(closestReef, swerve.getYaw());
+        double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose().getRotation());
         swerve.driveRobotRelative(new ChassisSpeeds(.6, 0, rotation));
     }
 

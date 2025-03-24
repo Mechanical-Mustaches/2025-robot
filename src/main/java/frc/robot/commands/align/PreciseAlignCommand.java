@@ -49,7 +49,7 @@ public class PreciseAlignCommand extends Command {
     }
 
     private boolean isRotated() {
-        return alignmentHelpers.isRotated(closestReef, swerve.getYaw());
+        return alignmentHelpers.isRotated(closestReef, swerve.getPose().getRotation());
     }
 
     private double getXSetpoint() {
@@ -66,7 +66,7 @@ public class PreciseAlignCommand extends Command {
     public void execute() {
         double vy = 0;
         double vx = 0;
-        double rotation = alignmentHelpers.getRotation(closestReef, swerve.getYaw());
+        double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose().getRotation());
 
         
         Optional<Pose3d> targetPose = getTagPose();
