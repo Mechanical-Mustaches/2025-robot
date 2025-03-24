@@ -12,7 +12,10 @@ public class RobotAlignCommand extends SequentialCommandGroup {
 
         if (isInAuto){
             addCommands(
-            new PreciseAlignCommand(swerveDriveSubsystem, mode),
+            new ParallelDeadlineGroup(
+                new WaitCommand(3),
+                new PreciseAlignCommand(swerveDriveSubsystem, mode)
+            ),
             new ParallelDeadlineGroup(
                 new WaitCommand(.5),
                 new DriveToWallCommand(swerveDriveSubsystem)
