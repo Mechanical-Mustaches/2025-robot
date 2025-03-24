@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleScoreRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlgaeL4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleGrabAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabAlgaeBottom"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleToBarge"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ScoreAlgaeBarge"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreAlgae"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

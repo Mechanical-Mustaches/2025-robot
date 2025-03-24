@@ -5,13 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlgaeIntakeCommand;
 import frc.robot.commands.AlgaeIntakeCommandGroup;
 import frc.robot.commands.AlgaeLaunchCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.CoralScoringCommand;
 import frc.robot.commands.DumbAlgaeIntakeCommand;
+import frc.robot.commands.DumbAlgaePivotCommand;
 import frc.robot.subsystems.AlgaeHandlerSubsystem;
+import frc.robot.subsystems.AlgaeHandlerSubsystem.Position;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ElevatorCommand;
@@ -106,11 +109,37 @@ public class RobotContainer {
                 NamedCommands.registerCommand("L4",
                                 new ElevatorCommand(elevatorSubsystem, Level.L4));
 
+                NamedCommands.registerCommand("AlgaeL4",
+                                new SequentialCommandGroup(
+                                                new ElevatorCommand(elevatorSubsystem, Level.L4),
+                                                new RobotAlignCommand(swerveDriveSubsystem, Mode.RIGHT),
+                                                new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
+
                 NamedCommands.registerCommand("L2",
                                 new SequentialCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.L2),
                                                 new WaitCommand(0.2),
                                                 new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem)));
+
+                NamedCommands.registerCommand("GrabAlgaeTop",
+                                new SequentialCommandGroup(
+                                                new ElevatorCommand(elevatorSubsystem, Level.LAlgaeTop),
+                                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.Out),
+                                                new AlgaeIntakeCommand(algaeHandlerSubsystem),
+                                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In)));
+
+                NamedCommands.registerCommand("GrabAlgaeBottom",
+                                new SequentialCommandGroup(
+                                                new ElevatorCommand(elevatorSubsystem, Level.LAlgaeBottom),
+                                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.Out),
+                                                new AlgaeIntakeCommand(algaeHandlerSubsystem),
+                                                new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In)));
+
+                NamedCommands.registerCommand("ScoreAlgae",
+                                new SequentialCommandGroup(
+                                                new WaitCommand(1),
+                                                new AlgaeLaunchCommand(algaeHandlerSubsystem),
+                                                new WaitCommand(0.5)));
 
                 if (!OperatorConstants.usingXBox) {
                         swerveDriveSubsystem.setDefaultCommand(swerveDriveSubsystem.driveCommand(

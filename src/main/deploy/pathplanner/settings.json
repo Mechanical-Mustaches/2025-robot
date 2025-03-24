@@ -3,12 +3,13 @@
   "robotLength": 0.914,
   "holonomicMode": true,
   "pathFolders": [
-    "Right",
-    "Right L4",
+    "Left",
+    "Left L4",
     "Middle",
     "Middle L4",
-    "Left",
-    "Left L4"
+    "Middle Algae",
+    "Right",
+    "Right L4"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
