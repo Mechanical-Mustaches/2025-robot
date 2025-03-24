@@ -51,6 +51,12 @@
           "data": {
             "name": "ScoreAlgae"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Leave Barge"
+          }
         }
       ]
     }
