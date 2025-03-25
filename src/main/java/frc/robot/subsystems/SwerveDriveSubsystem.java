@@ -216,6 +216,18 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 0.1);
     }
 
+    public Command goToWaypoint(Pose2d desiredPose,
+            double maxVelocityMPS,
+            double maxAccelerationMPSSq,
+            double maxAngularVelocityRadPerSec,
+            double maxAngularAccelerationRadPerSecSq,
+            double endVelocity) {
+        return AutoBuilder.pathfindToPose(desiredPose,
+                new PathConstraints(maxVelocityMPS, maxAccelerationMPSSq, maxAngularAccelerationRadPerSecSq,
+                        maxAngularAccelerationRadPerSecSq),
+                endVelocity);
+    }
+
     @Override
     public void periodic() {
         LimelightHelpers.SetRobotOrientation("limelight-right", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
