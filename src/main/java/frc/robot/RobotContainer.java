@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.KeepClosedCommand;
 import frc.robot.commands.OpenDoorCommand;
+import frc.robot.commands.align.PathPlanOnlyAlign;
 import frc.robot.commands.align.RobotAlignCommand;
 import frc.robot.commands.align.Constants.Mode;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -210,6 +211,7 @@ public class RobotContainer {
                 m_XboxController.rightTrigger().whileTrue(scoreCommand);
                 m_XboxController.x().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, Mode.LEFT));
                 m_XboxController.b().whileTrue(new RobotAlignCommand(swerveDriveSubsystem, Mode.RIGHT));
+                m_XboxController.y().whileTrue(new PathPlanOnlyAlign(swerveDriveSubsystem, Mode.LEFT));
 
                 m_XboxController.leftBumper().onTrue(new InstantCommand(() -> swerveDriveSubsystem.resetGyro()));
                 m_XboxController.povUp().onTrue(new InstantCommand(() -> climberSubsystem.dumbClimbComp()));
