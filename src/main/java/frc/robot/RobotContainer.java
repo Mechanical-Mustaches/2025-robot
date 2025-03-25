@@ -89,21 +89,6 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
-
-                var collectAlgaeCommand = new ParallelDeadlineGroup(
-                                new AlgaeIntakeCommand(algaeHandlerSubsystem),
-                                new StartEndCommand(
-                                                () -> swerveDriveSubsystem
-                                                                .driveRobotRelative(
-                                                                                new ChassisSpeeds(
-                                                                                                1,
-                                                                                                0,
-                                                                                                0)),
-                                                () -> new ChassisSpeeds(0, 0, 0),
-                                                swerveDriveSubsystem)
-
-                );
-
                 swerveDriveSubsystem = new SwerveDriveSubsystem();
 
                 NamedCommands.registerCommand("L1", new CoralScoringCommand(endEffectorSubsystem, elevatorSubsystem));
@@ -143,19 +128,19 @@ public class RobotContainer {
                                 new SequentialCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.LAlgaeTop),
                                                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.Out),
-                                                collectAlgaeCommand,
+                                                getAlgaeCollectionCommand(),
                                                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In)));
 
                 NamedCommands.registerCommand("GrabAlgaeBottom",
                                 new SequentialCommandGroup(
                                                 new ElevatorCommand(elevatorSubsystem, Level.LAlgaeBottom),
                                                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.Out),
-                                                collectAlgaeCommand,
+                                                getAlgaeCollectionCommand(),
                                                 new DumbAlgaePivotCommand(algaeHandlerSubsystem, Position.In)));
 
                 NamedCommands.registerCommand("ScoreAlgae",
                                 new SequentialCommandGroup(
-                                                new WaitCommand(1),
+                                                new WaitCommand(0.5),
                                                 new ParallelRaceGroup(
                                                                 new AlgaeLaunchCommand(algaeHandlerSubsystem),
                                                                 new WaitCommand(0.5))));
@@ -179,6 +164,22 @@ public class RobotContainer {
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Chooser", autoChooser);
 
+        }
+
+        private Command getAlgaeCollectionCommand() {
+                return new ParallelDeadlineGroup(
+                                new AlgaeIntakeCommand(algaeHandlerSubsystem),
+                                new StartEndCommand(
+                                                () -> swerveDriveSubsystem
+                                                                .driveRobotRelative(
+                                                                                new ChassisSpeeds(
+                                                                                                1,
+                                                                                                0,
+                                                                                                0)),
+                                                () -> new ChassisSpeeds(0, 0, 0),
+                                                swerveDriveSubsystem)
+
+                );
         }
 
         public void reset() {
