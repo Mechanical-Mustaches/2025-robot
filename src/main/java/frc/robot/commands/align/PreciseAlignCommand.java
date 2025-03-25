@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +27,9 @@ public class PreciseAlignCommand extends Command {
 
         SmartDashboard.putNumber("align/zPose", 0);
         SmartDashboard.putNumber("align/xPose", 0);
+        SmartDashboard.putNumber("align/tag-rotation/x", 0);
+        SmartDashboard.putNumber("align/tag-rotation/y", 0);
+        SmartDashboard.putNumber("align/tag-rotation/z", 0);
     }
 
     @Override
@@ -75,9 +79,13 @@ public class PreciseAlignCommand extends Command {
             vy = tagPidController.calculate(pose.getX(), getXSetpoint());
             vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
 
-            SmartDashboard.putNumber("align/zPose", pose.getZ ());
-            SmartDashboard.putNumber("align/xPose", pose.getX());
+            Rotation3d poseRotation = pose.getRotation();
 
+            SmartDashboard.putNumber("align/zPose", pose.getZ());
+            SmartDashboard.putNumber("align/xPose", pose.getX());
+            SmartDashboard.putNumber("align/tag-rotation/x", poseRotation.getX());
+            SmartDashboard.putNumber("align/tag-rotation/y", poseRotation.getY());
+            SmartDashboard.putNumber("align/tag-rotation/z", poseRotation.getZ());
         }
 
         swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
