@@ -27,5 +27,5 @@ public class Constants {
     // time.
     public static final double ROUGH_ALIGN_TARGET_REEF_DISTANCE = 0.65;
 
-    public static final boolean USE_TAG_SPACE = false;
+    public static final boolean USE_TAG_SPACE = true;
 }

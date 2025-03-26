@@ -92,7 +92,7 @@ public class PreciseAlignCommand extends Command {
             if (botPose.isPresent() && isRotated()) {
                 Pose3d pose = botPose.get();
                 vy = tagPidController.calculate(pose.getX(), -getXSetpoint()); // Left right is flipped for tag space
-                vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
+                vx = tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
                 rotation = -rotationPidController.calculate(pose.getRotation().getY(), 0);
             }
         } else {
