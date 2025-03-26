@@ -24,8 +24,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         LIntake(0),
         LAlgaeTop(19.5),
         LAlgaeBottom(7.5),
-        L1(11.5),
-        L2(22),
+        L1(12),
+        L2(21),
         L3(36),
         L4(57.5);
 
