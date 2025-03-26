@@ -21,12 +21,16 @@ public class AlignmentHelpers {
     }
 
     public boolean isRotated(ReefPosition reefPosition, Rotation2d robotHeading) {
+        return this.isRotated(reefPosition, robotHeading, Constants.ROTATION_ALIGNMENT_TOLERANCE);
+    }
+
+    public boolean isRotated(ReefPosition reefPosition, Rotation2d robotHeading, double tolerance) {
         double desiredPositiveAngle = reefPosition.rotation().getDegrees();
         double desiredNegativeAngle = reefPosition.rotation().getDegrees() - 360;
         double currentAngle = robotHeading.getDegrees();
 
-        boolean result = Math.abs(desiredNegativeAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE
-                || Math.abs(desiredPositiveAngle - currentAngle) < Constants.ROTATION_ALIGNMENT_TOLERANCE;
+        boolean result = Math.abs(desiredNegativeAngle - currentAngle) < tolerance
+                || Math.abs(desiredPositiveAngle - currentAngle) < tolerance;
 
         SmartDashboard.putBoolean("align/rotation/isRotated", result);
         return result;
