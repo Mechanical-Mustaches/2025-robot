@@ -16,6 +16,7 @@ public class PreciseAlignCommand extends Command {
     private SwerveDriveSubsystem swerve;
     private AlignmentHelpers alignmentHelpers = new AlignmentHelpers();
     private PIDController tagPidController = new PIDController(4, 0.3, 0);
+    private PIDController rotationPidController = new PIDController(.058, 0, 0);
 
     private SwerveDriveSubsystem.ReefPosition closestReef;
     private Constants.Mode mode;
@@ -52,7 +53,21 @@ public class PreciseAlignCommand extends Command {
         return Optional.empty();
     }
 
+    private Optional<Pose3d> getBotPoseTagSpace() {
+        String llName = this.mode == Constants.Mode.LEFT ? "limelight-right" : "limelight-left";
+
+        if (LimelightHelpers.getTV(llName)) {
+            Pose3d botPose = LimelightHelpers.getBotPose3d_TargetSpace(llName);
+            return Optional.of(botPose);
+        }
+
+        return Optional.empty();
+    }
+
     private boolean isRotated() {
+        if (Constants.USE_TAG_SPACE) {
+            return alignmentHelpers.isRotated(closestReef, swerve.getPose().getRotation(), 6);
+        }
         return alignmentHelpers.isRotated(closestReef, swerve.getPose().getRotation());
     }
 
@@ -72,20 +87,29 @@ public class PreciseAlignCommand extends Command {
         double vx = 0;
         double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose().getRotation());
 
-        
-        Optional<Pose3d> targetPose = getTagPose();
-        if (targetPose.isPresent() && isRotated()) {
-            Pose3d pose = targetPose.get();
-            vy = tagPidController.calculate(pose.getX(), getXSetpoint());
-            vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
+        if (Constants.USE_TAG_SPACE) {
+            Optional<Pose3d> botPose = getBotPoseTagSpace();
+            if (botPose.isPresent() && isRotated()) {
+                Pose3d pose = botPose.get();
+                vy = tagPidController.calculate(pose.getX(), -getXSetpoint()); // Left right is flipped for tag space
+                vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
+                rotation = -rotationPidController.calculate(pose.getRotation().getY(), 0);
+            }
+        } else {
+            Optional<Pose3d> targetPose = getTagPose();
+            if (targetPose.isPresent() && isRotated()) {
+                Pose3d pose = targetPose.get();
+                vy = tagPidController.calculate(pose.getX(), getXSetpoint());
+                vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
 
-            Rotation3d poseRotation = pose.getRotation();
+                Rotation3d poseRotation = pose.getRotation();
 
-            SmartDashboard.putNumber("align/zPose", pose.getZ());
-            SmartDashboard.putNumber("align/xPose", pose.getX());
-            SmartDashboard.putNumber("align/tag-rotation/x", poseRotation.getX());
-            SmartDashboard.putNumber("align/tag-rotation/y", poseRotation.getY());
-            SmartDashboard.putNumber("align/tag-rotation/z", poseRotation.getZ());
+                SmartDashboard.putNumber("align/zPose", pose.getZ());
+                SmartDashboard.putNumber("align/xPose", pose.getX());
+                SmartDashboard.putNumber("align/tag-rotation/x", poseRotation.getX());
+                SmartDashboard.putNumber("align/tag-rotation/y", poseRotation.getY());
+                SmartDashboard.putNumber("align/tag-rotation/z", poseRotation.getZ());
+            }
         }
 
         swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
@@ -101,15 +125,28 @@ public class PreciseAlignCommand extends Command {
             return false;
         }
 
-        Optional<Pose3d> targetPose = getTagPose();
-        if (targetPose.isEmpty()) {
-            return true;
-        }
+        if (Constants.USE_TAG_SPACE) {
+            Optional<Pose3d> botPose = getBotPoseTagSpace();
+            if (botPose.isEmpty()) {
+                return true;
+            }
 
-        Pose3d pose = targetPose.get();
-        if (inTolerance(pose.getX(), getXSetpoint())
-                && inTolerance(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT)) {
-            return true;
+            Pose3d pose = botPose.get();
+            if (inTolerance(pose.getX(), -getXSetpoint())
+                    && inTolerance(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT)) {
+                return true;
+            }
+        } else {
+            Optional<Pose3d> targetPose = getTagPose();
+            if (targetPose.isEmpty()) {
+                return true;
+            }
+
+            Pose3d pose = targetPose.get();
+            if (inTolerance(pose.getX(), getXSetpoint())
+                    && inTolerance(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT)) {
+                return true;
+            }
         }
 
         return false;
