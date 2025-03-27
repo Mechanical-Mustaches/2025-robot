@@ -45,7 +45,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
      */
     public enum Position {
         In(0.85),
-        Out(0.93);
+        Out(0.94);
 
         private final double encoderValue;
 
