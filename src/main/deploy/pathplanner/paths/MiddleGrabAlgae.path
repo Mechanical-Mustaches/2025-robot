@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -177.13759477388825
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Middle Algae",
