@@ -51,6 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 // .pid(0.02, 0.0000, 0.00003, ClosedLoopSlot.kSlot1)
                 .pidf(0.03, 0.00001, 0.00006, 0.001, ClosedLoopSlot.kSlot0)
                 .pidf(0.02, 0.00001, 0.00006, 0.001, ClosedLoopSlot.kSlot1)
+                .pidf(0.05, 0.00001, 0.00006, 0.001, ClosedLoopSlot.kSlot2)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         leftConfig
@@ -68,6 +69,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setPosition(Level targetLevel) {
+
+        if (targetLevel == Level.LAlgaeBottom || targetLevel == Level.LAlgaeTop) {
+            leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue - STAGE_ENCODER_OFFSET,
+                    ControlType.kPosition, ClosedLoopSlot.kSlot2);
+        }
 
         if (getEncoderValue() > targetLevel.encoderValue) {
             leftEleMotor.getClosedLoopController().setReference(targetLevel.encoderValue - STAGE_ENCODER_OFFSET,

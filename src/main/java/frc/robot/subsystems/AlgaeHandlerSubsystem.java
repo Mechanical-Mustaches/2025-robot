@@ -45,7 +45,7 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
      */
     public enum Position {
         In(0.85),
-        Out(0.91);
+        Out(0.93);
 
         private final double encoderValue;
 
@@ -85,8 +85,8 @@ public class AlgaeHandlerSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake);
 
         closedLoopConfig
-                .pid(2, 0.000001, 0, closedLoopSlots.get(Position.In))
-                .pid(2, 0.000001, 0, closedLoopSlots.get(Position.Out))
+                .pid(5, 0.00001, 0.00000, closedLoopSlots.get(Position.In))
+                .pid(5, 0.00001, 0.00000, closedLoopSlots.get(Position.Out))
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
         pivotConfig
