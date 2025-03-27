@@ -26,7 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         LAlgaeBottom(7.5),
         L1(12),
         L2(21),
-        L3(36),
+        L3(34),
         L4(57.5);
 
         public final double encoderValue;

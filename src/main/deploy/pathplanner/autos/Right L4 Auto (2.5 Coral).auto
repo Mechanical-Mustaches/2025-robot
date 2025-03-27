@@ -7,61 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ScoreTop L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4 right"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "SourceTop L4 (Further back)"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Source"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score2Top L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4 right"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Source2Top L4 (further back)"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Source"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score3Top L4"
+            "pathName": "ScoreBottom L4"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "L4 left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SourceBottom L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Source"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score2Bottom L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source2Bottom L4"
           }
         }
       ]
