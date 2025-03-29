@@ -14,6 +14,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
     private SparkMax rightPivot = new SparkMax(21, MotorType.kBrushless);
     private boolean isTeleOp = false;
     private boolean isOpen = false;
+    private boolean isEnabled = false;
 
     public SuperstructureSubsystem() {
         SparkMaxConfig leftConfig = new SparkMaxConfig();
@@ -23,7 +24,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
         pidConfig.pid(5, 0.00005, 0.00003);
 
         leftConfig
-                .smartCurrentLimit(50)
+                .smartCurrentLimit(30)
                 .idleMode(IdleMode.kBrake)
                 .apply(pidConfig);
 
@@ -35,8 +36,8 @@ public class SuperstructureSubsystem extends SubsystemBase {
     }
 
     public void keepClosed() {
-        leftPivot.set(0.1);
-        rightPivot.set(0.1);
+        leftPivot.set(0.2);
+        rightPivot.set(0.2);
     }
 
     public void keepClosedStop() {
@@ -60,13 +61,18 @@ public class SuperstructureSubsystem extends SubsystemBase {
         return isOpen;
     }
 
+    public void enable(){
+        isEnabled = true;
+    }
+
+    public void reset(){
+        isEnabled = false;
+    }
+
     @Override
     public void periodic() {
-        if (DriverStation.isAutonomous() || (DriverStation.getMatchTime() > 40)) {
+        if (DriverStation.isAutonomous() || !isEnabled) {
             keepClosed();
-        } else if (!isTeleOp) {
-            isTeleOp = true;
-            keepClosedStop();
         }
     }
 }

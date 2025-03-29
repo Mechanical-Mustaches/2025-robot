@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,8 +14,8 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 public class PreciseAlignCommand extends Command {
     private SwerveDriveSubsystem swerve;
     private AlignmentHelpers alignmentHelpers = new AlignmentHelpers();
-    private PIDController tagPidController = new PIDController(4, 0.3, 0);
-    private PIDController rotationPidController = new PIDController(.058, 0, 0);
+    private PIDController tagPidController = new PIDController(3, 0.03, 0);
+    //original: p: 3 i: 0.03 d: 0
 
     private SwerveDriveSubsystem.ReefPosition closestReef;
     private Constants.Mode mode;
@@ -25,12 +24,6 @@ public class PreciseAlignCommand extends Command {
         this.swerve = swerve;
         this.mode = mode;
         addRequirements(swerve);
-
-        SmartDashboard.putNumber("align/zPose", 0);
-        SmartDashboard.putNumber("align/xPose", 0);
-        SmartDashboard.putNumber("align/tag-rotation/x", 0);
-        SmartDashboard.putNumber("align/tag-rotation/y", 0);
-        SmartDashboard.putNumber("align/tag-rotation/z", 0);
     }
 
     @Override
@@ -53,19 +46,12 @@ public class PreciseAlignCommand extends Command {
         return Optional.empty();
     }
 
-    private Optional<Pose3d> getBotPoseTagSpace() {
-        String llName = this.mode == Constants.Mode.LEFT ? "limelight-right" : "limelight-left";
-
-        if (LimelightHelpers.getTV(llName)) {
-            Pose3d botPose = LimelightHelpers.getBotPose3d_TargetSpace(llName);
-            return Optional.of(botPose);
-        }
-
-        return Optional.empty();
-    }
-
     private boolean isRotated() {
         return alignmentHelpers.isRotated(closestReef, swerve.getPose().getRotation());
+    }
+    
+    private boolean isRotated(double tolerance) {
+        return alignmentHelpers.isRotated(closestReef, swerve.getPose().getRotation(), tolerance);
     }
 
     private double getXSetpoint() {
@@ -84,13 +70,13 @@ public class PreciseAlignCommand extends Command {
         double vx = 0;
         double rotation = alignmentHelpers.getRotation(closestReef, swerve.getPose().getRotation());
 
-        Optional<Pose3d> botPose = getBotPoseTagSpace();
-        if (botPose.isPresent() && isRotated()) {
-            Pose3d pose = botPose.get();
-            vy = tagPidController.calculate(pose.getX(), -getXSetpoint()); // Left right is flipped for tag space
-            vx = -tagPidController.calculate(-pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 2;
+        Optional<Pose3d> targetPose = getTagPose();
+        if (targetPose.isPresent() && isRotated(5)) {
+            Pose3d pose = targetPose.get();
+            vy = tagPidController.calculate(pose.getX(), getXSetpoint());
+            vx = -tagPidController.calculate(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT) / 1.5;
+            SmartDashboard.putNumber("align/getZ", pose.getZ());
 
-            SmartDashboard.putNumber("align/poseZ", pose.getZ());
         }
 
         swerve.driveRobotRelative(new ChassisSpeeds(vx, vy, rotation));
@@ -106,13 +92,13 @@ public class PreciseAlignCommand extends Command {
             return false;
         }
 
-        Optional<Pose3d> botPose = getBotPoseTagSpace();
-        if (botPose.isEmpty()) {
+        Optional<Pose3d> targetPose = getTagPose();
+        if (targetPose.isEmpty()) {
             return true;
         }
 
-        Pose3d pose = botPose.get();
-        if (inTolerance(pose.getX(), -getXSetpoint())
+        Pose3d pose = targetPose.get();
+        if (inTolerance(pose.getX(), getXSetpoint())
                 && inTolerance(pose.getZ(), Constants.PRECISE_ALIGNMENT_FORWARD_SETPOINT)) {
             return true;
         }

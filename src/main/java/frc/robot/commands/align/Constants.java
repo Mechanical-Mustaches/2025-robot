@@ -25,5 +25,5 @@ public class Constants {
     // Distance away from the wall to path to. This should be far enough to see
     // april tags with a good FOV, but as close as possible to reduce alignment
     // time.
-    public static final double ROUGH_ALIGN_TARGET_REEF_DISTANCE = 0.65;
+    public static final double ROUGH_ALIGN_TARGET_REEF_DISTANCE = 0.75;
 }

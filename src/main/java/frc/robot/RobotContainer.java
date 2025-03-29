@@ -185,6 +185,7 @@ public class RobotContainer {
         public void reset() {
                 this.algaeHandlerSubsystem.reset();
                 this.elevatorSubsystem.reset();
+                this.superstructureSubsystem.reset();
         }
 
         /**

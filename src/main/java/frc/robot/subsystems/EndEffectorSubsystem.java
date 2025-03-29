@@ -34,8 +34,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
         effectorRight.configure(rightConfig, null, null);
     }
     public void effectorSpin(){
-        effectorLeft.set(0.2);
-        effectorRight.set(-0.2);
+        effectorLeft.set(0.3);
+        effectorRight.set(-0.3);
     }
 
     public void effectorScore(){
